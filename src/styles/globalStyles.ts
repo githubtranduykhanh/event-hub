@@ -22,6 +22,11 @@ const globalStyles = StyleSheet.create({
         paddingHorizontal:20,
         paddingVertical:5,  
           
+    },
+    text:{
+        fontFamily:typography.fontFamily.regular,
+        fontSize:typography.fontSizeSmall,
+        color:colors.text
     }
 })
 
