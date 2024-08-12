@@ -6,7 +6,7 @@ import { HomeScreen } from '../screens'
 const TabNavigaror = () => {
     const Tab = createBottomTabNavigator()
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator screenOptions={{ headerShown: false }}>     
         <Tab.Screen name='HomeScreen' component={HomeScreen}/>
     </Tab.Navigator>
   )
