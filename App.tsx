@@ -19,9 +19,12 @@ export default function App() {
   },[])
 
   return (
-    isShowSplash ? <SplashScreen/> : <NavigationContainer>
-      <AuthNavigator/>
-    </NavigationContainer>
+   <>
+      <StatusBar style='dark' translucent/>
+      { !isShowSplash ? <SplashScreen/> : <NavigationContainer>
+        <AuthNavigator/>
+      </NavigationContainer>}
+   </>
   );
 }
 
