@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import colors from "./colors";
 import appInfo from "./appInfo";
+import typography from "./typography";
 
 
 
@@ -19,7 +20,8 @@ const globalStyles = StyleSheet.create({
         position:'absolute',
         bottom:20,
         paddingHorizontal:20,
-        paddingVertical:5,          
+        paddingVertical:5,  
+          
     }
 })
 

@@ -1,6 +1,6 @@
 import { View, Text, Image, TouchableHighlight, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import { colors, globalStyles } from '../../styles'
+import { colors, globalStyles, typography } from '../../styles'
 import Swiper from 'react-native-swiper'
 
 const OnboardingScreen = ({navigation}:any) => {
@@ -48,5 +48,5 @@ export default OnboardingScreen
 
 
 const style = StyleSheet.create({
-    text:{color:colors.white,fontSize:16,fontWeight:'bold'}
+    text:{color:colors.white,fontSize:16,fontFamily:typography.fontFamily.semiBold}
 })
