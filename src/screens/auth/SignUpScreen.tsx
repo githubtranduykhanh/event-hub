@@ -4,36 +4,44 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ButtonComponent, ContainerComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
 import {AntDesign} from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles';
-import { Lock1, Sms } from 'iconsax-react-native';
+import { Lock1, Sms,Profile, ArrowLeft } from 'iconsax-react-native';
 import SocialLogin from './SocialLogin';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
+
 interface Inputs {
   email: string;
   password: string;
+  fullName:string;
+  confirmPassword:string;
 }
 
-const LoginScreen = ({navigation}:any) => {
+const SignUpScreen = ({navigation}:any) => {
 
   const [inputs,setInput] =useState<Inputs>({
     email:'',
     password:'',
+    fullName:'',
+    confirmPassword:''
   })
-  const [isRemember,setIsRemember] = useState(true)
+  
 
   return (
-   <ContainerComponent isImageBackground isScroll>
-      <SectionComponent styles={{
-        justifyContent:'center',
-        alignItems:'center',
-        marginTop:31,
-      }}>
-      <Image style={{width:162,height:114}} source={require('../../../assets/images/logo.png')} resizeMode='cover' />
-      </SectionComponent>
-      <SpaceComponent height={10}/>
+   <ContainerComponent isImageBackground isScroll back>
+      <SpaceComponent height={7}/>
       <SectionComponent>
-        <TextComponent text='Sign in' title style={{alignSelf:'flex-start'}}/>
+        <TextComponent text='Sign up' title style={{alignSelf:'flex-start'}}/>
         <SpaceComponent height={21}/>
-        <InputComponent      
+          <InputComponent      
+            placeholder='Full name'
+            value={inputs.fullName} 
+            onChange={(val: string)=> setInput(prve => ({...prve,fullName:val}))}
+            isPassword={false}
+            allowClear
+            affix={<Profile size={22} color={colors.gray}/>}
+            type='default'
+          />
+          <SpaceComponent height={19}/>
+          <InputComponent      
             placeholder='abc@email.com'
             value={inputs.email} 
             onChange={(val: string)=> setInput(prve => ({...prve,email:val}))}
@@ -51,36 +59,29 @@ const LoginScreen = ({navigation}:any) => {
             allowClear         
             affix={<Lock1 size={22} color={colors.gray}/>}        
           />
-          <SpaceComponent height={20}/>
-          <RowComponent justify='space-between'>
-            <RowComponent onPress={() => setIsRemember(prve => !prve)}>            
-              <Switch
-                style={{marginRight:5}} 
-                trackColor={{true:colors.primary}}
-                thumbColor={colors.white}
-                value={isRemember}
-                onChange={() =>setIsRemember(prve => !prve)}
-              />
-              <TextComponent text='Remember Me'/>
-            </RowComponent>
-            
-            <ButtonComponent text='Forgot password?' onPress={()=>{}} type='text' />
-          </RowComponent>
+          <SpaceComponent height={19}/>
+          <InputComponent 
+            placeholder='Confirm password'
+            value={inputs.confirmPassword} 
+            onChange={(val: string)=> setInput(prve => ({...prve,confirmPassword:val}))}
+            isPassword={true}
+            allowClear         
+            affix={<Lock1 size={22} color={colors.gray}/>}        
+          />
       </SectionComponent>
  
-      <SectionComponent styles={{marginTop:16,marginBottom:4}}>      
+      <SectionComponent styles={{marginTop:16,marginBottom:4}}>
         <ButtonComponent 
         textStyle={{textAlign:'center',marginRight:0}}  
         iconFlex='right' 
         icon={<ArrowRight style={{position: 'absolute',right: 16}}  />} 
-        text='SIGN IN' 
-        type='primary' />
+        text='SIGN UP' type='primary' />
       </SectionComponent>
       <SocialLogin/>
       <SectionComponent>
         <RowComponent justify='center'>
-          <TextComponent text='Don’t have an account?' style={{marginRight:5}} />
-          <ButtonComponent text='Sign up' type='link' onPress={()=>navigation.navigate('SignUpScreen')}/>
+          <TextComponent text='Already have an account?' style={{marginRight:5}} />
+          <ButtonComponent text='Sign in' type='link' onPress={() => navigation.navigate('LoginScreen')}/>
           
         </RowComponent>
       </SectionComponent>
@@ -88,4 +89,4 @@ const LoginScreen = ({navigation}:any) => {
   )
 }
 
-export default LoginScreen
+export default SignUpScreen

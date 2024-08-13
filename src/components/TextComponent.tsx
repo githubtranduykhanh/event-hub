@@ -17,9 +17,9 @@ const TextComponent: React.FC<Props> = ({text,color,size,flex,font,style,title})
   return (
    <Text style={[{
     color:color ?? colors.text,
-    fontSize:size ?? title ? typography.fontSizeExtraLarge : typography.fontSizeSmall,
+    fontSize:size ?? (title ? typography.fontSizeExtraLarge : typography.fontSizeSmall),
     flex: flex ?? 0,
-    fontFamily:font ?? title ? typography.fontFamily.semiBold : typography.fontFamily.regular
+    fontFamily:font ?? (title ? typography.fontFamily.medium : typography.fontFamily.regular)
    },style]}>
     {text}
    </Text>

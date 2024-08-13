@@ -13,10 +13,10 @@ SplashScreenEX.preventAutoHideAsync();
 
 export default function App() {
   const [loaded, error] = useFonts({
-    [typography.fontFamily.bold]: require('./assets/fonts/AirbnbCereal_W_XBd.otf'),
+    [typography.fontFamily.regular]: require('./assets/fonts/AirbnbCereal_W_Lt.otf'),
     [typography.fontFamily.medium]: require('./assets/fonts/AirbnbCereal_W_Md.otf'),
     [typography.fontFamily.semiBold]: require('./assets/fonts/AirbnbCereal_W_Bd.otf'),
-    [typography.fontFamily.bold]: require('./assets/fonts/AirbnbCereal_W_Lt.otf'),
+    [typography.fontFamily.bold]: require('./assets/fonts/AirbnbCereal_W_XBd.otf'),
   });
   const [isShowSplash,setIsShowSplash] = useState(true)
   const [assetToken,setAssetToken] = useState('')
