@@ -27,6 +27,15 @@ const globalStyles = StyleSheet.create({
         fontFamily:typography.fontFamily.regular,
         fontSize:typography.fontSizeSmall,
         color:colors.text
+    },
+    button:{
+        flexDirection:'row',
+        borderRadius:12,
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:colors.white,
+        padding:16,
+        minHeight:56,
     }
 })
 
