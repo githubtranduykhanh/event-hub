@@ -10,13 +10,15 @@ interface Props {
     font?:string;
     style?:StyleProp<TextStyle>;
     title?:boolean;
+    lineHeight?:number;
 }
 
 
-const TextComponent: React.FC<Props> = ({text,color,size,flex,font,style,title}) => {
+const TextComponent: React.FC<Props> = ({lineHeight,text,color,size,flex,font,style,title}) => {
   return (
    <Text style={[{
     color:color ?? colors.text,
+    lineHeight,
     fontSize:size ?? (title ? typography.fontSizeExtraLarge : typography.fontSizeSmall),
     flex: flex ?? 0,
     fontFamily:font ?? (title ? typography.fontFamily.medium : typography.fontFamily.regular)

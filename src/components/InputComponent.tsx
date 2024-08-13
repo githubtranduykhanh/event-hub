@@ -33,7 +33,7 @@ const InputComponent:React.FC<Props> = ({allowClear,type,value,onChange,affix,pl
         }]} 
         value={value}
         placeholder={placeholder ?? ''} 
-        onChangeText={val => onChange(val)} 
+        onChangeText={onChange} 
         secureTextEntry={isShowPassword}
         placeholderTextColor={colors.subColor}
         keyboardType={type ?? 'default'}

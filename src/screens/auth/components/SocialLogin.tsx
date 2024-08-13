@@ -1,10 +1,10 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { ButtonComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
-import { colors, typography } from '../../styles'
+import { ButtonComponent, SectionComponent, SpaceComponent, TextComponent } from '../../../components'
+import { colors, typography } from '../../../styles'
 import { Lock1 } from 'iconsax-react-native'
-import Google from '../../../assets/svgs/google.svg'
-import Facebook from '../../../assets/svgs/facebook.svg'
+import Google from '../../../../assets/svgs/google.svg'
+import Facebook from '../../../../assets/svgs/facebook.svg'
 
 const SocialLogin = () => {
   return (

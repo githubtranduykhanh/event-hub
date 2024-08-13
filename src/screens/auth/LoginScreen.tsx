@@ -5,7 +5,7 @@ import { ButtonComponent, ContainerComponent, InputComponent, RowComponent, Sect
 import {AntDesign} from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles';
 import { Lock1, Sms } from 'iconsax-react-native';
-import SocialLogin from './SocialLogin';
+import {SocialLogin} from './components';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 interface Inputs {
   email: string;
@@ -31,7 +31,7 @@ const LoginScreen = ({navigation}:any) => {
       </SectionComponent>
       <SpaceComponent height={10}/>
       <SectionComponent>
-        <TextComponent text='Sign in' title style={{alignSelf:'flex-start'}}/>
+        <TextComponent text='Sign in' title/>
         <SpaceComponent height={21}/>
         <InputComponent      
             placeholder='abc@email.com'
@@ -64,7 +64,7 @@ const LoginScreen = ({navigation}:any) => {
               <TextComponent text='Remember Me'/>
             </RowComponent>
             
-            <ButtonComponent text='Forgot password?' onPress={()=>{}} type='text' />
+            <ButtonComponent text='Forgot password?' onPress={()=>navigation.navigate('ForgotPasswordScreen')} type='text' />
           </RowComponent>
       </SectionComponent>
  

@@ -7,6 +7,7 @@ import ButtonComponent from './ButtonComponent';
 import { ArrowLeft } from 'iconsax-react-native';
 import TextComponent from './TextComponent';
 import { memo } from 'react';
+import {HeaderComponent} from '../components'
 
 interface Props {
   isImageBackground?: boolean;
@@ -19,27 +20,11 @@ interface Props {
 
 
 
+
 const ContainerComponent: React.FC<Props> = ({ back,isImageBackground, isScroll, title, children }) => {
 
   const returnContainer = isScroll ? <ScrollView style={[globalStyles.container]}>{children}</ScrollView> : <View  style={[globalStyles.container]}>{children}</View>
-  const navigation:any = useNavigation()
-
-  const HeaderComponent = () => {
-    return (
-      <View style={{flex:1}}>
-        {(title || back) 
-        && (<RowComponent styles={{marginLeft:16,minWidth:48,minHeight:48}}>
-            {back && (<TouchableOpacity style={{marginRight:5}} onPress={()=>navigation.goBack()}>
-                  <ArrowLeft  size={typography.fontSizeExtraLarge} color={colors.text}/>           
-              </TouchableOpacity>)      
-            }
-            {title && (<TextComponent text={title} size={typography.fontSizeExtraLarge} font={typography.fontFamily.medium}/>)}
-        </RowComponent>)}
-        {returnContainer}
-      </View>
-    )
-  }
-
+ 
   return (
       isImageBackground
       ? <ImageBackground 
@@ -48,12 +33,12 @@ const ContainerComponent: React.FC<Props> = ({ back,isImageBackground, isScroll,
           imageStyle={{flex:1}}
           >
             <SafeAreaView style={[globalStyles.container]}>
-            <HeaderComponent/>
+            <HeaderComponent back={back} title={title} returnContainer={returnContainer}/>
             </SafeAreaView>         
         </ImageBackground>
       : <SafeAreaView style={[globalStyles.container]}>
         <View>
-          <HeaderComponent/>
+        <HeaderComponent back={back} title={title} returnContainer={returnContainer}/>
         </View>
       </SafeAreaView>
   )

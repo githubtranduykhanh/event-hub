@@ -5,7 +5,7 @@ import { ButtonComponent, ContainerComponent, InputComponent, RowComponent, Sect
 import {AntDesign} from '@expo/vector-icons';
 import { colors, globalStyles } from '../../styles';
 import { Lock1, Sms,Profile, ArrowLeft } from 'iconsax-react-native';
-import SocialLogin from './SocialLogin';
+import {SocialLogin} from './components';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 
 interface Inputs {
@@ -29,7 +29,7 @@ const SignUpScreen = ({navigation}:any) => {
    <ContainerComponent isImageBackground isScroll back>
       <SpaceComponent height={7}/>
       <SectionComponent>
-        <TextComponent text='Sign up' title style={{alignSelf:'flex-start'}}/>
+        <TextComponent text='Sign up' title />
         <SpaceComponent height={21}/>
           <InputComponent      
             placeholder='Full name'
