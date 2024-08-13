@@ -36,6 +36,24 @@ const globalStyles = StyleSheet.create({
         backgroundColor:colors.white,
         padding:16,
         minHeight:56,
+    },
+    inputContainer:{
+        flexDirection:'row',
+        borderRadius:12,
+        borderWidth:1,
+        borderColor:colors.inputBorder,
+        width:'100%',   
+        paddingHorizontal:15,
+        paddingVertical:17, 
+        alignItems:'center',
+        backgroundColor:colors.white   
+    },
+    input:{
+        padding:0,
+        margin:0,
+        flex:1,
+       
+        fontFamily:typography.fontFamily.regular
     }
 })
 
