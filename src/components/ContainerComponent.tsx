@@ -1,11 +1,6 @@
-import { View, Text, ImageBackground, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, ImageBackground, ScrollView, SafeAreaView } from 'react-native'
 import React, { ReactNode } from 'react'
-import { colors, globalStyles, typography } from '../styles';
-import { useNavigation } from '@react-navigation/native';
-import RowComponent from './RowComponent';
-import ButtonComponent from './ButtonComponent';
-import { ArrowLeft } from 'iconsax-react-native';
-import TextComponent from './TextComponent';
+import {  globalStyles } from '../styles';
 import { memo } from 'react';
 import {HeaderComponent} from '../components'
 
@@ -16,8 +11,6 @@ interface Props {
   children: ReactNode;
   back?:boolean
 }
-
-
 
 
 

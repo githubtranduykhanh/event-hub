@@ -1,4 +1,4 @@
-import { View, Text, Button, Image, Switch } from 'react-native'
+import { View, Text, Button, Image, Switch, Alert } from 'react-native'
 import React, { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ButtonComponent, ContainerComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '../../components'
@@ -7,6 +7,7 @@ import { colors, globalStyles } from '../../styles';
 import { Lock1, Sms } from 'iconsax-react-native';
 import {SocialLogin} from './components';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
+import { apiLogin } from '../../apis';
 interface Inputs {
   email: string;
   password: string;
@@ -20,8 +21,18 @@ const LoginScreen = ({navigation}:any) => {
   })
   const [isRemember,setIsRemember] = useState(true)
 
+
+  const handleLogin = async () =>{
+    apiLogin()
+    .then(response => console.log(response))
+    .catch(error => {
+      console.error('Error:', error);
+      Alert.alert('Error', error);
+    });
+  }
+
   return (
-   <ContainerComponent isImageBackground isScroll>
+   <ContainerComponent isImageBackground>
       <SectionComponent styles={{
         justifyContent:'center',
         alignItems:'center',
@@ -70,6 +81,7 @@ const LoginScreen = ({navigation}:any) => {
  
       <SectionComponent styles={{marginTop:16,marginBottom:4}}>      
         <ButtonComponent 
+        onPress={handleLogin}
         textStyle={{textAlign:'center',marginRight:0}}  
         iconFlex='right' 
         icon={<ArrowRight style={{position: 'absolute',right: 16}}  />} 
