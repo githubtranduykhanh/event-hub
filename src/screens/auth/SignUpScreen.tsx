@@ -96,17 +96,21 @@ const SignUpScreen = ({ navigation }: any) => {
     setIsLoading(true)
     apiRegister(inputs)
       .then(res => res.data)
-      .then(res => {
+      .then(res => {   
         if (res.status) {
           console.log('=============')
-          console.log("Data", res.data)
-        } else {
+          console.log("Res", res)
+          Alert.alert("Successfully",res.mes)
+        }else if (!res.status && res.errors && Object.keys(res.errors).length > 0){
+          Alert.alert("Error",res.mes)
           setErrorInput(prve => ({ ...prve, ...res.errors }))
+        }else{
+          Alert.alert("Error",res.mes)
         }
       })
       .catch(error => {
-        console.error('Error:', error);
-        Alert.alert('Error', error);
+        console.log('Error:', error?.response?.data?.mes || error.message || error);
+        Alert.alert('Error', error?.response?.data?.mes || error.message || error);
       }).finally(() => {
         setIsLoading(false)
       })

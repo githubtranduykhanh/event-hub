@@ -6,9 +6,19 @@ interface ApiResponse<T> {
     errors?: Record<string, string>;
 }
 
-export const apiLogin = () => axiosClient({
+interface ApiResponseLogin<T> {
+    status: boolean;
+    mes?: string;
+    data?: T;
+    accessToken?:string;
+    user?:T
+    errors?: Record<string, string>;
+}
+
+export const apiLogin = (data:any) => axiosClient<ApiResponseLogin<any>>({
     url:'/auth/login',
-    method:'get', 
+    method:'post',
+    data 
 })
 
 
