@@ -8,6 +8,7 @@ import { Lock1, Sms } from 'iconsax-react-native';
 import {SocialLogin} from './components';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 import { apiLogin } from '../../apis';
+
 interface Inputs {
   email: string;
   password: string;

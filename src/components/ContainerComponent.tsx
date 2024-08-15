@@ -2,7 +2,7 @@ import { View, ImageBackground, ScrollView, SafeAreaView } from 'react-native'
 import React, { ReactNode } from 'react'
 import {  globalStyles } from '../styles';
 import { memo } from 'react';
-import {HeaderComponent} from '../components'
+import HeaderComponent from '../components/HeaderComponent'
 
 interface Props {
   isImageBackground?: boolean;
@@ -26,12 +26,16 @@ const ContainerComponent: React.FC<Props> = ({ back,isImageBackground, isScroll,
           imageStyle={{flex:1}}
           >
             <SafeAreaView style={[globalStyles.container]}>
-            <HeaderComponent back={back} title={title} returnContainer={returnContainer}/>
+              <View style={{flex:1}}>
+              <HeaderComponent back={back} title={title}/>
+              {returnContainer}
+              </View>
             </SafeAreaView>         
         </ImageBackground>
       : <SafeAreaView style={[globalStyles.container]}>
-        <View>
-        <HeaderComponent back={back} title={title} returnContainer={returnContainer}/>
+       <View style={{flex:1}}>
+          <HeaderComponent back={back} title={title} />
+          {returnContainer}
         </View>
       </SafeAreaView>
   )

@@ -61,7 +61,9 @@ export default function App() {
       { isShowSplash 
       ? <SplashScreen/> 
       : <NavigationContainer>
-        {assetToken ? <MainNavigator/> :  <AuthNavigator/>}     
+         
+            {assetToken ? <MainNavigator/> :  <AuthNavigator/>}     
+        
       </NavigationContainer>}
    </>
   );

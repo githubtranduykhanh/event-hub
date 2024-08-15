@@ -5,7 +5,7 @@ import Constants from 'expo-constants';
 
 // Tạo một instance của Axios
 const instance: AxiosInstance = axios.create({
-  baseURL: Constants.expoConfig?.extra?.apiUrl || 'http://192.168.1.14:5000', // Đảm bảo có giá trị mặc định cho baseURL
+  baseURL: Constants.expoConfig?.extra?.apiUrl || 'http://192.168.1.14:5000/api', // Đảm bảo có giá trị mặc định cho baseURL
   paramsSerializer: params => queryString.stringify(params),
   headers: {
     'Accept': 'application/json', // Loại dữ liệu client mong muốn nhận về
@@ -30,7 +30,7 @@ instance.interceptors.request.use(
 
 // Interceptor cho phản hồi (response)
 instance.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
+  (response: AxiosResponse) => response,
   (error: AxiosError) => {
     // Xử lý lỗi phản hồi
     if (error.response) {

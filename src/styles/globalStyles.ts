@@ -80,6 +80,12 @@ const globalStyles = StyleSheet.create({
         shadowOpacity: 0.25, // Độ mờ của bóng
         shadowRadius: 30, // Độ lan tỏa của bóng
         elevation: 5, // Đối với Android
+    },
+    modal:{   
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:'rgba(0, 0, 0, 0.5)'
     }
 })
 
