@@ -10,6 +10,9 @@ import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 import { apiRegister } from '~/apis';
 import { LoadingModal } from '~/modals';
 import { Validate } from '~/utils/validate';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '~/redux/store';
+import { registerUser } from '~/redux/features/auth/authActions';
 
 
 interface Inputs {
@@ -28,8 +31,9 @@ interface Error {
 }
 
 const SignUpScreen = ({ navigation }: any) => {
-
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, errorMessage, errors } = useSelector((state: RootState) => state.auth);
+  const [isLoadingState, setIsLoadingState] = useState<boolean>(false)
 
   const [inputs, setInput] = useState<Inputs>({
     email: '',
@@ -44,6 +48,19 @@ const SignUpScreen = ({ navigation }: any) => {
     fullName: '',
     confirmPassword: ''
   })
+
+  useEffect(() => {
+    if (errorMessage) {
+        Alert.alert('Error', errorMessage);
+    }
+
+    if(errors && Object.keys(errors).length > 0){
+      setErrorInput(prve => ({...prve,...errors}))
+    }
+  }, [errorMessage,errors]);
+
+
+
 
 
   useEffect(() => {
@@ -93,7 +110,9 @@ const SignUpScreen = ({ navigation }: any) => {
     if (Object.keys(emptyErrors).length !== 0 || Object.keys(typeErrors).length !== 0) return
 
 
-    setIsLoading(true)
+    dispatch(registerUser(inputs))
+
+    /* setIsLoadingState(true)
     apiRegister(inputs)
       .then(res => res.data)
       .then(res => {   
@@ -112,8 +131,8 @@ const SignUpScreen = ({ navigation }: any) => {
         console.log('Error:', error?.response?.data?.mes || error.message || error);
         Alert.alert('Error', error?.response?.data?.mes || error.message || error);
       }).finally(() => {
-        setIsLoading(false)
-      })
+        setIsLoadingState(false)
+      }) */
   }
 
   return (

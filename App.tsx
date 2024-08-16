@@ -4,10 +4,12 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SplashScreen, } from './src/screens';
-import { AuthNavigator, MainNavigator } from './src/navigators';
+import { AppRouters, AuthNavigator, MainNavigator } from './src/navigators';
 import { NavigationContainer } from '@react-navigation/native';
 import { useAsyncStorage } from '@react-native-async-storage/async-storage';
 import { typography } from './src/styles';
+import { Provider } from 'react-redux';
+import { store } from '~/redux/store';
 
 SplashScreenEX.preventAutoHideAsync();
 
@@ -19,9 +21,6 @@ export default function App() {
     [typography.fontFamily.bold]: require('./assets/fonts/AirbnbCereal_W_XBd.otf'),
   });
   const [isShowSplash,setIsShowSplash] = useState(true)
-  const [assetToken,setAssetToken] = useState('')
-
-  const {getItem,setItem} = useAsyncStorage('assetToken')
 
   useEffect(() => {
     if (loaded || error) {
@@ -32,24 +31,12 @@ export default function App() {
   
 
   useEffect(() => {
-    checkLogin()
     const timeout = setTimeout(()=>{
       setIsShowSplash(false)
     },1500)
 
     return () => clearTimeout(timeout)
   },[])
-
-  useEffect(() => {
-
-  },[])
-
-  const checkLogin = async () => {
-    const token = await getItem()
-
-    token && setAssetToken(token)
-    console.log(token)
-  }
 
   if (!loaded && !error) {
     return <ActivityIndicator />;
@@ -58,13 +45,13 @@ export default function App() {
   return (
    <>
       <StatusBar style='dark' translucent/>
-      { isShowSplash 
-      ? <SplashScreen/> 
-      : <NavigationContainer>
-         
-            {assetToken ? <MainNavigator/> :  <AuthNavigator/>}     
-        
-      </NavigationContainer>}
+      <Provider store={store}>
+        { isShowSplash 
+        ? <SplashScreen/> 
+        : <NavigationContainer>
+              <AppRouters/> 
+        </NavigationContainer>}
+      </Provider>      
    </>
   );
 }

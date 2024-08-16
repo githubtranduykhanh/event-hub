@@ -1,3 +1,4 @@
+import { UserSlice } from '~/redux/features/auth/authSlice';
 import axiosClient from './axiosClient'
 interface ApiResponse<T> {
     status: boolean;
@@ -6,16 +7,10 @@ interface ApiResponse<T> {
     errors?: Record<string, string>;
 }
 
-interface ApiResponseLogin<T> {
-    status: boolean;
-    mes?: string;
-    data?: T;
-    accessToken?:string;
-    user?:T
-    errors?: Record<string, string>;
-}
 
-export const apiLogin = (data:any) => axiosClient<ApiResponseLogin<any>>({
+
+
+export const apiLogin = (data:{ email: string; password: string }) => axiosClient<ApiResponse<UserSlice>>({
     url:'/auth/login',
     method:'post',
     data 
@@ -23,7 +18,7 @@ export const apiLogin = (data:any) => axiosClient<ApiResponseLogin<any>>({
 
 
 
-export const apiRegister = (data:any) => axiosClient<ApiResponse<any>>({
+export const apiRegister = (data:{fullName: string; email: string; password: string; confirmPassword: string;}) => axiosClient<ApiResponse<UserSlice>>({
     url:'/auth/register',
     method:'post', 
     data

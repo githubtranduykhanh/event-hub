@@ -10,6 +10,9 @@ import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 import { apiLogin } from '../../apis';
 import { Validate } from '~/utils/validate';
 import { LoadingModal } from '~/modals';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '~/redux/store';
+import { loginUser } from '~/redux/features/auth/authActions';
 
 interface Inputs {
   email: string;
@@ -22,7 +25,9 @@ interface Error {
 }
 
 const LoginScreen = ({navigation}:any) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoading, errorMessage } = useSelector((state: RootState) => state.auth);
+  const [isLoadingState, setIsLoadingState] = useState<boolean>(false)
   const [inputs,setInput] =useState<Inputs>({
     email:'',
     password:'',
@@ -35,6 +40,12 @@ const LoginScreen = ({navigation}:any) => {
 
   const [isRemember,setIsRemember] = useState(true)
 
+
+  useEffect(() => {
+    if (errorMessage) {
+        Alert.alert('Error', errorMessage);
+    }
+  }, [errorMessage]);
 
   useEffect(() => {
     setErrorInput({
@@ -61,7 +72,12 @@ const LoginScreen = ({navigation}:any) => {
       return setErrorInput(prev => ({ ...prev, ...errors }))
     }
   
-    setIsLoading(true)
+
+
+    dispatch(loginUser(inputs))
+
+
+   /*  setIsLoadingState(true)
     apiLogin(inputs)
     .then(res => res.data)
     .then(res => {
@@ -80,8 +96,8 @@ const LoginScreen = ({navigation}:any) => {
       console.log('Error:', error?.response?.data?.mes || error.message || error);
       Alert.alert('Error', error?.response?.data?.mes || error.message || error);
     }).finally(()=>{
-      setIsLoading(false)
-    })
+      setIsLoadingState(false)
+    }) */
   }
 
   return (
