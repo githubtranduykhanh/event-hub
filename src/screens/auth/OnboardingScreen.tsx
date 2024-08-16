@@ -2,10 +2,17 @@ import { View, Text, Image, TouchableHighlight, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { colors, globalStyles, typography } from '../../styles'
 import Swiper from 'react-native-swiper'
+import { saveToStorage } from '~/utils/storage'
 
 const OnboardingScreen = ({navigation}:any) => {
 
     const [indexSwiper,setIndexSwiper] = useState(0)
+
+    const handleClose = async () => {
+        await saveToStorage('first',true)
+        navigation.navigate('LoginScreen')
+    }
+
     return (
         <View style={[globalStyles.container,{position:'relative'}]}>
             <Swiper
@@ -29,14 +36,14 @@ const OnboardingScreen = ({navigation}:any) => {
             </Swiper>
             <TouchableHighlight 
                 style={[globalStyles.arrowsText,{left:50}]}
-                onPress={() => navigation.navigate('LoginScreen')}
+                onPress={handleClose}
                 >
                 <Text style={[style.text,{color:colors.gray2}]}>Skip</Text>
             </TouchableHighlight>
             
             <TouchableHighlight 
                 style={[globalStyles.arrowsText,{right:50}]}
-                onPress={() => indexSwiper < 2 ? setIndexSwiper(prve => ++prve) : navigation.navigate('LoginScreen')}
+                onPress={async () => indexSwiper < 2 ? setIndexSwiper(prve => ++prve) : await handleClose()}
                 >
                 <Text style={style.text}>Next</Text>
             </TouchableHighlight>

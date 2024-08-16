@@ -33,7 +33,6 @@ interface Error {
 const SignUpScreen = ({ navigation }: any) => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, errorMessage, errors } = useSelector((state: RootState) => state.auth);
-  const [isLoadingState, setIsLoadingState] = useState<boolean>(false)
 
   const [inputs, setInput] = useState<Inputs>({
     email: '',
@@ -51,13 +50,13 @@ const SignUpScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (errorMessage) {
-        Alert.alert('Error', errorMessage);
+      Alert.alert('Error', errorMessage);
     }
 
-    if(errors && Object.keys(errors).length > 0){
-      setErrorInput(prve => ({...prve,...errors}))
+    if (errors && Object.keys(errors).length > 0) {
+      setErrorInput(prve => ({ ...prve, ...errors }))
     }
-  }, [errorMessage,errors]);
+  }, [errorMessage, errors]);
 
 
 
@@ -75,19 +74,19 @@ const SignUpScreen = ({ navigation }: any) => {
 
   const validateEmpty = (): Record<string, string> => {
     const errors: Record<string, string> = {};
-    
+
     if (inputs.fullName === '') errors.fullName = 'Full Name is required.';
     if (inputs.email === '') errors.email = 'Email is required.';
     if (inputs.password === '') errors.password = 'Password is required.';
     if (inputs.confirmPassword === '') errors.confirmPassword = 'Confirm Password is required.';
-    
+
     setErrorInput(prev => ({ ...prev, ...errors }));
     return errors;
   }
-  
+
   const validateType = (emptyErrors: Record<string, string>): Record<string, string> => {
     const errors: Record<string, string> = {};
-    
+
     if (!emptyErrors.email && !Validate.email(inputs.email)) {
       errors.email = 'Invalid email.';
     }
@@ -97,42 +96,19 @@ const SignUpScreen = ({ navigation }: any) => {
     if (!emptyErrors.confirmPassword && !Validate.ConfirmPassword(inputs.password, inputs.confirmPassword)) {
       errors.confirmPassword = 'Password confirmation must match the password.';
     }
-    
+
     setErrorInput(prev => ({ ...prev, ...errors }));
 
     return errors;
   }
 
   const handleRegister = () => {
-      // Kiểm tra lỗi xác thực
+    // Kiểm tra lỗi xác thực
     const emptyErrors = validateEmpty();
     const typeErrors = validateType(emptyErrors)
     if (Object.keys(emptyErrors).length !== 0 || Object.keys(typeErrors).length !== 0) return
 
-
     dispatch(registerUser(inputs))
-
-    /* setIsLoadingState(true)
-    apiRegister(inputs)
-      .then(res => res.data)
-      .then(res => {   
-        if (res.status) {
-          console.log('=============')
-          console.log("Res", res)
-          Alert.alert("Successfully",res.mes)
-        }else if (!res.status && res.errors && Object.keys(res.errors).length > 0){
-          Alert.alert("Error",res.mes)
-          setErrorInput(prve => ({ ...prve, ...res.errors }))
-        }else{
-          Alert.alert("Error",res.mes)
-        }
-      })
-      .catch(error => {
-        console.log('Error:', error?.response?.data?.mes || error.message || error);
-        Alert.alert('Error', error?.response?.data?.mes || error.message || error);
-      }).finally(() => {
-        setIsLoadingState(false)
-      }) */
   }
 
   return (

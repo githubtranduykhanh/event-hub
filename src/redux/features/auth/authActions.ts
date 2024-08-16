@@ -11,15 +11,16 @@ interface LoginError {
     errors?: Record<string, string>;
 }
 // Tạo một async thunk để gọi API đăng nhập
-export const loginUser = createAsyncThunk<UserSlice, { email: string; password: string },{ rejectValue: LoginError }>(
+export const loginUser = createAsyncThunk<UserSlice, { email: string; password: string,isRemember:boolean },{ rejectValue: LoginError }>(
     'auth/loginUser',
-    async ({ email, password }, thunkAPI) => {
+    async ({ email, password,isRemember }, thunkAPI) => {
         try {
             const response = await apiLogin({ email, password })
             console.log('loginUser',response)
             if (response.data.status) {
                 const userData = response.data.data as UserSlice;    
                 // Lưu vào AsyncStorage
+                await saveToStorage('isRemember', isRemember);
                 await saveToStorage('auth', userData);
                 return userData;
             } else {

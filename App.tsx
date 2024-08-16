@@ -20,7 +20,7 @@ export default function App() {
     [typography.fontFamily.semiBold]: require('./assets/fonts/AirbnbCereal_W_Bd.otf'),
     [typography.fontFamily.bold]: require('./assets/fonts/AirbnbCereal_W_XBd.otf'),
   });
-  const [isShowSplash,setIsShowSplash] = useState(true)
+  
 
   useEffect(() => {
     if (loaded || error) {
@@ -28,15 +28,7 @@ export default function App() {
     }
   }, [loaded, error]);
 
-  
-
-  useEffect(() => {
-    const timeout = setTimeout(()=>{
-      setIsShowSplash(false)
-    },1500)
-
-    return () => clearTimeout(timeout)
-  },[])
+ 
 
   if (!loaded && !error) {
     return <ActivityIndicator />;
@@ -46,11 +38,9 @@ export default function App() {
    <>
       <StatusBar style='dark' translucent/>
       <Provider store={store}>
-        { isShowSplash 
-        ? <SplashScreen/> 
-        : <NavigationContainer>
+        <NavigationContainer>
               <AppRouters/> 
-        </NavigationContainer>}
+        </NavigationContainer>
       </Provider>      
    </>
   );
