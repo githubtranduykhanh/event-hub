@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, TextInput, KeyboardType } from 'react-native'
-import React, { ReactNode, useState } from 'react'
+import { View, Text, TouchableOpacity, TextInput, KeyboardType, NativeSyntheticEvent, TextInputEndEditingEventData, StyleProp, ViewProps, ViewStyle, TextStyle } from 'react-native'
+import React, { LegacyRef, ReactNode, useState } from 'react'
 import { EyeSlash,Eye } from 'iconsax-react-native';
 import { colors, globalStyles } from '../styles';
 import {AntDesign} from '@expo/vector-icons';
@@ -15,10 +15,15 @@ interface Props {
     allowClear?:boolean;
     type?:KeyboardType
     error?:string;
+    onEnd?:(e:NativeSyntheticEvent<TextInputEndEditingEventData>)=>void;
+    styles?:StyleProp<ViewStyle>;
+    styleInput?:StyleProp<TextStyle>;
+    inputRef?:LegacyRef<TextInput>
+    maxLength?:number;
 }
 
 
-const InputComponent:React.FC<Props> = ({error,allowClear,type,value,onChange,affix,placeholder,suffix,isPassword}) => {
+const InputComponent:React.FC<Props> = ({maxLength,inputRef,styleInput,styles,error,allowClear,type,value,onEnd,onChange,affix,placeholder,suffix,isPassword}) => {
  
   
     const [isShowPassword,setIsShowPassword] = useState(isPassword ?? false)
@@ -28,28 +33,35 @@ const InputComponent:React.FC<Props> = ({error,allowClear,type,value,onChange,af
     <>
     <View style={[globalStyles.inputContainer,{
         borderColor: (error && error != '') ? colors.danger : colors.inputBorder 
-    }]}>
+    },styles]}>
      {affix ?? affix}
 
     <TextInput
         style={[globalStyles.input,{
             marginLeft:affix ? 14 :0,
             marginRight:suffix ? 14 :0,           
-        }]} 
+        },styleInput]} 
         value={value}
         placeholder={placeholder ?? ''} 
         onChangeText={onChange} 
+        onEndEditing={onEnd}
         secureTextEntry={isShowPassword}
         placeholderTextColor={colors.subColor}
         keyboardType={type ?? 'default'}
+        ref={inputRef}
+        maxLength={maxLength}
     />
 
      {suffix ?? suffix}
-     <TouchableOpacity style={{marginLeft:5}} onPress={() => isPassword ? setIsShowPassword(prve => !prve) : onChange('')}>
+
+     {(isPassword || allowClear) && 
+        (<TouchableOpacity style={{marginLeft:5}} onPress={() => isPassword ? setIsShowPassword(prve => !prve) : onChange('')}>
         {isPassword 
         ? isShowPassword ? <Eye size={22} color={colors.gray}/> :  <EyeSlash size={22} color={colors.gray}/>            
         : value.length > 0 && allowClear && <AntDesign name='close' size={22} color={colors.gray}/>}
-     </TouchableOpacity>
+        </TouchableOpacity>)
+     }
+     
     </View>
     {error && <TextComponent style={{marginTop:5}} text={error} color={colors.danger}/>}
     </>

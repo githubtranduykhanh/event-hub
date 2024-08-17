@@ -7,12 +7,13 @@ import { colors, globalStyles } from '../../styles';
 import { Lock1, Sms, Profile, ArrowLeft } from 'iconsax-react-native';
 import { SocialLogin } from '~/screens/auth/components';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
-import { apiRegister } from '~/apis';
+import { apiRegister, apiVerification } from '~/apis';
 import { LoadingModal } from '~/modals';
 import { Validate } from '~/utils/validate';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '~/redux/store';
 import { registerUser } from '~/redux/features/auth/authActions';
+import { TextHelper } from '~/utils/text';
 
 
 interface Inputs {
@@ -31,8 +32,13 @@ interface Error {
 }
 
 const SignUpScreen = ({ navigation }: any) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, errorMessage, errors } = useSelector((state: RootState) => state.auth);
+  
+  
+
+  const [disable, setDisable] = useState<boolean>(true)
+
+
+  const [isLoadingVerication, setIsLoadingVerication] = useState<boolean>(false)
 
   const [inputs, setInput] = useState<Inputs>({
     email: '',
@@ -48,19 +54,8 @@ const SignUpScreen = ({ navigation }: any) => {
     confirmPassword: ''
   })
 
-  useEffect(() => {
-    if (errorMessage) {
-      Alert.alert('Error', errorMessage);
-    }
-
-    if (errors && Object.keys(errors).length > 0) {
-      setErrorInput(prve => ({ ...prve, ...errors }))
-    }
-  }, [errorMessage, errors]);
-
-
-
-
+ 
+ 
 
   useEffect(() => {
     setErrorInput({
@@ -69,8 +64,26 @@ const SignUpScreen = ({ navigation }: any) => {
       fullName: '',
       confirmPassword: ''
     })
+   
   }, [inputs])
 
+
+  useEffect(() => {
+    setDisable(Object.values(errorInputs).some((val) => val !== '') || Object.values(inputs).some(val => val.trim() === ''))
+  },[errorInputs])
+
+  const validateOnEnd = (val:string,name:string) => {
+
+      if(val.trim() === ''){
+        setErrorInput(prevErrors => ({ ...prevErrors, [name]: `${TextHelper.capitalizeFirstLetter(name)} is required.` }))
+        return
+      }
+
+      if(name === 'email') !Validate.email(val) && setErrorInput(prev => ({ ...prev,email:'Invalid email.'}))
+      else if(name === 'password') !Validate.Password(val) && setErrorInput(prev => ({ ...prev,password:'Password must be greater than 6 characters.'}))
+      else if(name === 'confirmPassword') !Validate.ConfirmPassword(inputs.password,val)  && setErrorInput(prev => ({ ...prev,confirmPassword:'Password confirmation must match the password.'}))
+      
+  }
 
   const validateEmpty = (): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -108,12 +121,28 @@ const SignUpScreen = ({ navigation }: any) => {
     const typeErrors = validateType(emptyErrors)
     if (Object.keys(emptyErrors).length !== 0 || Object.keys(typeErrors).length !== 0) return
 
-    dispatch(registerUser(inputs))
+    setIsLoadingVerication(true)
+    apiVerification({email:inputs.email})
+    .then(res => res.data)
+    .then(data => {
+      data.status ? navigation.navigate('VericationScreen',{...inputs,numbers:data.numbers}) : Alert.alert('Error',data.mes)
+    })
+    .catch(error => {
+      if (error.response && error.response.data) {
+        console.log(error.response.data.mes) 
+        Alert.alert('Error',error.response.data.mes) 
+      } else {
+        console.log({ message: 'An unknown error has occurred' })
+      }
+    })
+    .finally(()=> setIsLoadingVerication(false))
+    // dispatch(registerUser(inputs))
   }
 
   return (
     <>
-      <LoadingModal visible={isLoading} />
+      
+      <LoadingModal visible={isLoadingVerication} />
       <ContainerComponent isImageBackground isScroll back>
         <SpaceComponent height={7} />
         <SectionComponent>
@@ -128,6 +157,7 @@ const SignUpScreen = ({ navigation }: any) => {
             affix={<Profile size={22} color={colors.gray} />}
             type='default'
             error={errorInputs.fullName}
+            onEnd={(e) => e.nativeEvent.text === '' && setErrorInput(prve => ({...prve,fullName:'Full Name is required.'}))}
           />
           <SpaceComponent height={19} />
           <InputComponent
@@ -139,6 +169,7 @@ const SignUpScreen = ({ navigation }: any) => {
             affix={<Sms size={22} color={colors.gray} />}
             type='email-address'
             error={errorInputs.email}
+            onEnd={(e) => validateOnEnd(e.nativeEvent.text,'email')}
           />
           <SpaceComponent height={19} />
           <InputComponent
@@ -149,6 +180,7 @@ const SignUpScreen = ({ navigation }: any) => {
             allowClear
             affix={<Lock1 size={22} color={colors.gray} />}
             error={errorInputs.password}
+            onEnd={(e) => validateOnEnd(e.nativeEvent.text,'password')}
           />
           <SpaceComponent height={19} />
           <InputComponent
@@ -159,21 +191,26 @@ const SignUpScreen = ({ navigation }: any) => {
             allowClear
             affix={<Lock1 size={22} color={colors.gray} />}
             error={errorInputs.confirmPassword}
+            onEnd={(e) => validateOnEnd(e.nativeEvent.text,'confirmPassword')}
           />
         </SectionComponent>
 
         <SectionComponent styles={{ marginTop: 16, marginBottom: 4 }}>
           <ButtonComponent
+            style={{maxWidth:271,alignSelf:'center'}}
             onPress={handleRegister}
             textStyle={{ textAlign: 'center', marginRight: 0 }}
             iconFlex='right'
             icon={<ArrowRight style={{ position: 'absolute', right: 16 }} />}
-            text='SIGN UP' type='primary' />
+            text='SIGN UP' type='primary' 
+            disable={disable}      
+            />
         </SectionComponent>
         <SocialLogin />
         <SectionComponent>
           <RowComponent justify='center'>
-            <TextComponent text='Already have an account?' style={{ marginRight: 5 }} />
+            <TextComponent text='Already have an account?' />
+            <SpaceComponent width={5}/>
             <ButtonComponent text='Sign in' type='link' onPress={() => navigation.navigate('LoginScreen')} />
 
           </RowComponent>

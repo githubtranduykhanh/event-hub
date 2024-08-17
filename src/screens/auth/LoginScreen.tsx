@@ -112,12 +112,12 @@ const LoginScreen = ({ navigation }: any) => {
           <RowComponent justify='space-between'>
             <RowComponent onPress={() => setIsRemember(prve => !prve)}>
               <Switch
-                style={{ marginRight: 5 }}
                 trackColor={{ true: colors.primary }}
                 thumbColor={colors.white}
                 value={isRemember}
                 onChange={() => setIsRemember(prve => !prve)}
               />
+              <SpaceComponent width={5}/>
               <TextComponent text='Remember Me' />
             </RowComponent>
 
@@ -127,6 +127,7 @@ const LoginScreen = ({ navigation }: any) => {
 
         <SectionComponent styles={{ marginTop: 16, marginBottom: 4 }}>
           <ButtonComponent
+            style={{maxWidth:271,alignSelf:'center'}}
             onPress={handleLogin}
             textStyle={{ textAlign: 'center', marginRight: 0 }}
             iconFlex='right'
@@ -137,7 +138,8 @@ const LoginScreen = ({ navigation }: any) => {
         <SocialLogin />
         <SectionComponent>
           <RowComponent justify='center'>
-            <TextComponent text='Don’t have an account?' style={{ marginRight: 5 }} />
+            <TextComponent text='Don’t have an account?' />
+            <SpaceComponent width={5}/>
             <ButtonComponent text='Sign up' type='link' onPress={() => navigation.navigate('SignUpScreen')} />
 
           </RowComponent>

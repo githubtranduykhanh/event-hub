@@ -86,7 +86,19 @@ const globalStyles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         backgroundColor:'rgba(0, 0, 0, 0.5)'
-    }
+    },
+    inputVerication: {
+        height: 55,
+        width: 55,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: colors.gray2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        fontSize: typography.fontSizeExtraLarge,
+        fontFamily: typography.fontFamily.bold,
+        textAlign: 'center',
+      },
 })
 
 export default globalStyles

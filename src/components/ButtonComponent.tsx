@@ -15,17 +15,20 @@ interface Props {
     textStyle?:StyleProp<TextStyle>;
     onPress?:() => void;
     iconFlex?:'right' | 'left';
+    disable?:boolean;
 }
 
 
-const ButtonComponent:React.FC<Props> = ({flex,icon,text,type,color,style,textFont,textColor,textStyle,onPress,iconFlex}) => {
+const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,style,textFont,textColor,textStyle,onPress,iconFlex}) => {
   return type === 'primary' 
   ? (
     <TouchableOpacity 
     onPress={onPress}
+    disabled={disable}
     style={[globalStyles.button,globalStyles.shadow,{
      backgroundColor:color ?? colors.primary,   
-     alignSelf:flex ?? 'auto' 
+     alignSelf:flex ?? 'auto',
+     opacity:disable ? 0.7 : 1
     },style]}>
          {icon && iconFlex !== 'right' && icon}
              <TextComponent 
@@ -34,7 +37,7 @@ const ButtonComponent:React.FC<Props> = ({flex,icon,text,type,color,style,textFo
                 style={[{
                   marginLeft:icon && iconFlex === 'left' ? 12 : 0,
                   marginRight:icon && iconFlex === 'right' ? 12 : 0,
-                  fontSize:16
+                  fontSize:16,
                 },textStyle]}
                 font={textFont ?? typography.fontFamily.medium}
                 flex={icon && iconFlex === 'right' ? 1 : 0}
