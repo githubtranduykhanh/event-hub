@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '~/redux/store'
 import { registerUser } from '~/redux/features/auth/authActions'
 import { NumberHelper } from '~/utils/number'
-import { apiVerification } from '~/apis'
+import { apiSentCodeEmail } from '~/apis'
 
 
 interface IInputs {
@@ -110,7 +110,7 @@ const VericationScreen = ({navigation,route}:any) => {
       number4:''
     })
     setIsLoadingVerication(true)
-    apiVerification({email})
+    apiSentCodeEmail({email})
     .then((res => res.data))
     .then(data =>{
         if(data.status) {

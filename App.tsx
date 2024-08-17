@@ -21,14 +21,14 @@ export default function App() {
     [typography.fontFamily.bold]: require('./assets/fonts/AirbnbCereal_W_XBd.otf'),
   });
   
-
+  
   useEffect(() => {
     if (loaded || error) {
       SplashScreenEX.hideAsync();
     }
   }, [loaded, error]);
 
- 
+
 
   if (!loaded && !error) {
     return <ActivityIndicator />;

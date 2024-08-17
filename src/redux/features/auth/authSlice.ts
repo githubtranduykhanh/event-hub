@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser, registerUser } from './authActions';
+import { loginUser, registerUser, ressetPasswordUser } from './authActions';
 
 
 export interface UserSlice {
@@ -48,6 +48,24 @@ export const authSlice = createSlice({
         resetAuth:(state)=>{
             state = initialState
         },
+        resetErrorMessage:(state)=>{
+            state.errorMessage = null
+        },
+        resetErrors:(state)=>{
+            state.errors = {}
+        },
+        resetIsLoading:(state)=>{
+            state.isLoading = false
+        },
+        resetIsLoadingAndErrorMessageAndErrors:(state)=>{
+            state.isLoading = false
+            state.errors = {}
+            state.errorMessage = null
+        },
+        resetErrorMessageAndErrors:(state)=>{
+            state.errors = {}
+            state.errorMessage = null
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -79,9 +97,23 @@ export const authSlice = createSlice({
                 state.errorMessage = action.payload?.message || 'Registration failed';
                 state.errors = action.payload?.errors || {}; // Cập nhật lỗi chi tiết
             });
+        builder.addCase(ressetPasswordUser.pending, (state) => {
+                state.isLoading = true;   
+                state.errorMessage = null;          
+            })
+            .addCase(ressetPasswordUser.fulfilled, (state, action: PayloadAction<UserSlice>) => {
+                state.isLoading = false;
+                state.user = action.payload;    
+                state.errorMessage = null;   
+            })
+            .addCase(ressetPasswordUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errorMessage = action.payload?.message || 'Resset Password failed';
+                state.errors = action.payload?.errors || {}; // Cập nhật lỗi chi tiết
+            });    
     },
 });
 
-export const { addAuth,removeAuth,resetAuth } = authSlice.actions;
+export const { addAuth,removeAuth,resetAuth,resetErrorMessage,resetErrorMessageAndErrors,resetErrors,resetIsLoading,resetIsLoadingAndErrorMessageAndErrors } = authSlice.actions;
 
 export default authSlice.reducer;

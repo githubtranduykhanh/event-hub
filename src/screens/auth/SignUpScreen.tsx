@@ -7,7 +7,7 @@ import { colors, globalStyles } from '../../styles';
 import { Lock1, Sms, Profile, ArrowLeft } from 'iconsax-react-native';
 import { SocialLogin } from '~/screens/auth/components';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
-import { apiRegister, apiVerification } from '~/apis';
+import { apiRegister, apiSentCodeEmail } from '~/apis';
 import { LoadingModal } from '~/modals';
 import { Validate } from '~/utils/validate';
 import { useDispatch, useSelector } from 'react-redux';
@@ -122,7 +122,7 @@ const SignUpScreen = ({ navigation }: any) => {
     if (Object.keys(emptyErrors).length !== 0 || Object.keys(typeErrors).length !== 0) return
 
     setIsLoadingVerication(true)
-    apiVerification({email:inputs.email})
+    apiSentCodeEmail({email:inputs.email})
     .then(res => res.data)
     .then(data => {
       data.status ? navigation.navigate('VericationScreen',{...inputs,numbers:data.numbers}) : Alert.alert('Error',data.mes)
@@ -132,6 +132,7 @@ const SignUpScreen = ({ navigation }: any) => {
         console.log(error.response.data.mes) 
         Alert.alert('Error',error.response.data.mes) 
       } else {
+        Alert.alert('Error','An unknown error has occurred') 
         console.log({ message: 'An unknown error has occurred' })
       }
     })

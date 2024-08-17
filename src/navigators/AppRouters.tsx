@@ -27,8 +27,11 @@ const AppRouters = () => {
     const checkLogin = async () => {
         const storedUser = await getFromStorage('auth');
         const isRemember = await getFromStorage('isRemember');
-        console.log(storedUser)
-        console.log(isRemember)
+        console.log('======================')
+        console.log('Stored User: ',storedUser)
+        console.log('======================')
+        console.log('Is Remember:',isRemember)
+        console.log('======================')
         isRemember && storedUser &&  dispatch(addAuth(storedUser))
     }
 
