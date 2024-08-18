@@ -13,6 +13,7 @@ import { LoadingModal } from '~/modals';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '~/redux/store';
 import { loginUser } from '~/redux/features/auth/authActions';
+import { resetErrorMessage } from '~/redux/features/auth/authSlice';
 
 interface Inputs {
   email: string;
@@ -43,6 +44,7 @@ const LoginScreen = ({ navigation }: any) => {
   useEffect(() => {
     if (errorMessage) {
       Alert.alert('Error', errorMessage);
+      dispatch(resetErrorMessage())
     }
   }, [errorMessage]);
 

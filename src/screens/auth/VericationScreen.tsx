@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from '~/redux/store'
 import { registerUser } from '~/redux/features/auth/authActions'
 import { NumberHelper } from '~/utils/number'
 import { apiSentCodeEmail } from '~/apis'
+import { resetErrorMessage, resetErrors } from '~/redux/features/auth/authSlice'
 
 
 interface IInputs {
@@ -58,10 +59,12 @@ const VericationScreen = ({navigation,route}:any) => {
   useEffect(() => {
     if (errorMessage) {
       Alert.alert('Error', errorMessage);
+      dispatch(resetErrorMessage())
     }
 
     if (errors && Object.keys(errors).length > 0) {
         setTextErrorMessage(Object.values(errors))
+        dispatch(resetErrors())
     }
   }, [errorMessage, errors]);
 
