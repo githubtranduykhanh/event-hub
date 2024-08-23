@@ -12,13 +12,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.anonymous.eventhub",
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.anonymous.eventhub"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -27,7 +29,8 @@
       "expo-font"
     ],
     "extra": {
-      "apiUrl": "http://192.168.1.3:5000/api" 
-    }
+      "apiUrl": "http://192.168.1.3:5000/api"
+    },
+    "scheme": "event-hub"
   }
 }
