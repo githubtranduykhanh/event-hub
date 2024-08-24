@@ -1,4 +1,4 @@
-import { View, Text, Button, SafeAreaView } from 'react-native'
+import { View, Text, Button, SafeAreaView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ import { CircleComponent, RowComponent, SectionComponent, TextComponent } from '
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
 import { Notification } from 'iconsax-react-native'
-const HomeScreen = () => {
+const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
 
@@ -32,7 +32,9 @@ const HomeScreen = () => {
           }}>
             <SectionComponent styles={{}}>
               <RowComponent justify='space-between'>
-                <MenuSVG color={colors.white} fontSize={typography.fontSizeExtraLarge} />
+                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                 <MenuSVG color={colors.white} fontSize={typography.fontSizeExtraLarge} />
+                </TouchableOpacity>     
                 <View>
                   <RowComponent>
                     <TextComponent text='Current Location' size={typography.fontSizeSmall} color={colors.white2} />

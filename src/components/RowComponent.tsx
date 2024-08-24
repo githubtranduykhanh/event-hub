@@ -17,7 +17,7 @@ const RowComponent:React.FC<Props> = ({justify,styles,children,onPress}) => {
 
 
   return onPress 
-  ?(<TouchableOpacity activeOpacity={1}  onPress={onPress} style={localStyle}>
+  ?(<TouchableOpacity activeOpacity={0.5}  onPress={onPress} style={localStyle}>
      {children}
   </TouchableOpacity>)  
   :(
