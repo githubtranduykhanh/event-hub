@@ -7,10 +7,10 @@ import { removeAuth } from '~/redux/features/auth/authSlice'
 import { removeFromStorage } from '~/utils/storage'
 import { colors, globalStyles, typography } from '~/styles'
 import { StatusBar } from 'expo-status-bar'
-import { CircleComponent, RowComponent, SectionComponent, TextComponent } from '~/components'
+import { CircleComponent, RowComponent, SectionComponent, SpaceComponent, TagComponent, TextComponent } from '~/components'
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
-import { Notification } from 'iconsax-react-native'
+import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
@@ -19,6 +19,15 @@ const HomeScreen = ({navigation}:any) => {
     await removeFromStorage('auth')
     dispatch(removeAuth())
   }
+
+
+  const handleSearchOrFilters = (isFilter:boolean) =>{
+    navigation.navigate('SearchEvents',{
+      isFilter
+    })
+  }
+
+
   return (
     <View style={[globalStyles.container]}>
       <StatusBar style='light' translucent/>
@@ -32,12 +41,13 @@ const HomeScreen = ({navigation}:any) => {
           }}>
             <SectionComponent styles={{}}>
               <RowComponent justify='space-between'>
-                <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                <TouchableOpacity onPress={() => navigation.openDrawer()} style={{paddingVertical:5,paddingRight:5}}>
                  <MenuSVG color={colors.white} fontSize={typography.fontSizeExtraLarge} />
                 </TouchableOpacity>     
                 <View>
                   <RowComponent>
                     <TextComponent text='Current Location' size={typography.fontSizeSmall} color={colors.white2} />
+                    <SpaceComponent width={4}/>
                     <AntDesign name="caretdown" size={11} color={colors.white} />
                   </RowComponent>
                   <TextComponent text='New Yourk, USA' font={typography.fontFamily.medium} color={colors.white} />
@@ -59,6 +69,26 @@ const HomeScreen = ({navigation}:any) => {
                     </View>
                   </View>
                 </CircleComponent>
+              </RowComponent>
+              <SpaceComponent height={20}/>
+              <RowComponent>
+                <RowComponent 
+                    styles={{flex:1}} 
+                    onPress={() => handleSearchOrFilters(false)}
+                  >
+                  <SearchNormal1 variant='TwoTone' size={24} color={colors.white}/>
+                  <RowComponent styles={{opacity:0.3}}>
+                    <View style={{width:1,backgroundColor:colors.white,height:24,marginLeft:10,marginRight:7}}/>
+                    <TextComponent text='Search...' flex={1} color={colors.white} size={typography.fontSizeLarge}/>
+                  </RowComponent>
+                </RowComponent>
+                <TagComponent 
+                  onPress={() => handleSearchOrFilters(true)}
+                  lable='Filters' 
+                  icon={<CircleComponent size={23} color='#B1AEFA'>
+                    <Sort size={typography.fontSizeMedium} variant='Outline' color='#5D56F3'/>
+                  </CircleComponent>} 
+                />
               </RowComponent>
             </SectionComponent>
           </View>
