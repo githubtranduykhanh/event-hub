@@ -7,7 +7,7 @@ import { removeAuth } from '~/redux/features/auth/authSlice'
 import { removeFromStorage } from '~/utils/storage'
 import { colors, globalStyles, typography } from '~/styles'
 import { StatusBar } from 'expo-status-bar'
-import { CircleComponent, RowComponent, SectionComponent, SpaceComponent, TagComponent, TextComponent } from '~/components'
+import { CategoriesList, CircleComponent, RowComponent, SectionComponent, SpaceComponent, TagComponent, TextComponent } from '~/components'
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
 import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
@@ -90,6 +90,8 @@ const HomeScreen = ({navigation}:any) => {
                   </CircleComponent>} 
                 />
               </RowComponent>
+              <SpaceComponent height={18}/>
+              <CategoriesList isColor/>
             </SectionComponent>
           </View>
           <View style={{ flex: 1}}>

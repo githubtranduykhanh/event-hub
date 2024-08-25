@@ -98,7 +98,21 @@ const globalStyles = StyleSheet.create({
         fontSize: typography.fontSizeExtraLarge,
         fontFamily: typography.fontFamily.bold,
         textAlign: 'center',
-      },
+    },
+    tag:{
+        borderRadius:50,
+        paddingHorizontal:11,
+        paddingVertical:9,
+        paddingLeft:16
+    },
+    shadowBox: {
+        backgroundColor: '#F0635A', // Màu nền của box
+        shadowColor: 'rgba(46, 46, 79, 0.12)', // Màu của shadow
+        shadowOffset: { width: 0, height: 6 }, // Vị trí của shadow
+        shadowOpacity: 1, // Độ mờ của shadow
+        shadowRadius: 20, // Bán kính của shadow
+        elevation: 10, // Độ cao của shadow trên Android
+    },
 })
 
 export default globalStyles
