@@ -11,14 +11,17 @@ interface Props {
     style?:StyleProp<TextStyle>;
     title?:boolean;
     lineHeight?:number;
+    numOfLine?:number
 }
 
 
-const TextComponent: React.FC<Props> = ({lineHeight,text,color,size,flex,font,style,title}) => {
+const TextComponent: React.FC<Props> = ({numOfLine,lineHeight,text,color,size,flex,font,style,title}) => {
   
   const fontSizeDefault = Platform.OS === 'ios' ? typography.fontSizeMedium : typography.fontSizeSmall
   return (
-   <Text style={[{
+   <Text
+    numberOfLines={numOfLine}
+    style={[{
     color:color ?? colors.text,
     lineHeight,
     fontSize:size ?? (title ? typography.fontSizeExtraLarge : fontSizeDefault),

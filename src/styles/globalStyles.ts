@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import colors from "./colors";
 import appInfo from "./appInfo";
 import typography from "./typography";
@@ -101,17 +101,32 @@ const globalStyles = StyleSheet.create({
     },
     tag:{
         borderRadius:50,
-        paddingHorizontal:11,
+        paddingHorizontal:16,
         paddingVertical:9,
-        paddingLeft:16
     },
     shadowBox: {
-        backgroundColor: '#F0635A', // Màu nền của box
         shadowColor: 'rgba(46, 46, 79, 0.12)', // Màu của shadow
         shadowOffset: { width: 0, height: 6 }, // Vị trí của shadow
         shadowOpacity: 1, // Độ mờ của shadow
         shadowRadius: 20, // Bán kính của shadow
         elevation: 10, // Độ cao của shadow trên Android
+    },
+    card:{
+        borderRadius:12,
+        backgroundColor:colors.white,
+        padding:9,
+        margin:8,
+        marginBottom:16
+    },
+    shadowCard: {
+        shadowColor: Platform.OS === 'ios' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.5)',
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 8,
+        elevation: 6,
     },
 })
 

@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, StyleProp, ViewStyle } from 'react-native'
 import React from 'react'
 import { Categories } from '~/constants/categories';
 import CategoriesItem from './CategoriesItem';
@@ -7,14 +7,15 @@ import SpaceComponent from './SpaceComponent';
 
 interface Props {
     isColor?:boolean;
+    styles?:StyleProp<ViewStyle>
 }
 
 
-const CategoriesList:React.FC<Props> = ({isColor}) => {
+const CategoriesList:React.FC<Props> = ({isColor,styles}) => {
 
   return (
     <FlatList
-        style={{paddingHorizontal: 16}}
+        style={[{paddingHorizontal: 16},styles]}
         showsHorizontalScrollIndicator={false}
         horizontal
         data={Categories(isColor)}

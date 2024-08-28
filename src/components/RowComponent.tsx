@@ -5,15 +5,16 @@ import { globalStyles } from '../styles';
 
 interface Props{
     justify?:"center" | "flex-start" | "flex-end" | "space-between" | "space-around" | "space-evenly" | undefined;
+    align?:'baseline' | 'center' | 'stretch' | 'flex-start' | 'flex-end' | undefined;
     styles?:StyleProp<ViewStyle>;
     children:ReactNode;
     onPress?:()=>void;
 }
 
-const RowComponent:React.FC<Props> = ({justify,styles,children,onPress}) => {
+const RowComponent:React.FC<Props> = ({justify,styles,children,onPress,align}) => {
 
 
-    const localStyle = [globalStyles.row,{justifyContent:justify},styles]
+    const localStyle:StyleProp<ViewStyle> = [globalStyles.row,{justifyContent:justify,alignItems:align ?? 'center'},styles]
 
 
   return onPress 

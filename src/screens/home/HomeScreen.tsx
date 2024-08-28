@@ -1,4 +1,4 @@
-import { View, Text, Button, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, Text, Button, SafeAreaView, TouchableOpacity, ScrollView, FlatList } from 'react-native'
 import React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,10 +7,11 @@ import { removeAuth } from '~/redux/features/auth/authSlice'
 import { removeFromStorage } from '~/utils/storage'
 import { colors, globalStyles, typography } from '~/styles'
 import { StatusBar } from 'expo-status-bar'
-import { CategoriesList, CircleComponent, RowComponent, SectionComponent, SpaceComponent, TagComponent, TextComponent } from '~/components'
+import { CategoriesList, CircleComponent, EventItem, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
 import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
+import { itemEvent } from '~/constants/events'
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
@@ -39,7 +40,7 @@ const HomeScreen = ({navigation}:any) => {
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30
           }}>
-            <SectionComponent styles={{}}>
+            <SectionComponent styles={{paddingHorizontal:24,paddingBottom:0}}>
               <RowComponent justify='space-between'>
                 <TouchableOpacity onPress={() => navigation.openDrawer()} style={{paddingVertical:5,paddingRight:5}}>
                  <MenuSVG color={colors.white} fontSize={typography.fontSizeExtraLarge} />
@@ -90,13 +91,29 @@ const HomeScreen = ({navigation}:any) => {
                   </CircleComponent>} 
                 />
               </RowComponent>
-              <SpaceComponent height={18}/>
-              <CategoriesList isColor/>
             </SectionComponent>
+            <SpaceComponent height={15}/>
+            <CategoriesList isColor styles={
+              {
+                position:'absolute',
+                bottom:-18,
+                left:24,
+              }
+            }/>
           </View>
-          <View style={{ flex: 1}}>
-            <TextComponent text='Hello' />
-          </View>
+          <SpaceComponent height={42}/>
+          <ScrollView 
+            showsVerticalScrollIndicator={false}
+            style={{ flex: 1,marginHorizontal:24}}
+            >
+            <TabBarComponent title='Upcoming Events' onPress={()=>{}}/>
+            <FlatList 
+              showsHorizontalScrollIndicator={false}
+              horizontal 
+              data={Array.from({length:5})}
+              renderItem={({item,index}) => <EventItem item={itemEvent} type='card' key={`EventItem-${index}`} />}
+            />
+          </ScrollView>
         </View>
       </SafeAreaView>
     </View>
