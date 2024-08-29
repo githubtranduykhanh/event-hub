@@ -9,6 +9,7 @@ import RowComponent from './RowComponent';
 import { Location } from 'iconsax-react-native';
 import SpaceComponent from './SpaceComponent';
 import {MaterialIcons} from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 interface Props {
     item:EventModel;
     type:'card' | 'list';
@@ -16,11 +17,14 @@ interface Props {
 
 
 const EventItem:React.FC<Props> = ({item,type}) => {
+
+  const navication:any = useNavigation()
+
   return (
     <CardComponent 
         styles={{width:appInfo.size.WIDTH * 0.6}}
         isShadow
-        onPress={()=>{}}
+        onPress={()=> navication.navigate('EventDetail',{item})}
         >
         <ImageBackground 
         style={{

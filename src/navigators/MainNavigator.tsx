@@ -3,6 +3,7 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import TabNavigaror from './TabNavigaror'
 import DrawerNavigator from './DrawerNavigator'
+import { EventDetail } from '~/screens'
 
 const MainNavigator = () => {
 
@@ -10,6 +11,7 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='Main' component={DrawerNavigator}/>
+        <Stack.Screen name='EventDetail' component={EventDetail}/>
     </Stack.Navigator>
   )
 }

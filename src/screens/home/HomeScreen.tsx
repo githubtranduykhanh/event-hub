@@ -1,4 +1,4 @@
-import { View, Text, Button, SafeAreaView, TouchableOpacity, ScrollView, FlatList } from 'react-native'
+import { View, Text, Button, SafeAreaView, TouchableOpacity, ScrollView, FlatList, ImageBackground, Image } from 'react-native'
 import React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,13 +7,15 @@ import { removeAuth } from '~/redux/features/auth/authSlice'
 import { removeFromStorage } from '~/utils/storage'
 import { colors, globalStyles, typography } from '~/styles'
 import { StatusBar } from 'expo-status-bar'
-import { CategoriesList, CircleComponent, EventItem, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
+import { ButtonComponent, CategoriesList, CircleComponent, EventItem, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
 import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
 import { itemEvent } from '~/constants/events'
+
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
+  
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
 
   const handleLogout = async () => {
@@ -100,13 +102,69 @@ const HomeScreen = ({navigation}:any) => {
                 left:24,
               }
             }/>
-          </View>
-          <SpaceComponent height={42}/>
+          </View>         
           <ScrollView 
             showsVerticalScrollIndicator={false}
-            style={{ flex: 1,marginHorizontal:24}}
+            style={{ flex: 1,marginHorizontal:24,marginTop:18}}
             >
+            <SpaceComponent height={20}/>  
             <TabBarComponent title='Upcoming Events' onPress={()=>{}}/>
+            <FlatList               
+              showsHorizontalScrollIndicator={false}
+              horizontal 
+              data={Array.from({length:5})}
+              renderItem={({item,index}) => <EventItem item={itemEvent} type='card' key={`EventItem-${index}`} />}
+            />
+
+            <SpaceComponent height={20}/>
+            <RowComponent styles={
+              {
+                height:127,
+                backgroundColor:'rgba(0, 248, 255, 0.25)',
+                overflow:'hidden',
+                borderRadius:12,
+                position:'relative'              
+              }
+            }>
+                <View style={{
+                  flex:1,               
+                  position:'absolute',     
+                  top:0,
+                  bottom:0,
+                  right:0,
+                  left:0,
+                  zIndex:2,
+                  padding:18,
+                  paddingTop:13,
+                }}>
+                      <TextComponent numOfLine={1} title size={18} lineHeight={34} text={'Invite your friends'}/>
+                      <TextComponent size={13} text={'Get $20 for ticket'}/>
+                      <SpaceComponent height={13}/>
+                      <TouchableOpacity 
+                      style={[globalStyles.shadow,{
+                        backgroundColor:'#00F8FF',
+                        borderRadius:5,
+                        paddingHorizontal:14,
+                        paddingVertical:5,
+                        alignSelf:'flex-start',
+                      }]}>
+                        <TextComponent size={12} lineHeight={23} text={'Invite'.toUpperCase()} color={colors.white}/>
+                      </TouchableOpacity>                
+                </View>
+                <Image 
+                style={{
+                  position:'absolute',
+                  top:-5,
+                  right:-25,
+                  zIndex:1
+                }}
+                source={require('../../../assets/images/invite.png')} 
+                resizeMode='cover'
+                />              
+            </RowComponent>
+            <SpaceComponent height={24}/>
+
+            <TabBarComponent title='Nearby You' onPress={()=>{}}/>
             <FlatList 
               showsHorizontalScrollIndicator={false}
               horizontal 

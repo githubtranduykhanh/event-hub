@@ -12,6 +12,7 @@ interface Props {
     style?:StyleProp<ViewStyle>;
     textFont?:string
     textColor?:string;
+    textSize?:number;
     textStyle?:StyleProp<TextStyle>;
     onPress?:() => void;
     iconFlex?:'right' | 'left';
@@ -19,7 +20,7 @@ interface Props {
 }
 
 
-const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,style,textFont,textColor,textStyle,onPress,iconFlex}) => {
+const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,style,textFont,textColor,textSize,textStyle,onPress,iconFlex}) => {
   return type === 'primary' 
   ? (
     <TouchableOpacity 
@@ -33,11 +34,11 @@ const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,styl
          {icon && iconFlex !== 'right' && icon}
              <TextComponent 
                 text={text} 
+                size={textSize ?? 16}
                 color={textColor ?? colors.white} 
                 style={[{
                   marginLeft:icon && iconFlex === 'left' ? 12 : 0,
                   marginRight:icon && iconFlex === 'right' ? 12 : 0,
-                  fontSize:16,
                 },textStyle]}
                 font={textFont ?? typography.fontFamily.medium}
                 flex={icon && iconFlex === 'right' ? 1 : 0}
@@ -47,7 +48,7 @@ const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,styl
   ) 
   : (
     <TouchableOpacity onPress={onPress}>
-      <TextComponent text={text} color={type === 'link' ? colors.link : colors.text}/>
+      <TextComponent text={text} size={textSize} color={type === 'link' ? colors.link : colors.text}/>
     </TouchableOpacity>
   )
 }
