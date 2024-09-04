@@ -64,7 +64,7 @@ const LocationModal:React.FC<Props> = ({visible,onClose,onSelect}) => {
                         console.log(data, details);
                     }}
                     query={{
-                        key: 'AIzaSyAF2Re9YjNd9I9RR8U0Nar25NUKiu_4hEs',
+                        key: process.env.EXPO_PUBLIC_APP_API_KEY,
                         language: 'en',
                     }}
                     
