@@ -1,5 +1,5 @@
 import { View, Text, Button, SafeAreaView, TouchableOpacity, ScrollView, FlatList, ImageBackground, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '~/redux/store'
@@ -12,11 +12,15 @@ import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
 import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
 import { itemEvent } from '~/constants/events'
+import * as Location from 'expo-location';
+import { AddressModel } from '~/models/AddressModel'
 
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
   
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [currentLocation, setCurrentLocation] = useState<Location.LocationGeocodedAddress | null>(null);
 
   const handleLogout = async () => {
     await removeFromStorage('auth')
@@ -30,6 +34,33 @@ const HomeScreen = ({navigation}:any) => {
     })
   }
 
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      if(location) await reverseGeocode(location)
+    })();
+  }, []);
+
+  const reverseGeocode = async (currentPosition:Location.LocationObject) => { 
+    if (currentPosition) {
+      try {
+        const reverseGeocode = await Location.reverseGeocodeAsync({
+          latitude: currentPosition.coords.latitude,
+          longitude: currentPosition.coords.longitude
+        });
+        setCurrentLocation(reverseGeocode[0])
+      } catch (error) {
+        console.error('Error with reverse geocoding:', error);
+      }
+    }
+  }
+ 
 
   return (
     <View style={[globalStyles.container]}>
@@ -53,7 +84,7 @@ const HomeScreen = ({navigation}:any) => {
                     <SpaceComponent width={4}/>
                     <AntDesign name="caretdown" size={11} color={colors.white} />
                   </RowComponent>
-                  <TextComponent text='New Yourk, USA' font={typography.fontFamily.medium} color={colors.white} />
+                  <TextComponent style={{textAlign:'center'}} text={  currentLocation? `${currentLocation.city}, ${currentLocation.isoCountryCode}` :'New Yourk, USA'} font={typography.fontFamily.medium} color={colors.white} />
                 </View>
                 <CircleComponent size={36} color='#5D56F3'>
                   <View>

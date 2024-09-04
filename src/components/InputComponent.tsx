@@ -20,10 +20,12 @@ interface Props {
     styleInput?:StyleProp<TextStyle>;
     inputRef?:LegacyRef<TextInput>
     maxLength?:number;
+    multiline?:boolean;
+    numberOfLines?:number;
 }
 
 
-const InputComponent:React.FC<Props> = ({maxLength,inputRef,styleInput,styles,error,allowClear,type,value,onEnd,onChange,affix,placeholder,suffix,isPassword}) => {
+const InputComponent:React.FC<Props> = ({numberOfLines,multiline,maxLength,inputRef,styleInput,styles,error,allowClear,type,value,onEnd,onChange,affix,placeholder,suffix,isPassword}) => {
  
   
     const [isShowPassword,setIsShowPassword] = useState(isPassword ?? false)
@@ -41,6 +43,8 @@ const InputComponent:React.FC<Props> = ({maxLength,inputRef,styleInput,styles,er
             marginLeft:affix ? 14 :0,
             marginRight:suffix ? 14 :0,           
         },styleInput]} 
+        multiline={multiline}
+        numberOfLines={numberOfLines}
         value={value}
         placeholder={placeholder ?? ''} 
         onChangeText={onChange} 
@@ -55,7 +59,7 @@ const InputComponent:React.FC<Props> = ({maxLength,inputRef,styleInput,styles,er
      {suffix ?? suffix}
 
      {(isPassword || allowClear) && 
-        (<TouchableOpacity style={{marginLeft:5}} onPress={() => isPassword ? setIsShowPassword(prve => !prve) : onChange('')}>
+        (<TouchableOpacity style={{marginLeft:5,alignSelf:multiline ? 'flex-start' : undefined}} onPress={() => isPassword ? setIsShowPassword(prve => !prve) : onChange('')}>
         {isPassword 
         ? isShowPassword ? <Eye size={22} color={colors.gray}/> :  <EyeSlash size={22} color={colors.gray}/>            
         : value.length > 0 && allowClear && <AntDesign name='close' size={22} color={colors.gray}/>}

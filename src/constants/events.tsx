@@ -1,4 +1,21 @@
-export const itemEvent = {
+
+export interface EventConstanst {
+  title: string;
+  description: string;
+  location: {
+    title: string;
+    address: string;
+  };
+  imageUrl: string;
+  users: string[];
+  authorId: string;
+  startAt: number;  // Unix timestamp (milliseconds since epoch)
+  endAt: number;    // Unix timestamp (milliseconds since epoch)
+  date: number;     // Unix timestamp (milliseconds since epoch)
+}
+
+
+export const itemEvent:EventConstanst = {
     title: 'International Band Music Concert',
     description:
       'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase.',
@@ -12,4 +29,20 @@ export const itemEvent = {
     startAt: Date.now(),
     endAt: Date.now(),
     date: Date.now(),
+}
+
+
+export const initEvent:EventConstanst = {
+  title: '',
+  description:'',
+  location: {
+    title: '',
+    address: '',
+  },
+  imageUrl: '',
+  users: [''],
+  authorId: '',
+  startAt: Date.now(),
+  endAt: Date.now(),
+  date: Date.now(),
 }
