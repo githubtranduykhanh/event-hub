@@ -1,6 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import queryString from 'query-string';
 import Constants from 'expo-constants';
+import { getFromStorage } from '~/utils/storage';
+import { UserSlice } from '~/redux/features/auth/authSlice';
 
 
 // Tạo một instance của Axios
@@ -15,10 +17,11 @@ const instance: AxiosInstance = axios.create({
 
 // Interceptor cho yêu cầu (request)
 instance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
     // Thêm header Authorization nếu cần
     if (config.headers) {
-      config.headers.Authorization = `Bearer reactnative`;
+      const storedUser:UserSlice = await getFromStorage('auth');
+      if(storedUser) config.headers.Authorization = `Bearer ${storedUser.accessToken}`;  
     }
     return config;
   },
@@ -34,10 +37,11 @@ instance.interceptors.response.use(
   (error: AxiosError) => {
     // Xử lý lỗi phản hồi
     if (error.response) {
-      const { status } = error.response;
+      const { status,data } = error.response;
       if (status === 401) {
         // Xử lý lỗi không được xác thực
-        console.error('Unauthorized access - please login');
+        const errorData = data as {success:boolean,mes:string}
+        console.error(data ? errorData.mes :'Unauthorized access - please login');
       } else if (status === 403) {
         // Xử lý lỗi cấm truy cập
         console.error('Access forbidden - you do not have permission');

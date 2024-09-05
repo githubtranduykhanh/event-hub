@@ -14,6 +14,8 @@ import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
 import { itemEvent } from '~/constants/events'
 import * as Location from 'expo-location';
 import { AddressModel } from '~/models/AddressModel'
+import { addRegion } from '~/redux/features/app/appSlice'
+import { LoadingModal } from '~/modals'
 
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -21,7 +23,7 @@ const HomeScreen = ({navigation}:any) => {
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [currentLocation, setCurrentLocation] = useState<Location.LocationGeocodedAddress | null>(null);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const handleLogout = async () => {
     await removeFromStorage('auth')
     dispatch(removeAuth())
@@ -43,26 +45,43 @@ const HomeScreen = ({navigation}:any) => {
       }
 
       const location = await Location.getCurrentPositionAsync({});
-      if(location) await reverseGeocode(location)
+      if(location) {
+        setIsLoading(true)
+        try {
+          await reverseGeocode(location)
+        } catch (error) {
+          console.error('Error with use effect reverse geocoding:', error);
+        }finally{
+          setIsLoading(false)
+        }      
+      }
     })();
   }, []);
 
   const reverseGeocode = async (currentPosition:Location.LocationObject) => { 
     if (currentPosition) {
       try {
-        const reverseGeocode = await Location.reverseGeocodeAsync({
+        const reverseGeocode:Location.LocationGeocodedAddress[] = await Location.reverseGeocodeAsync({
           latitude: currentPosition.coords.latitude,
           longitude: currentPosition.coords.longitude
         });
+        dispatch(addRegion({
+          latitude: currentPosition.coords.latitude,
+          longitude: currentPosition.coords.longitude,
+          ...reverseGeocode[0]
+        }))
         setCurrentLocation(reverseGeocode[0])
       } catch (error) {
         console.error('Error with reverse geocoding:', error);
+      }finally{
+        setIsLoading(false)
       }
     }
   }
  
 
   return (
+    <>
     <View style={[globalStyles.container]}>
       <StatusBar style='light' translucent/>
       <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
@@ -206,6 +225,8 @@ const HomeScreen = ({navigation}:any) => {
         </View>
       </SafeAreaView>
     </View>
+    <LoadingModal visible={isLoading}/>
+    </>
   )
 }
 

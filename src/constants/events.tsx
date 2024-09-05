@@ -9,9 +9,9 @@ export interface EventConstanst {
   imageUrl: string;
   users: string[];
   authorId: string;
-  startAt: number;  // Unix timestamp (milliseconds since epoch)
-  endAt: number;    // Unix timestamp (milliseconds since epoch)
-  date: number;     // Unix timestamp (milliseconds since epoch)
+  startAt: Date;  // Unix timestamp (milliseconds since epoch)
+  endAt: Date;    // Unix timestamp (milliseconds since epoch)
+  date: Date;     // Unix timestamp (milliseconds since epoch)
 }
 
 
@@ -26,9 +26,9 @@ export const itemEvent:EventConstanst = {
     imageUrl: 'https://st2.depositphotos.com/41960954/42058/i/450/depositphotos_420585092-stock-photo-beautiful-woman-portrait-digital-illustration.jpg',
     users: [''],
     authorId: '',
-    startAt: Date.now(),
-    endAt: Date.now(),
-    date: Date.now(),
+    startAt: new Date(),
+    endAt: new Date(),
+    date: new Date(),
 }
 
 
@@ -42,7 +42,7 @@ export const initEvent:EventConstanst = {
   imageUrl: '',
   users: [''],
   authorId: '',
-  startAt: Date.now(),
-  endAt: Date.now(),
-  date: Date.now(),
+  startAt: new Date(),
+  endAt: new Date(),
+  date:new Date(),
 }

@@ -1,11 +1,11 @@
 export interface EventModel {
     authorId: string;
-    date: number;
+    date: Date;
     description: string;
-    endAt: number;
+    endAt: Date;
     imageUrl: string;
     location: Location;
-    startAt: number;
+    startAt: Date;
     title: string;
     users: string[];
 }

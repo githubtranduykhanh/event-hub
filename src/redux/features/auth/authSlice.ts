@@ -3,7 +3,7 @@ import { loginUser, registerUser, ressetPasswordUser } from './authActions';
 
 
 export interface UserSlice {
-    id: string;
+    _id: string;
     email: string;
     role: number;
     fullName: string;
@@ -20,7 +20,7 @@ interface AuthState<T> {
 
 const initialState: AuthState<UserSlice> = {
     user: {
-        id: '',
+        _id: '',
         email: '',
         role: 2101,
         fullName: '',

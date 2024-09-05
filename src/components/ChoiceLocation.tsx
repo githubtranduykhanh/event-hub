@@ -7,9 +7,17 @@ import { ArrowRight2,Location } from 'iconsax-react-native'
 import CardComponent from './CardComponent'
 import  LocationModal  from '~/modals/LocationModal'
 
-const ChoiceLocation = () => {
+interface Props {
+  onSubMitLocation:(location:string,title:string) => void;
+  dataLocation:string
+}
 
+
+
+const ChoiceLocation:React.FC<Props> = ({onSubMitLocation,dataLocation}) => {
+ 
   const [isVibleModalLocotion, setIsVibleModelLocation] = useState<boolean>(false);
+
   
   return (
     <>
@@ -19,11 +27,11 @@ const ChoiceLocation = () => {
             <Location size={15} variant='Outline' color={colors.primary} />
           </CardComponent>
         </CardComponent>
-        <TextComponent style={{flex:1,marginLeft:10}} text='Newyork, USA'/>
+        <TextComponent numOfLine={1} style={{flex:1,marginLeft:10}} text={dataLocation}/>
         <ArrowRight2 color={colors.primary} size={20}/>
       </RowComponent>
-      <LocationModal visible={isVibleModalLocotion} onClose={setIsVibleModelLocation} onSelect={val => console.log(val)}/>
       
+      <LocationModal  visible={isVibleModalLocotion} onClose={setIsVibleModelLocation} onSubMit={onSubMitLocation}/>
     </>
   )
 }
