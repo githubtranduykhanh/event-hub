@@ -4,7 +4,7 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 const firebaseConfig = {
-  apiKey: "AIzaSyA0kHBIkFyu_DncUXtKdxEMy0AqpKqwG4E",
+  apiKey: process.env.EXPO_PUBLIC_APP_API_KEY_FIREBASE,
   authDomain: "event-hub-4f241.firebaseapp.com",
   projectId: "event-hub-4f241",
   storageBucket: "event-hub-4f241.appspot.com",
