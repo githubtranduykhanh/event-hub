@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { EventConstanst, initEvent } from '~/constants/events'
-import { ButtonComponent, ChoiceLocation, ContainerComponent, DateTimePickerComponent, DropdownPicker, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent } from '~/components'
+import { ButtonComponent, ChoiceLocation, ContainerComponent, DateTimePickerComponent, DropdownPicker, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent, UploadImagePicker } from '~/components'
 import { StatusBar } from 'expo-status-bar'
 import { useSelector } from 'react-redux'
 import { RootState } from '~/redux/store'
@@ -73,6 +73,8 @@ const AddNewScreen = () => {
         <TextComponent title text='Add New'/>
       </SectionComponent>
       <SectionComponent>
+        <UploadImagePicker/>
+        <SpaceComponent height={15}/>
         <InputComponent  allowClear placeholder='Title' value={eventData.title} onChange={(val) => handleChangeValue('title',val)}/>
         <SpaceComponent height={15}/>
         <InputComponent 
@@ -101,6 +103,8 @@ const AddNewScreen = () => {
         />
         <SpaceComponent height={15}/>
         <InputComponent  allowClear placeholder='Title Address' value={eventData.location.title} onChange={(val) => handleChangeValue('location.title',val)}/>
+        <SpaceComponent height={15}/>
+        <InputComponent  allowClear type='number-pad' placeholder='Price' value={eventData.price} onChange={(val) => handleChangeValue('price',val)}/>
         <SpaceComponent height={15}/>
         <ChoiceLocation onSubMitLocation={(val) => handleChangeValue('location.address',val)} dataLocation={eventData.location.address}/>
       </SectionComponent>

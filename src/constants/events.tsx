@@ -6,6 +6,7 @@ export interface EventConstanst {
     title: string;
     address: string;
   };
+  price:string;
   imageUrl: string;
   users: string[];
   authorId: string;
@@ -23,6 +24,7 @@ export const itemEvent:EventConstanst = {
       title: 'Gala Convention Center',
       address: '36 Guild Street London, UK',
     },
+    price:'',
     imageUrl: 'https://st2.depositphotos.com/41960954/42058/i/450/depositphotos_420585092-stock-photo-beautiful-woman-portrait-digital-illustration.jpg',
     users: [''],
     authorId: '',
@@ -39,6 +41,7 @@ export const initEvent:EventConstanst = {
     title: '',
     address: '',
   },
+  price:'',
   imageUrl: '',
   users: [],
   authorId: '',

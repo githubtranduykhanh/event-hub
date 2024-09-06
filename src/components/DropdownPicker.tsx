@@ -74,19 +74,6 @@ const DropdownPicker:React.FC<Props> = ({lable,values,selected,onSelect,multible
                     <InputComponent styles={{ flex: 1 }} allowClear affix={<SearchNormal1 size="22" color={colors.text} />} placeholder='Search...' value={search} onChange={(val) => setSearch(val)} />
                     <SpaceComponent width={5} />
                     <TouchableOpacity
-                       
-                        style={{
-                            width: 58,
-                            height: 58,
-                            borderRadius: 12,
-                            backgroundColor: colors.primary,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                        }}>
-                        <SearchNormal1 size="22" color={colors.white} />
-                    </TouchableOpacity>
-                    <SpaceComponent width={5} />
-                    <TouchableOpacity
                        onPress={() => modalizeRef?.current?.close()}
                         style={{
                             width: 58,
