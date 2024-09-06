@@ -40,7 +40,7 @@ export const initEvent:EventConstanst = {
     address: '',
   },
   imageUrl: '',
-  users: [''],
+  users: [],
   authorId: '',
   startAt: new Date(),
   endAt: new Date(),

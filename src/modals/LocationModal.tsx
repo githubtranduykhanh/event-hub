@@ -33,7 +33,7 @@ export interface SearchResult {
 interface Props {
     visible: boolean;
     onClose: Dispatch<SetStateAction<boolean>>;
-    onSubMit: (val: string,title:string) => void;
+    onSubMit: (val: string) => void;
 }
 
 
@@ -129,11 +129,11 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit }) => {
 
     const handleOnSubMit = () => {
         if(!markerSelected) {
-            results && results.length === 1 ? onSubMit(`${results[0].address.city}, ${results[0].address.countryCode}`,results[0].address.city)  : onSubMit(`${city}, ${isoCountryCode}`,city??'')
+            results && results.length === 1 ? onSubMit(`${results[0].address.city}, ${results[0].address.countryCode}`)  : onSubMit(`${city}, ${isoCountryCode}`)
         }
         else{
             console.log(markerSelected)
-            onSubMit(`${markerSelected.address.city}, ${markerSelected.address.countryCode}`,markerSelected.address.city)
+            onSubMit(`${markerSelected.address.city}, ${markerSelected.address.countryCode}`)
         }
         onClose(false)
     }

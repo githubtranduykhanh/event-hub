@@ -8,7 +8,7 @@ import CardComponent from './CardComponent'
 import  LocationModal  from '~/modals/LocationModal'
 
 interface Props {
-  onSubMitLocation:(location:string,title:string) => void;
+  onSubMitLocation:(location:string) => void;
   dataLocation:string
 }
 

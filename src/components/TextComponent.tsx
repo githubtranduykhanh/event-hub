@@ -12,10 +12,11 @@ interface Props {
     title?:boolean;
     lineHeight?:number;
     numOfLine?:number
+    textAlign?:"auto" | "left" | "right" | "center" | "justify" | undefined
 }
 
 
-const TextComponent: React.FC<Props> = ({numOfLine,lineHeight,text,color,size,flex,font,style,title}) => {
+const TextComponent: React.FC<Props> = ({numOfLine,textAlign,lineHeight,text,color,size,flex,font,style,title}) => {
   
   const fontSizeDefault = Platform.OS === 'ios' ? typography.fontSizeMedium : typography.fontSizeSmall
   return (
@@ -26,6 +27,7 @@ const TextComponent: React.FC<Props> = ({numOfLine,lineHeight,text,color,size,fl
     lineHeight,
     fontSize:size ?? (title ? typography.fontSizeExtraLarge : fontSizeDefault),
     flex: flex ?? 0,
+    textAlign:textAlign,
     fontFamily:font ?? (title ? typography.fontFamily.medium : typography.fontFamily.regular)
    },style]}>
     {text}
