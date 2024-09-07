@@ -10,6 +10,7 @@ import { Location } from 'iconsax-react-native';
 import SpaceComponent from './SpaceComponent';
 import {MaterialIcons} from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { endAt } from 'firebase/firestore';
 interface Props {
     item:EventModel;
     type:'card' | 'list';
@@ -24,7 +25,12 @@ const EventItem:React.FC<Props> = ({item,type}) => {
     <CardComponent 
         styles={{width:appInfo.size.WIDTH * 0.6}}
         isShadow
-        onPress={()=> navication.navigate('EventDetail',{item})}
+        onPress={()=> navication.navigate('EventDetail',{item: {
+          ...item,
+          startAt: item.startAt.toISOString(), // Chuyển Date thành chuỗi
+          endAt: item.endAt.toISOString(),
+          date: item.date.toISOString(),
+        },})}
         >
         <ImageBackground 
         style={{

@@ -100,7 +100,6 @@ const EventDetail = ({navigation,route}:any) => {
             />
           </RowComponent>
           <SpaceComponent height={23}/>
-
           <TabBarComponent title='About Event'/>
           <SpaceComponent height={8}/>
           <TextComponent lineHeight={28}  text={item.description}/>

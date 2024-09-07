@@ -14,7 +14,7 @@ const AddNewScreen = () => {
   const {city,country,isoCountryCode} = useSelector((state:RootState) => state.app.region)
   const [eventData, setEventData] = useState<EventConstanst>({...initEvent,authorId:_id,location:city && isoCountryCode ? {...initEvent.location,address:`${city}, ${isoCountryCode}`} : {...initEvent.location,address:'ChoiceLocation'}})
   const [selectUsers,setSelectUsers] = useState<SelectModel[]>([])
-
+  const [fileSelected,setFileSelected] = useState<string|null>(null)
 
   useEffect(()=>{
     handleGetAllUsers()
@@ -61,8 +61,19 @@ const AddNewScreen = () => {
     setEventData(prve => ({...prve,location:{...prve.location,address:val}}))
   }
 
-  const handleOnSelectDropdownPicker = (val:string[]) => {
+  const handleOnSelectDropdownPickerUser = (val:string[]) => {
     setEventData(prve => ({...prve,users:val}))
+  }
+
+
+  const handleOnSelectDropdownPickerCaterory = (val:string[]) => {
+    setEventData(prve => ({...prve,caterory:val}))
+  }
+
+
+  const handleOnSelectUploadImagePicker = (type:string,imageString:string) => {
+      setFileSelected(type === 'file' ? imageString : null)
+      handleChangeValue('imageUrl',type === 'file' ? '' : imageString)
   }
   
   return (
@@ -73,7 +84,7 @@ const AddNewScreen = () => {
         <TextComponent title text='Add New'/>
       </SectionComponent>
       <SectionComponent>
-        <UploadImagePicker/>
+        <UploadImagePicker onSelect={handleOnSelectUploadImagePicker}/>
         <SpaceComponent height={15}/>
         <InputComponent  allowClear placeholder='Title' value={eventData.title} onChange={(val) => handleChangeValue('title',val)}/>
         <SpaceComponent height={15}/>
@@ -86,6 +97,30 @@ const AddNewScreen = () => {
           onChange={(val) => handleChangeValue('description',val)}
         />
         <SpaceComponent height={15}/>
+        <DropdownPicker 
+          placeholder='Category'
+          values={[
+            {
+              lable:'Sport',
+              value:'sport'
+            },
+            {
+              lable:'Food',
+              value:'food'
+            },
+            {
+              lable:'Art',
+              value:'art'
+            },
+            {
+              lable:'Music',
+              value:'music'
+            },
+          ]}
+          selected={eventData.caterory}
+          onSelect={handleOnSelectDropdownPickerCaterory}
+        />
+        <SpaceComponent height={15}/>
         <RowComponent>
           <DateTimePickerComponent label='Start At' testID='startAt' mode='time' dateSelected={eventData.startAt} onSelect={handleOnSelectDateTime}/>
           <SpaceComponent width={15}/>
@@ -95,11 +130,12 @@ const AddNewScreen = () => {
         <DateTimePickerComponent label='Date' testID='date' mode='date' dateSelected={eventData.date} onSelect={handleOnSelectDateTime}/>
         <SpaceComponent height={15}/>
         <DropdownPicker 
+          placeholder='Users'
           lable='Invited users'
           values={selectUsers}
           selected={eventData.users}
           multible
-          onSelect={handleOnSelectDropdownPicker}
+          onSelect={handleOnSelectDropdownPickerUser}
         />
         <SpaceComponent height={15}/>
         <InputComponent  allowClear placeholder='Title Address' value={eventData.location.title} onChange={(val) => handleChangeValue('location.title',val)}/>

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleProp, ViewStyle, TextStyle, Alert } from 'react-native'
+import { View, Text, TouchableOpacity, StyleProp, ViewStyle, TextStyle, Alert, ScrollView, FlatList, TouchableWithoutFeedback } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { SelectModel } from '~/models';
 import TextComponent from './TextComponent';
@@ -20,6 +20,7 @@ interface Props{
     selected?:string[];
     onSelect:(val:string[]) => void;
     multible?:boolean;
+    placeholder?:string;
 }
 
 
@@ -27,7 +28,7 @@ const activeBag:StyleProp<ViewStyle> = {
     backgroundColor:colors.primary
 }
 
-const DropdownPicker:React.FC<Props> = ({lable,values,selected,onSelect,multible}) => {
+const DropdownPicker:React.FC<Props> = ({lable,values,selected,onSelect,multible,placeholder}) => {
     const modalizeRef = useRef<Modalize>(null);
     const [search, setSearch] = useState<string>('')
     const [selectedItems, setSelectedItems] = useState<string[]>(selected??[])
@@ -62,9 +63,13 @@ const DropdownPicker:React.FC<Props> = ({lable,values,selected,onSelect,multible
   return (
     <>
         {lable && <TextComponent font={typography.fontFamily.medium} text={lable}/>}
-        <RowComponent styles={[globalStyles.inputContainer]} onPress={handleOpen}>
-            <TextComponent textAlign='center' flex={1} text={`Selected ${selected?.length}`}/>
-            <ArrowDown2 size={20} color={colors.primary}/>
+        <RowComponent onPress={handleOpen} styles={globalStyles.inputContainer}>
+            
+                
+                <TextComponent textAlign='center' flex={1} text={`${selected && selected?.length >= 1 ? multible ? `${placeholder ?? 'Selected'} ${selected?.length}` : values.find(item => item.value.includes(selected[0]))?.lable : `Select ${placeholder ?? ''}`}`}/>
+                 
+                <ArrowDown2 size={20} color={colors.primary}/>
+           
         </RowComponent>
         <Portal>
             <Modalize 
@@ -94,7 +99,7 @@ const DropdownPicker:React.FC<Props> = ({lable,values,selected,onSelect,multible
                 }
 
             >
-            <View style={{flex:1,paddingHorizontal:20,paddingVertical:5}}>
+            <ScrollView style={{flex:1,paddingHorizontal:20,paddingVertical:5}}>
                 {values && search
                 ?
                     values.filter(item => item.lable.toLowerCase().includes(search.toLowerCase())).map((item)=>(
@@ -107,7 +112,7 @@ const DropdownPicker:React.FC<Props> = ({lable,values,selected,onSelect,multible
                         <TextComponent  text={item.lable} color={selectedItems.includes(item.value) ? colors.white : colors.text}/>
                     </TouchableOpacity>
                 ))}
-            </View>
+            </ScrollView>
             </Modalize>
         </Portal>
        

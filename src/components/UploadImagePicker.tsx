@@ -1,5 +1,5 @@
-import { View, Text, Image, ImageBackground } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { View, Text, Image, ImageBackground, Modal, StatusBar,SafeAreaView } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Portal } from 'react-native-portalize'
 import { Modalize } from 'react-native-modalize'
@@ -9,11 +9,28 @@ import RowComponent from './RowComponent'
 import SpaceComponent from './SpaceComponent'
 import * as ImagePicker from 'expo-image-picker';
 import { CloseCircle, DocumentUpload } from 'iconsax-react-native'
-import { colors } from '~/styles'
-const UploadImagePicker = () => {
+import { colors, globalStyles, typography } from '~/styles'
+import InputComponent from './InputComponent'
+import ButtonComponent from './ButtonComponent'
+
+
+interface Props{
+    onSelect:(type:'file'|'url',imageString:string) => void
+}
+
+
+const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
     const modalizeRef = useRef<Modalize>(null);
-    const [image, setImage] = useState<string | null>(null);
+    const [image, setImage] = useState<string>('');
+    const [imageURL, setImageURL] = useState<string>('');
     const [showOption, setShowOption] = useState<boolean>(false);
+    const [isVisibleModalAddUrl, setIsVisibleModalAddUrl] = useState<boolean>(false);
+
+
+
+
+
+
     const takePhoto = async () => {
         // Yêu cầu quyền truy cập vào camera
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -32,6 +49,7 @@ const UploadImagePicker = () => {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);  // Lấy URI của ảnh được chụp
+            onSelect('file',result.assets[0].uri)
         }
     }
 
@@ -55,15 +73,19 @@ const UploadImagePicker = () => {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);  // Lấy URI của ảnh được chọn
+            onSelect('file',result.assets[0].uri)
         }
     }
     const handleOnPressOption = async (key: string) => {
         switch (key) {
             case KEY_OPTIONS.CAMERA:
-                await takePhoto()
+                await takePhoto()     
                 break;
             case KEY_OPTIONS.LIBRARY:
-                await pickImage()
+                await pickImage()   
+                break;
+            case KEY_OPTIONS.URL:
+                setIsVisibleModalAddUrl(true)
                 break;
             default:
                 break;
@@ -72,7 +94,8 @@ const UploadImagePicker = () => {
     }
 
     const handleRemoveImage = () => {
-        setImage(null)
+        setImage('')
+        setImageURL('')
         setShowOption(false)
     }
 
@@ -84,6 +107,13 @@ const UploadImagePicker = () => {
     const handleShow  = () => {
         image ? setShowOption(prve => !prve) : modalizeRef?.current?.open()
     }
+
+    const handleAgreeImageURL = () => {
+        setImage(imageURL)
+        onSelect('url',imageURL)
+        setIsVisibleModalAddUrl(false)
+    }
+   
     return (
         <>
             <TouchableOpacity
@@ -148,6 +178,40 @@ const UploadImagePicker = () => {
                     </View>
                 </Modalize>
             </Portal>
+            <Modal 
+                transparent
+                statusBarTranslucent
+                animationType='slide'           
+                visible={isVisibleModalAddUrl}
+            >
+                
+                <SafeAreaView style={[globalStyles.modalOverlay,{justifyContent:'flex-start'}]}>
+                    <View style={{paddingHorizontal:30}}>
+                        <RowComponent justify='flex-end' styles={{width:'100%'}}>
+                            <TouchableOpacity onPress={() => setIsVisibleModalAddUrl(false)}>
+                                <CloseCircle
+                                    size="32"
+                                    color={colors.white}                            
+                                />
+                            </TouchableOpacity>
+                        </RowComponent>
+                            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                                <View style={{width:'100%',backgroundColor:colors.white,borderRadius:10,padding:20}}>
+                                    <TextComponent text='Image URL' font={typography.fontFamily.medium}/>
+                                    <SpaceComponent height={5}/>
+                                    <InputComponent 
+                                        value={imageURL}
+                                        onChange={(val) => setImageURL(val)}
+                                        allowClear
+                                        placeholder='Image URL'
+                                    />
+                                    <SpaceComponent height={10}/>
+                                    <ButtonComponent text='Argee' type='primary' onPress={handleAgreeImageURL}/>
+                                </View>
+                            </View>
+                    </View>
+                </SafeAreaView>             
+            </Modal>
         </>
     )
 }

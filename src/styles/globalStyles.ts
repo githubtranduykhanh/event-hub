@@ -133,7 +133,13 @@ const globalStyles = StyleSheet.create({
         shadowOpacity: 1,
         shadowRadius: 20,
         elevation: 20, // Chỉ dành cho Android
-    }
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Phần nền transparent
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 })
 
 export default globalStyles
