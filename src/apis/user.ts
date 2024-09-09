@@ -1,20 +1,24 @@
 import { UserSlice } from '~/redux/features/auth/authSlice';
 import axiosClient from './axiosClient'
 import { UsersModel } from '~/models/UserModel';
+import { EventModel } from '~/models';
+import { ApiResponse } from './apiInterface';
 
 
-interface ApiResponse<T> {
-    status: boolean;
-    mes?: string;
-    data?: T;
-    errors?: Record<string, string>;
-}
 
 
 
 export const apiUsers = () => axiosClient<ApiResponse<UsersModel[]>>({
     url:'/users/',
     method:'get',
+})
+
+
+
+export const apiAddNewEvent = (eventModel:EventModel) => axiosClient<ApiResponse<[]>>({
+    url:'/users/add-new-event',
+    method:'post',
+    data:eventModel
 })
 
 

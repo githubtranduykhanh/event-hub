@@ -1,23 +1,9 @@
-
-export interface EventConstanst {
-  title: string;
-  description: string;
-  location: {
-    title: string;
-    address: string;
-  };
-  price:string;
-  imageUrl: string;
-  users: string[];
-  caterory:string[];
-  authorId: string;
-  startAt: Date;  // Unix timestamp (milliseconds since epoch)
-  endAt: Date;    // Unix timestamp (milliseconds since epoch)
-  date: Date;     // Unix timestamp (milliseconds since epoch)
-}
+import { EventModel } from "~/models"
 
 
-export const itemEvent:EventConstanst = {
+
+
+export const itemEvent:EventModel = {
     title: 'International Band Music Concert',
     description:
       'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase.',
@@ -36,7 +22,7 @@ export const itemEvent:EventConstanst = {
 }
 
 
-export const initEvent:EventConstanst = {
+export const initEvent:EventModel = {
   title: '',
   description:'',
   location: {

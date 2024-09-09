@@ -4,11 +4,12 @@ import { apiLogin,apiRegister, apiRessetPassword } from '~/apis';
 import { UserSlice } from './authSlice'; // Đường dẫn đến file slice của bạn
 
 import { saveToStorage } from '~/utils/storage';
+import { ValidationError } from '~/apis/apiInterface';
 
 
 interface LoginError {
     message: string;
-    errors?: Record<string, string>;
+    errors?: Record<string, string> | ValidationError[];
 }
 // Tạo một async thunk để gọi API đăng nhập
 export const loginUser = createAsyncThunk<UserSlice, { email: string; password: string,isRemember:boolean },{ rejectValue: LoginError }>(

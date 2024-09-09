@@ -1,6 +1,5 @@
 import { View, Text, ImageBackground, SafeAreaView, ScrollView, Image } from 'react-native'
 import React from 'react'
-import { EventModel } from '~/models';
 import { AvatarGroup, ButtonComponent, CardComponent, ContainerComponent, HeaderComponent, RowComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
 import { colors, globalStyles, typography } from '~/styles'
 import {MaterialIcons} from '@expo/vector-icons';

@@ -3,7 +3,6 @@ import React from 'react'
 import CardComponent from './CardComponent';
 import TextComponent from './TextComponent';
 import { appInfo, colors, typography } from '~/styles';
-import { EventModel } from '~/models';
 import AvatarGroup from './AvatarGroup';
 import RowComponent from './RowComponent';
 import { Location } from 'iconsax-react-native';
@@ -11,6 +10,7 @@ import SpaceComponent from './SpaceComponent';
 import {MaterialIcons} from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { endAt } from 'firebase/firestore';
+import { EventModel } from '~/models';
 interface Props {
     item:EventModel;
     type:'card' | 'list';

@@ -15,7 +15,7 @@ import ButtonComponent from './ButtonComponent'
 
 
 interface Props{
-    onSelect:(type:'file'|'url',imageString:string) => void
+    onSelect:(type:'file'|'url'|'null',imageString:string) => void
 }
 
 
@@ -25,7 +25,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
     const [imageURL, setImageURL] = useState<string>('');
     const [showOption, setShowOption] = useState<boolean>(false);
     const [isVisibleModalAddUrl, setIsVisibleModalAddUrl] = useState<boolean>(false);
-
+    
 
 
 
@@ -96,6 +96,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
     const handleRemoveImage = () => {
         setImage('')
         setImageURL('')
+        onSelect('null','')
         setShowOption(false)
     }
 
@@ -206,7 +207,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
                                         placeholder='Image URL'
                                     />
                                     <SpaceComponent height={10}/>
-                                    <ButtonComponent text='Argee' type='primary' onPress={handleAgreeImageURL}/>
+                                    <ButtonComponent  text='Argee' type='primary' onPress={handleAgreeImageURL}/>
                                 </View>
                             </View>
                     </View>
