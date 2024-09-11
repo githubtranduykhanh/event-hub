@@ -13,3 +13,23 @@ export interface ValidationError {
     location: string; // Location of the field (body, query, params, etc.)
 }
 
+
+
+export enum URL_API_ENDPOINT {
+    AUTH = '/auth',
+    USERS ='/users',
+    EVENTS = '/events'
+}
+
+export enum EVENT_API_ENDPOINT {
+    ADD_NEW_EVENT = URL_API_ENDPOINT.EVENTS + '/add-new-event'
+}
+
+
+
+export enum API_METHOD {
+    POST = 'post',
+    GET = 'get',
+    PUT = 'put',
+    DELETE = 'delete'
+}

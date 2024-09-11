@@ -14,6 +14,7 @@ import { RootState } from '~/redux/store';
 import MapView, { Marker, MarkerPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
 import TextComponent  from '~/components/TextComponent';
 import  ButtonComponent  from '~/components/ButtonComponent';
+import { Position } from '~/models';
 
 export interface SearchResult {
     id: string;
@@ -23,22 +24,32 @@ export interface SearchResult {
         lng: number;
     };
     address: {
-        label: string;
+        city:string;
         countryCode:string;
         countryName:string;
+        label: string;
         county:string;
-        city:string;
+        district:string;
+        postalCode:number;
     };
 }
+
+
+export interface DataPositionModal {
+    address:string;
+    lat:number;
+    lng:number;
+}
+
 interface Props {
     visible: boolean;
+    dataPositionModal:DataPositionModal;
     onClose: Dispatch<SetStateAction<boolean>>;
-    onSubMit: (val: string) => void;
+    onSubMit: (val: string, position:Position) => void;
 }
 
 
-const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit }) => {
-    const {latitude,longitude,city,isoCountryCode} = useSelector((state:RootState) => state.app.region)
+const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit,dataPositionModal }) => {
     const [search, setSearch] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [displayListSearch, setDisplayListSearch] = useState<boolean>(false)
@@ -48,8 +59,8 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit }) => {
     const debouncedQuery = useDebounce(search, 500);
     const mapRef = useRef<MapView>(null);
     const [region, setRegion] = useState({
-        latitude: latitude,
-        longitude: longitude,
+        latitude: dataPositionModal.lat,
+        longitude: dataPositionModal.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
@@ -129,11 +140,11 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit }) => {
 
     const handleOnSubMit = () => {
         if(!markerSelected) {
-            results && results.length === 1 ? onSubMit(`${results[0].address.city}, ${results[0].address.countryCode}`)  : onSubMit(`${city}, ${isoCountryCode}`)
+            results && results.length === 1 ? onSubMit(`${results[0].title}`,{lat:results[0].position.lat,lng:results[0].position.lng})  : onSubMit(`${dataPositionModal.address}`,{lat:dataPositionModal.lat,lng:dataPositionModal.lng})
         }
         else{
             console.log(markerSelected)
-            onSubMit(`${markerSelected.address.city}, ${markerSelected.address.countryCode}`)
+            onSubMit(`${markerSelected.title}`,{lat:markerSelected.position.lat,lng:markerSelected.position.lng})
         }
         onClose(false)
     }

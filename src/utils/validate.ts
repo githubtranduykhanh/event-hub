@@ -42,4 +42,6 @@ export class Validate {
       })
       return result
     }  
+
+    static ValidateDates = (startAt:Date, endAt:Date) : boolean => startAt < endAt;
 }

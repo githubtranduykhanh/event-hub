@@ -11,10 +11,14 @@ export const itemEvent:EventModel = {
       title: 'Gala Convention Center',
       address: '36 Guild Street London, UK',
     },
+    position:{
+      lat:0,
+      lng:0
+    },
     price:'',
     imageUrl: 'https://st2.depositphotos.com/41960954/42058/i/450/depositphotos_420585092-stock-photo-beautiful-woman-portrait-digital-illustration.jpg',
     users: [],
-    caterory: [],
+    categories: [],
     authorId: '',
     startAt: new Date(),
     endAt: new Date(),
@@ -29,10 +33,14 @@ export const initEvent:EventModel = {
     title: '',
     address: '',
   },
+  position:{
+    lat:0,
+    lng:0
+  },
   price:'',
   imageUrl: '',
   users: [],
-  caterory: [],
+  categories: [],
   authorId: '',
   startAt: new Date(),
   endAt: new Date(),

@@ -5,16 +5,18 @@ import { colors, globalStyles } from '~/styles'
 import TextComponent from './TextComponent'
 import { ArrowRight2,Location } from 'iconsax-react-native'
 import CardComponent from './CardComponent'
-import  LocationModal  from '~/modals/LocationModal'
+import  LocationModal, { DataPositionModal }  from '~/modals/LocationModal'
+import { Position } from '~/models'
 
 interface Props {
-  onSubMitLocation:(location:string) => void;
-  dataLocation:string
+  onSubMitLocation:(location:string,position:Position) => void;
+  dataLocation:string;
+  dataPosition:DataPositionModal;
 }
 
 
 
-const ChoiceLocation:React.FC<Props> = ({onSubMitLocation,dataLocation}) => {
+const ChoiceLocation:React.FC<Props> = ({onSubMitLocation,dataLocation,dataPosition}) => {
  
   const [isVibleModalLocotion, setIsVibleModelLocation] = useState<boolean>(false);
 
@@ -31,7 +33,7 @@ const ChoiceLocation:React.FC<Props> = ({onSubMitLocation,dataLocation}) => {
         <ArrowRight2 color={colors.primary} size={20}/>
       </RowComponent>
       
-      <LocationModal  visible={isVibleModalLocotion} onClose={setIsVibleModelLocation} onSubMit={onSubMitLocation}/>
+      <LocationModal  visible={isVibleModalLocotion} dataPositionModal={dataPosition} onClose={setIsVibleModelLocation} onSubMit={onSubMitLocation}/>
     </>
   )
 }

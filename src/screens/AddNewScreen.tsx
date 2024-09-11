@@ -5,13 +5,15 @@ import { ButtonComponent, ChoiceLocation, ContainerComponent, DateTimePickerComp
 import { StatusBar } from 'expo-status-bar'
 import { useSelector } from 'react-redux'
 import { RootState } from '~/redux/store'
-import { apiAddNewEvent, apiUsers } from '~/apis/user'
-import { EventModel, SelectModel } from '~/models'
+
+import { EventModel, Position, SelectModel } from '~/models'
 import { Validate, ValidateEventKeyAndErrMess } from '~/utils/validate'
 import { colors } from '~/styles'
 import { randomUUID } from 'expo-crypto'
 import { FileHelper } from '~/utils/file'
 import { LoadingModal } from '~/modals'
+import { apiAddNewEvent, apiUsers } from '~/apis'
+import { UsersModel } from '~/models/UserModel'
 
 
 const keyAndErrMess:ValidateEventKeyAndErrMess[] = [
@@ -24,8 +26,8 @@ const keyAndErrMess:ValidateEventKeyAndErrMess[] = [
     errMess:'Title  is required'
   },
   {
-    key:'caterory',
-    errMess:'Caterory is required'
+    key:'categories',
+    errMess:'Categories is required'
   },
   {
     key:'location.title',
@@ -39,8 +41,17 @@ const keyAndErrMess:ValidateEventKeyAndErrMess[] = [
 
 const AddNewScreen = () => {
   const {_id} = useSelector((state:RootState) => state.auth.user)
-  const {city,country,isoCountryCode} = useSelector((state:RootState) => state.app.region)
-  const [eventData, setEventData] = useState<EventModel>({...initEvent,authorId:_id,location:city && isoCountryCode ? {...initEvent.location,address:`${city}, ${isoCountryCode}`} : {...initEvent.location,address:'ChoiceLocation'}})
+  const {city,latitude,longitude,isoCountryCode} = useSelector((state:RootState) => state.app.region)
+  const [eventData, setEventData] = useState<EventModel>({
+    ...initEvent,
+    authorId:_id,
+    location:city && isoCountryCode 
+    ? {...initEvent.location,address:`${city}, ${isoCountryCode}`} 
+    : {...initEvent.location,address:'ChoiceLocation'},
+    position:latitude && longitude
+    ? {...initEvent.position,lat:latitude,lng:longitude}
+    : {...initEvent.position}
+  })
   const [selectUsers,setSelectUsers] = useState<SelectModel[]>([])
   const [fileSelected,setFileSelected] = useState<string|null>(null)
   const [errorsMess,setErrorMess] =  useState<ValidateEventKeyAndErrMess[]>([])
@@ -57,7 +68,7 @@ const AddNewScreen = () => {
 
   
 
-  const handleChangeValue = (key: string, value: string) => {
+  const handleChangeValue = (key: string, value: string | Position) => {
     setEventData(prev => {
       const prevData = prev as any; // Ép kiểu sang 'any' để tránh lỗi
       const keys = key.split('.');
@@ -80,6 +91,11 @@ const AddNewScreen = () => {
   const handleAddNew = async () => {
     console.log(eventData)
     try {
+
+      if(!Validate.ValidateDates(eventData.startAt,eventData.endAt)){
+        Alert.alert('EndAt must be greater than StartAt !')
+        return
+      }
       if(fileSelected) {
         const urlImage = await FileHelper.uploadImageToFirebase(fileSelected, (progress) => setUploadProgress(progress))
         if(!urlImage) {
@@ -101,7 +117,7 @@ const AddNewScreen = () => {
     apiUsers().then((res)=>res.data).then(data=>{
       // console.log(JSON.stringify(data, null, 2));
       if(data && data?.data && data?.data?.length > 0){
-        setSelectUsers(data.data.map((item):SelectModel=>({lable:item.email,value:item._id})))
+        setSelectUsers(data.data.filter((item):boolean=> item._id != eventData.authorId).map((item):SelectModel => ({lable:item.email,value:item._id})))
       }
     }).catch(error => console.log('Api Users error',error))
   }
@@ -110,9 +126,6 @@ const AddNewScreen = () => {
     setEventData(prve => ({...prve,[key]:date}))
   }
 
-  const handleOnSubMitLocation = (val:string) => {
-    setEventData(prve => ({...prve,location:{...prve.location,address:val}}))
-  }
 
   const handleOnSelectDropdownPickerUser = (val:string[]) => {
     setEventData(prve => ({...prve,users:val}))
@@ -120,12 +133,18 @@ const AddNewScreen = () => {
 
 
   const handleOnSelectDropdownPickerCaterory = (val:string[]) => {
-    setEventData(prve => ({...prve,caterory:val}))
+    setEventData(prve => ({...prve,categories:val}))
   }
 
   const handleOnSelectUploadImagePicker = (type:string,imageString:string) => {
       setFileSelected(type === 'file' ? imageString : null)
       handleChangeValue('imageUrl',imageString)
+  }
+
+
+  const handleOnSubMitLocation = (location: string, position: Position) =>{
+    handleChangeValue('location.address',location)
+    handleChangeValue('position',position)
   }
   
   return (
@@ -171,7 +190,7 @@ const AddNewScreen = () => {
               value:'music'
             },
           ]}
-          selected={eventData.caterory}
+          selected={eventData.categories}
           onSelect={handleOnSelectDropdownPickerCaterory}
         />
         <SpaceComponent height={15}/>
@@ -196,7 +215,11 @@ const AddNewScreen = () => {
         <SpaceComponent height={15}/>
         <InputComponent  allowClear type='number-pad' placeholder='Price' value={eventData.price} onChange={(val) => handleChangeValue('price',val)}/>
         <SpaceComponent height={15}/>
-        <ChoiceLocation onSubMitLocation={(val) => handleChangeValue('location.address',val)} dataLocation={eventData.location.address}/>
+        <ChoiceLocation  onSubMitLocation={handleOnSubMitLocation} dataPosition={{
+            address:eventData.location.address,
+            lat:eventData.position.lat,
+            lng:eventData.position.lng
+        }} dataLocation={eventData.location.address}/>
       </SectionComponent>
       {errorsMess && errorsMess.length > 0 && <SectionComponent>
             {errorsMess.map(item => (<TextComponent key={`errorsMess-${randomUUID()}`} text={item.errMess} color={colors.danger}/>))}

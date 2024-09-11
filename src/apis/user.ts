@@ -15,11 +15,6 @@ export const apiUsers = () => axiosClient<ApiResponse<UsersModel[]>>({
 
 
 
-export const apiAddNewEvent = (eventModel:EventModel) => axiosClient<ApiResponse<[]>>({
-    url:'/users/add-new-event',
-    method:'post',
-    data:eventModel
-})
 
 
     
