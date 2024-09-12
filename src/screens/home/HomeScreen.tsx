@@ -43,23 +43,14 @@ const HomeScreen = ({navigation}:any) => {
         console.log('Permission to access location was denied');
         return;
       }
-
       const location = await Location.getCurrentPositionAsync({});
-      if(location) {
-        setIsLoading(true)
-        try {
-          await reverseGeocode(location)
-        } catch (error) {
-          console.error('Error with use effect reverse geocoding:', error);
-        }finally{
-          setIsLoading(false)
-        }      
-      }
+      if(location) await reverseGeocode(location)
     })();
   }, []);
 
   const reverseGeocode = async (currentPosition:Location.LocationObject) => { 
     if (currentPosition) {
+      setIsLoading(true)
       try {
         const reverseGeocode:Location.LocationGeocodedAddress[] = await Location.reverseGeocodeAsync({
           latitude: currentPosition.coords.latitude,
@@ -74,7 +65,7 @@ const HomeScreen = ({navigation}:any) => {
       } catch (error) {
         console.error('Error with reverse geocoding:', error);
       }finally{
-        setIsLoading(false)
+        setIsLoading(false)  
       }
     }
   }

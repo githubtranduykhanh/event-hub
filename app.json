@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "eventhub",
+    "slug": "eventhub",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,7 +12,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "bundleIdentifier": "com.anonymous.mobile",
+      "bundleIdentifier": "com.anonymous.eventhub",
       "supportsTablet": true
     },
     "android": {
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.mobile"
+      "package": "com.anonymous.eventhub"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -39,6 +39,6 @@
         "projectId": "db1c5fd5-eec5-4143-838d-e58c27de67b3"
       }
     },
-    "scheme": "mobile"
+    "scheme": "eventhub"
   }
 }

@@ -227,6 +227,7 @@ const AddNewScreen = () => {
       <SectionComponent>
         <ButtonComponent disable={errorsMess.length > 0} text='Add New' onPress={handleAddNew} type='primary'/>
       </SectionComponent>
+      <SpaceComponent height={20}/>
     </ContainerComponent>
     <LoadingModal visible={uploadProgress > 0 && uploadProgress < 100}/>
     </>

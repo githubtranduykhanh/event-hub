@@ -11,51 +11,44 @@ import { LocationModel } from '~/models/LocationModel';
 import { useDebounce } from '~/hooks';
 import { useSelector } from 'react-redux';
 import { RootState } from '~/redux/store';
-import MapView, { Marker, MarkerPressEvent, PROVIDER_GOOGLE } from 'react-native-maps';
-import TextComponent  from '~/components/TextComponent';
-import  ButtonComponent  from '~/components/ButtonComponent';
+import MapView, { LatLng, MapPressEvent, Marker, MarkerPressEvent, Polyline, PROVIDER_GOOGLE, } from 'react-native-maps';
+import TextComponent from '~/components/TextComponent';
+import ButtonComponent from '~/components/ButtonComponent';
 import { Position } from '~/models';
+import { decode, fetchSearchGeocode, getAddressFromCoordinates, getRoute, SearchResultHereApi } from '~/apis/hereapi';
 
-export interface SearchResult {
-    id: string;
-    title: string;
-    position: {
-        lat: number;
-        lng: number;
-    };
-    address: {
-        city:string;
-        countryCode:string;
-        countryName:string;
-        label: string;
-        county:string;
-        district:string;
-        postalCode:number;
-    };
-}
+// Định nghĩa kiểu dữ liệu cho các điểm tọa độ
+
+
+// Tọa độ hai điểm
+const pointA = { latitude: 10.0452, longitude: 105.7460 };
+
+const pointB = { latitude: 10.8231, longitude: 106.6297 };
+
 
 
 export interface DataPositionModal {
-    address:string;
-    lat:number;
-    lng:number;
+    address: string;
+    lat: number;
+    lng: number;
 }
 
 interface Props {
     visible: boolean;
-    dataPositionModal:DataPositionModal;
+    dataPositionModal: DataPositionModal;
     onClose: Dispatch<SetStateAction<boolean>>;
-    onSubMit: (val: string, position:Position) => void;
+    onSubMit: (val: string, position: Position) => void;
 }
 
 
-const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit,dataPositionModal }) => {
+const LocationModal: React.FC<Props> = ({ visible, onClose, onSubMit, dataPositionModal }) => {
+    const [routeCoordinates, setRouteCoordinates] = useState<LatLng[] | null>(null);
     const [search, setSearch] = useState<string>('')
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [displayListSearch, setDisplayListSearch] = useState<boolean>(false)
-    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-    const [results, setResults] = useState<SearchResult[]>([]);
-    const [markerSelected,setMarkerSelected] = useState<SearchResult | null>(null)
+    const [searchResults, setSearchResults] = useState<SearchResultHereApi[]>([]);
+    const [results, setResults] = useState<SearchResultHereApi[]>([]);
+    const [markerSelected, setMarkerSelected] = useState<SearchResultHereApi | null>(null)
     const debouncedQuery = useDebounce(search, 500);
     const mapRef = useRef<MapView>(null);
     const [region, setRegion] = useState({
@@ -65,88 +58,121 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit,dataPosition
         longitudeDelta: 0.0421,
     });
 
-    
+
     useEffect(() => {
         if (debouncedQuery && debouncedQuery !== '') {
-            fetchSearchGeocode(debouncedQuery,'search');
-        }else{
-            setResults([])
-            setSearchResults([])
+            fetchSearchGeocode(
+                debouncedQuery,
+                (data) => {
+                    setSearchResults(data)
+                    setDisplayListSearch(true)
+                },
+                (error) => {
+                    console.error('Error Fetch Search Geocode occurred:', error.message)
+                }
+            )
+        } else {
+            setSearchResults([]) // Xóa kết quả khi không có query
+            setDisplayListSearch(false)
         }
     }, [debouncedQuery]);
 
-    const handleSearchLocation = async () => {
-       /*  const urlApi = `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${search}&limit=10&apiKey=${process.env.EXPO_PUBLIC_APP_API_KEY_HERE}`
-        console.log(urlApi)
-        try {
-            const req = await axios.get(urlApi)
 
-            const items: LocationModel = req.data
-            items.items.forEach(item => {
-                console.log(item.title)
-            })
-
-
-
-        } catch (error) {
-            console.error('Error with Search Location:', error);
-        } */
-        fetchSearchGeocode(search,'submit')
-        
-    }
-    const fetchSearchGeocode = async (searchQuery: string, type:'search'|'submit') => {
-        try {
-            const response = await axios.get('https://geocode.search.hereapi.com/v1/geocode', {
-                params: {
-                    q: searchQuery,
-                    apiKey: process.env.EXPO_PUBLIC_APP_API_KEY_HERE,
-                },
-            });
-
-            const items: SearchResult[] = response.data.items.map((item: any) => ({
-                id: item.id,
-                title: item.title,
-                position: item.position,
-                address: item.address,
-            }));
-            console.log(items)
-            if(type === 'search') {
-                setSearchResults(items)
-                setDisplayListSearch(true)
+    useEffect(() => {
+        const fetchRoute = async () => {
+            const polyline = await getRoute(pointA.latitude, pointA.longitude, pointB.latitude,pointB.longitude); // Điểm bắt đầu và kết thúc
+            if (polyline) {
+               
+                // Chuyển đổi polyline từ dạng Base64 thành array của coordinates
+                const coordinates = decode(polyline);
+                const latLngCoordinates: LatLng[] = coordinates.polyline.map(coord => {
+                    return {
+                        latitude: coord[0],
+                        longitude: coord[1],
+                    };
+                });
+                setRouteCoordinates(latLngCoordinates);
             }
-            else {
-                setResults(items) 
+        };
+
+        fetchRoute();
+    }, []);
+
+    
+    const handleSearchLocation = () => {
+        /*  const urlApi = `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${search}&limit=10&apiKey=${process.env.EXPO_PUBLIC_APP_API_KEY_HERE}`
+         console.log(urlApi)
+         try {
+             const req = await axios.get(urlApi)
+ 
+             const items: LocationModel = req.data
+             items.items.forEach(item => {
+                 console.log(item.title)
+             })
+ 
+ 
+ 
+         } catch (error) {
+             console.error('Error with Search Location:', error);
+         } */
+
+        fetchSearchGeocode(
+            search,
+            (data) => {
+                setResults(data)
                 setDisplayListSearch(false)
-            }          
-                
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
+            },
+            (error) => {
+                console.error('Error Fetch Search Geocode occurred:', error.message)
+            }
+        );
     }
 
-    const handeleFocusMap = (searchResults:SearchResult) => {
+
+
+
+
+    const handeleFocusMap = (searchResults: SearchResultHereApi) => {
         setMarkerSelected(searchResults)
         const centerContent = {
-            latitude:searchResults.position.lat,
-            longitude:searchResults.position.lng,
+            latitude: searchResults.position.lat,
+            longitude: searchResults.position.lng,
             latitudeDelta: 0.1,
             longitudeDelta: 0.1,
         }
-        mapRef?.current?.animateCamera({center:centerContent,zoom:10},{duration:3000})
+        mapRef?.current?.animateCamera({ center: centerContent, zoom: 10 }, { duration: 1500 })
         setResults([searchResults])
         setDisplayListSearch(false)
     }
 
 
     const handleOnSubMit = () => {
-        if(!markerSelected) {
-            results && results.length === 1 ? onSubMit(`${results[0].title}`,{lat:results[0].position.lat,lng:results[0].position.lng})  : onSubMit(`${dataPositionModal.address}`,{lat:dataPositionModal.lat,lng:dataPositionModal.lng})
+        if (!markerSelected) {
+            results && results.length === 1 ? onSubMit(`${results[0].title}`, { lat: results[0].position.lat, lng: results[0].position.lng }) : onSubMit(`${dataPositionModal.address}`, { lat: dataPositionModal.lat, lng: dataPositionModal.lng })
         }
-        else{
+        else {
             console.log(markerSelected)
-            onSubMit(`${markerSelected.title}`,{lat:markerSelected.position.lat,lng:markerSelected.position.lng})
+            onSubMit(`${markerSelected.title}`, { lat: markerSelected.position.lat, lng: markerSelected.position.lng })
         }
         onClose(false)
+    }
+
+    const handleMapPress = async (event: MapPressEvent) => {
+        const { coordinate } = event.nativeEvent;
+        getAddressFromCoordinates(
+            {
+                lat:coordinate.latitude,
+                lng:coordinate.longitude
+            },
+            (data) => {
+                console.log(data)
+                setResults(data)
+                setMarkerSelected(data[0])
+            },
+            (error) => {
+                console.error('Error Get Address From Coordinates:', error.message)
+            }
+        )   
     }
 
     return (
@@ -165,7 +191,7 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit,dataPosition
                     </TouchableOpacity>
                 </RowComponent>
                 <SpaceComponent height={15} />
-                <RowComponent styles={{position:'relative'}}>
+                <RowComponent styles={{ position: 'relative' }}>
                     {/* <GooglePlacesAutocomplete
                 
                     placeholder='Search'
@@ -193,35 +219,36 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit,dataPosition
                         }}>
                         <SearchNormal1 size="22" color={colors.white} />
                     </TouchableOpacity>
-                    {displayListSearch && searchResults && searchResults.length > 0 && 
-                        <View style={[globalStyles.shadow,{
-                            position:'absolute',
-                            top:62,
-                            right:70,
-                            left:0,
-                            backgroundColor:colors.white,
-                            zIndex:1,
-                            maxHeight:200,
-                            borderRadius:12,
+                    {displayListSearch && searchResults && searchResults.length > 0 &&
+                        <View style={[globalStyles.shadow, {
+                            position: 'absolute',
+                            top: 62,
+                            right: 70,
+                            left: 0,
+                            backgroundColor: colors.white,
+                            zIndex: 1,
+                            maxHeight: 200,
+                            borderRadius: 12,
                         }]}>
 
-                        <FlatList               
-                            showsHorizontalScrollIndicator={false} 
-                            data={searchResults}
-                            renderItem={({item,index}) => <TouchableOpacity onPress={() => handeleFocusMap(item)} style={{paddingHorizontal:12,paddingVertical:10}} key={`results-searh-${item.id}`}>
-                                 <TextComponent text={item.title}/>
-                            </TouchableOpacity>}
-                        />
-                    </View>}
+                            <FlatList
+                                showsHorizontalScrollIndicator={false}
+                                data={searchResults}
+                                renderItem={({ item, index }) => <TouchableOpacity onPress={() => handeleFocusMap(item)} style={{ paddingHorizontal: 12, paddingVertical: 10 }} key={`results-searh-${item.id}`}>
+                                    <TextComponent text={item.title} />
+                                </TouchableOpacity>}
+                            />
+                        </View>}
                 </RowComponent>
-                
-                <MapView    
-                    ref={mapRef}     
-                    style={{flex:1,marginTop:10,borderRadius:12,zIndex:-1}}
+
+                <MapView
+                    ref={mapRef}
+                    style={{ flex: 1, marginTop: 10, borderRadius: 12, zIndex: -1 }}
                     region={region}
                     showsUserLocation
                     showsMyLocationButton
                     onRegionChangeComplete={(region) => setRegion(region)}
+                    onPress={handleMapPress}
                 >
                     {results && results.map((result) => (
                         <Marker
@@ -235,9 +262,20 @@ const LocationModal: React.FC<Props> = ({ visible, onClose,onSubMit,dataPosition
                             onPress={() => setMarkerSelected(result)}
                         />
                     ))}
+
+                    <Marker coordinate={pointA} title="Point A" />
+                    <Marker coordinate={pointB} title="Point B" />
+                    {routeCoordinates && (
+                        <Polyline
+                            coordinates={routeCoordinates}
+                            strokeColor={colors.primary} // Màu đường
+                            strokeWidth={3}   // Độ dày của đường
+                            lineDashPattern={[1, 5]}
+                        />
+                    )}
                 </MapView>
-                <SpaceComponent height={20}/>
-                <ButtonComponent text='Submit' type='primary'  onPress={handleOnSubMit}/>
+                <SpaceComponent height={20} />
+                <ButtonComponent text='Submit' type='primary' onPress={handleOnSubMit} />
             </View>
         </Modal>
     )
