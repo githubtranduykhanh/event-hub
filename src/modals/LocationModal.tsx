@@ -78,11 +78,10 @@ const LocationModal: React.FC<Props> = ({ visible, onClose, onSubMit, dataPositi
     }, [debouncedQuery]);
 
 
-    useEffect(() => {
+    /* useEffect(() => {
         const fetchRoute = async () => {
             const polyline = await getRoute(pointA.latitude, pointA.longitude, pointB.latitude,pointB.longitude); // Điểm bắt đầu và kết thúc
             if (polyline) {
-               
                 // Chuyển đổi polyline từ dạng Base64 thành array của coordinates
                 const coordinates = decode(polyline);
                 const latLngCoordinates: LatLng[] = coordinates.polyline.map(coord => {
@@ -96,26 +95,10 @@ const LocationModal: React.FC<Props> = ({ visible, onClose, onSubMit, dataPositi
         };
 
         fetchRoute();
-    }, []);
+    }, []); */
 
     
     const handleSearchLocation = () => {
-        /*  const urlApi = `https://autocomplete.search.hereapi.com/v1/autocomplete?q=${search}&limit=10&apiKey=${process.env.EXPO_PUBLIC_APP_API_KEY_HERE}`
-         console.log(urlApi)
-         try {
-             const req = await axios.get(urlApi)
- 
-             const items: LocationModel = req.data
-             items.items.forEach(item => {
-                 console.log(item.title)
-             })
- 
- 
- 
-         } catch (error) {
-             console.error('Error with Search Location:', error);
-         } */
-
         fetchSearchGeocode(
             search,
             (data) => {
@@ -148,11 +131,11 @@ const LocationModal: React.FC<Props> = ({ visible, onClose, onSubMit, dataPositi
 
     const handleOnSubMit = () => {
         if (!markerSelected) {
-            results && results.length === 1 ? onSubMit(`${results[0].title}`, { lat: results[0].position.lat, lng: results[0].position.lng }) : onSubMit(`${dataPositionModal.address}`, { lat: dataPositionModal.lat, lng: dataPositionModal.lng })
+            results && results.length === 1 ? onSubMit(`${results[0].address.label}`, { lat: results[0].position.lat, lng: results[0].position.lng }) : onSubMit(`${dataPositionModal.address}`, { lat: dataPositionModal.lat, lng: dataPositionModal.lng })
         }
         else {
             console.log(markerSelected)
-            onSubMit(`${markerSelected.title}`, { lat: markerSelected.position.lat, lng: markerSelected.position.lng })
+            onSubMit(`${markerSelected.address.label}`, { lat: markerSelected.position.lat, lng: markerSelected.position.lng })
         }
         onClose(false)
     }
@@ -263,7 +246,7 @@ const LocationModal: React.FC<Props> = ({ visible, onClose, onSubMit, dataPositi
                         />
                     ))}
 
-                    <Marker coordinate={pointA} title="Point A" />
+                    {/* <Marker coordinate={pointA} title="Point A" />
                     <Marker coordinate={pointB} title="Point B" />
                     {routeCoordinates && (
                         <Polyline
@@ -272,7 +255,7 @@ const LocationModal: React.FC<Props> = ({ visible, onClose, onSubMit, dataPositi
                             strokeWidth={3}   // Độ dày của đường
                             lineDashPattern={[1, 5]}
                         />
-                    )}
+                    )} */}
                 </MapView>
                 <SpaceComponent height={20} />
                 <ButtonComponent text='Submit' type='primary' onPress={handleOnSubMit} />

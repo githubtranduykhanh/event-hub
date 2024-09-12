@@ -16,12 +16,12 @@ import ButtonComponent from './ButtonComponent'
 
 interface Props{
     onSelect:(type:'file'|'url'|'null',imageString:string) => void
+    image:string;
 }
 
 
-const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
+const UploadImagePicker:React.FC<Props> = ({onSelect,image}) => {
     const modalizeRef = useRef<Modalize>(null);
-    const [image, setImage] = useState<string>('');
     const [imageURL, setImageURL] = useState<string>('');
     const [showOption, setShowOption] = useState<boolean>(false);
     const [isVisibleModalAddUrl, setIsVisibleModalAddUrl] = useState<boolean>(false);
@@ -48,7 +48,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);  // Lấy URI của ảnh được chụp
+          
             onSelect('file',result.assets[0].uri)
         }
     }
@@ -72,7 +72,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);  // Lấy URI của ảnh được chọn
+           
             onSelect('file',result.assets[0].uri)
         }
     }
@@ -94,7 +94,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
     }
 
     const handleRemoveImage = () => {
-        setImage('')
+     
         setImageURL('')
         onSelect('null','')
         setShowOption(false)
@@ -110,7 +110,7 @@ const UploadImagePicker:React.FC<Props> = ({onSelect}) => {
     }
 
     const handleAgreeImageURL = () => {
-        setImage(imageURL)
+        
         onSelect('url',imageURL)
         setIsVisibleModalAddUrl(false)
     }

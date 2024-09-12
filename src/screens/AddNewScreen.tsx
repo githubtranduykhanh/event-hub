@@ -39,7 +39,7 @@ const keyAndErrMess:ValidateEventKeyAndErrMess[] = [
   },
 ]  
 
-const AddNewScreen = () => {
+const AddNewScreen = ({navigation}:any) => {
   const {_id} = useSelector((state:RootState) => state.auth.user)
   const {city,latitude,longitude,isoCountryCode} = useSelector((state:RootState) => state.app.region)
   const [eventData, setEventData] = useState<EventModel>({
@@ -66,6 +66,21 @@ const AddNewScreen = () => {
      setErrorMess(Validate.EventValidation(eventData,keyAndErrMess))
   },[eventData])
 
+
+  const resetStates = () => {
+    setEventData({
+      ...initEvent,
+      authorId: _id,
+      location: city && isoCountryCode
+        ? { ...initEvent.location, address: `${city}, ${isoCountryCode}` }
+        : { ...initEvent.location, address: 'ChoiceLocation' },
+      position: latitude && longitude
+        ? { ...initEvent.position, lat: latitude, lng: longitude }
+        : { ...initEvent.position }
+    });
+    setFileSelected(null);
+    setUploadProgress(0);
+  };
   
 
   const handleChangeValue = (key: string, value: string | Position) => {
@@ -89,7 +104,6 @@ const AddNewScreen = () => {
   }
 
   const handleAddNew = async () => {
-    console.log(eventData)
     try {
 
       if(!Validate.ValidateDates(eventData.startAt,eventData.endAt)){
@@ -104,10 +118,10 @@ const AddNewScreen = () => {
         } 
         eventData.imageUrl = urlImage
       }
-      console.log(eventData)
       const res = await apiAddNewEvent(eventData)
       const data = res.data
-      console.log(data)
+      if(data.status) resetStates()
+      else Alert.alert('Error',data.mes)
     } catch (error:any) {
        console.log('Handle Add New Error:', error.response.data)
     }
@@ -156,8 +170,7 @@ const AddNewScreen = () => {
         <TextComponent title text='Add New'/>
       </SectionComponent>
       <SectionComponent>
-       
-        <UploadImagePicker onSelect={handleOnSelectUploadImagePicker}/>
+        <UploadImagePicker image={eventData.imageUrl} onSelect={handleOnSelectUploadImagePicker}/>
         <SpaceComponent height={15}/>
         <InputComponent  allowClear placeholder='Title' value={eventData.title} onChange={(val) => handleChangeValue('title',val)}/>
         <SpaceComponent height={15}/>
