@@ -48,11 +48,7 @@ export const fetchSearchGeocode = async (searchQuery: string, onSuccess: (data: 
             },
         });
 
-        if (response.status === 200 && response.data.items && response.data.items.length > 0) {
-            onSuccess(mapSearchResult(response.data.items));
-        } else {
-            onError && onError({ message: 'No address found or unexpected status code', statusCode: response.status });
-        }
+        if (response.status === 200 && response.data.items && response.data.items.length > 0) onSuccess(mapSearchResult(response.data.items));
     } catch (error) {
         // Gọi callback onError nếu có lỗi
         if (axios.isAxiosError(error)) {

@@ -21,7 +21,7 @@ const TabNavigaror = () => {
         tabBarStyle:{
           height:Platform.OS === 'ios' ? 88 : 68,
           justifyContent:'center',
-          alignItems:'center'
+          alignItems:'center',
         },
         tabBarIcon:(({focused,color,size}) => {
           let icon:ReactNode;
@@ -68,7 +68,13 @@ const TabNavigaror = () => {
         <Tab.Screen name='Explore' component={ExploreNavigator}/>
         <Tab.Screen name='Events' component={EventNavigator}/>
         <Tab.Screen name='Add' component={AddNewScreen}/>
-        <Tab.Screen name='Map' component={MapNavigator}/>
+        <Tab.Screen name='Map' component={MapNavigator} 
+          options={({ route }) => ({
+            tabBarStyle: {
+              display: route.name === 'Map' ? 'none' : 'flex',
+            },
+          })}
+        />
         <Tab.Screen name='Profile' component={ProfileNavigator}/>
     </Tab.Navigator>
   )

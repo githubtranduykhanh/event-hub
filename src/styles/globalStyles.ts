@@ -115,7 +115,6 @@ const globalStyles = StyleSheet.create({
         backgroundColor: colors.white,
         padding: 9,
         margin: 8,
-        marginBottom: 16
     },
     shadowCard: {
         shadowColor: Platform.OS === 'ios' ? 'rgba(0,0,0,0.3)' : 'rgba(0,0,0,0.5)',

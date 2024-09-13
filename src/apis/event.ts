@@ -11,3 +11,12 @@ export const apiAddNewEvent = (eventModel:EventModel) => axiosClient<ApiResponse
     method: API_METHOD.POST,
     data:eventModel
 })
+
+
+
+
+export const apiByDistance = (params:{lat:number,lng:number,distance:number}) => axiosClient<ApiResponse<EventModel[]>>({
+    url: EVENT_API_ENDPOINT.DISTANCE,
+    method: API_METHOD.GET,
+    params
+})

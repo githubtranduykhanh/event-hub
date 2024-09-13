@@ -6,18 +6,21 @@ import {MaterialIcons} from '@expo/vector-icons';
 import { Calendar,Location } from 'iconsax-react-native';
 import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 import { LinearGradient } from 'expo-linear-gradient';
+import { EventModel } from '~/models';
+import { TextHelper } from '~/utils/text';
 
 
 const EventDetail = ({navigation,route}:any) => {
-  const {item} = route.params
+  const item = route.params.item as EventModel
 
   return (
     
     <ContainerComponent isSafeAreaView={false}>
       <ImageBackground 
-        style={{height:244,zIndex:1}}
+        style={{height:244,zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)'}}
         resizeMode='cover'
-        source={require('../../../assets/images/image-bg-event-detail.png')}>
+        imageStyle={{opacity:0.5}}
+        source={{uri:item.imageUrl}}>
         <SafeAreaView style={{flex:1}}>
           <HeaderComponent color={colors.white} back title='Event Details' 
             icon={<CardComponent 
@@ -59,8 +62,8 @@ const EventDetail = ({navigation,route}:any) => {
             </CardComponent>
             <SpaceComponent width={14}/>
             <View style={{flex:1}}>
-              <TextComponent title size={16} lineHeight={34} text='14 December, 2021'/>
-              <TextComponent size={12} color={colors.subColor} text='Tuesday, 4:00PM - 9:00PM'/>
+              <TextComponent title size={16} lineHeight={34} text={TextHelper.formatDateTime(new Date(item.date),'dd MMMM, yyyy')}/>
+              <TextComponent size={12} color={colors.subColor} text={`${TextHelper.formatDateTime(new Date(item.date),'ddd')}, ${TextHelper.formatDateTime(new Date(item.startAt),'hh:mm a')} - ${TextHelper.formatDateTime(new Date(item.endAt),'hh:mm a')}`}/>
             </View>
           </RowComponent>
           <SpaceComponent height={18}/>
@@ -70,8 +73,8 @@ const EventDetail = ({navigation,route}:any) => {
             </CardComponent>
             <SpaceComponent width={14}/>
             <View style={{flex:1}}>
-              <TextComponent title size={16} lineHeight={34} text='Gala Convention Center'/>
-              <TextComponent size={12} color={colors.subColor} text='36 Guild Street London, UK'/>
+              <TextComponent title size={16} lineHeight={34} text={item.location.title}/>
+              <TextComponent size={12} color={colors.subColor} text={item.location.address}/>
             </View>
           </RowComponent>
           <SpaceComponent height={18}/>
@@ -117,15 +120,15 @@ const EventDetail = ({navigation,route}:any) => {
             style={{         
               position:'absolute',
               bottom:26,
-              width:271,
+              minWidth:271,
               alignSelf:'center',
               height:58,
               zIndex:2
             }}
             iconFlex='right'
-            textStyle={{ textAlign: 'center', marginRight: 0 }}
+            textStyle={{ textAlign: 'center', marginRight: 25 }}
             icon={<ArrowRight style={{ position: 'absolute', right: 16 }} />}
-            text={'Buy Ticket $120'.toUpperCase()} 
+            text={`Buy Ticket ${TextHelper.formatToVND(+item.price)}`.toUpperCase()} 
             type='primary'
           />
       </LinearGradient>

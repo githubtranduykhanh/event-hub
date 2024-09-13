@@ -50,7 +50,6 @@ const HomeScreen = ({navigation}:any) => {
 
   const reverseGeocode = async (currentPosition:Location.LocationObject) => { 
     if (currentPosition) {
-      setIsLoading(true)
       try {
         const reverseGeocode:Location.LocationGeocodedAddress[] = await Location.reverseGeocodeAsync({
           latitude: currentPosition.coords.latitude,
@@ -64,8 +63,6 @@ const HomeScreen = ({navigation}:any) => {
         setCurrentLocation(reverseGeocode[0])
       } catch (error) {
         console.error('Error with reverse geocoding:', error);
-      }finally{
-        setIsLoading(false)  
       }
     }
   }
@@ -136,7 +133,7 @@ const HomeScreen = ({navigation}:any) => {
               </RowComponent>
             </SectionComponent>
             <SpaceComponent height={15}/>
-            <CategoriesList isColor styles={
+            <CategoriesList isColor isShadowBox styles={
               {
                 position:'absolute',
                 bottom:-18,

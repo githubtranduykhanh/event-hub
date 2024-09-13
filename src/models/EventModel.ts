@@ -11,6 +11,7 @@ export interface Position {
 }
 
 export interface EventModel {
+    _id?:string;
     title: string;
     description: string;
     location: Location;
@@ -23,6 +24,10 @@ export interface EventModel {
     startAt: Date;  // Unix timestamp (milliseconds since epoch)
     endAt: Date;    // Unix timestamp (milliseconds since epoch)
     date: Date;     // Unix timestamp (milliseconds since epoch)
+    followers?:string[];
 }
+
+
+ 
 
 

@@ -9,12 +9,13 @@ import { colors, globalStyles } from '~/styles';
 interface CategoriesItemProps {
     item: Category;
     isColor?:boolean;
+    isShadowBox?:boolean;
 }
 
-const CategoriesItem: React.FC<CategoriesItemProps> = ({ item,isColor }) => {
+const CategoriesItem: React.FC<CategoriesItemProps> = ({ item,isColor,isShadowBox }) => {
     return (
       <RowComponent styles={
-        [globalStyles.tag,globalStyles.shadowBox,{
+        [globalStyles.tag,isShadowBox && globalStyles.shadowBox,{
             backgroundColor:isColor ? item.iconColor : colors.white
         }]
       }>

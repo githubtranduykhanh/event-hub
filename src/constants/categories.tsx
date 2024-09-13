@@ -11,7 +11,7 @@ export interface Category {
 export const Categories = (isColor?:boolean): Category[] => {
     return [
         {
-          key: '1',
+          key: 'sport',
           icon: (
             <Ionicons
               name="basketball"
@@ -23,7 +23,7 @@ export const Categories = (isColor?:boolean): Category[] => {
           title: 'Sports',
         },
         {
-          key: '2',
+          key: 'music',
           icon: (
             <FontAwesome
               name="music"
@@ -35,13 +35,13 @@ export const Categories = (isColor?:boolean): Category[] => {
           title: 'Music',
         },
         {
-          key: '3',
-          icon: <ChefForkSVG color={isColor ? colors.white : '#29D697'} />,
+          key: 'food',
+          icon: <ChefForkSVG fill={isColor ? colors.white : '#29D697'} stroke={isColor ? colors.white : '#29D697'}/>,
           iconColor: '#29D697',
           title: 'Food',
         },
         {
-          key: '4',
+          key: 'art',
           icon: (
             <Ionicons
               name="color-palette-sharp"

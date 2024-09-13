@@ -15,6 +15,12 @@ export class TextHelper {
 
     return `${start}${maskedPart}${end}@${domain}`;
   };
+  static formatToVND(amount:number):string {
+    // Định dạng số thành chuỗi với phân cách hàng nghìn
+    const formattedAmount = amount.toLocaleString('vi-VN');
+    // Thêm ký hiệu VNĐ vào cuối chuỗi
+    return `${formattedAmount} VNĐ`;
+  };
   static formatDateTime(dateTime: Date, format: string): string {
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -39,7 +45,7 @@ export class TextHelper {
         'mm': String(minutes).padStart(2, '0'),
         'ss': String(seconds).padStart(2, '0'),
         'a': isPM ? 'PM' : 'AM',
-        'ddd': daysOfWeek[dateTime.getUTCDay()]
+        'ddd': daysOfWeek[dateTime.getDay()]
     };
 
     // Thay thế theo thứ tự ưu tiên từ dài đến ngắn
@@ -48,13 +54,14 @@ export class TextHelper {
     format = format.replace('MMMM', formatters['MMMM']); 
     format = format.replace('MMM', formatters['MMM']);
     format = format.replace('MM', formatters['MM']);
+    format = format.replace('ddd', formatters['ddd']);
     format = format.replace('dd', formatters['dd']);
     format = format.replace('HH', formatters['HH']);
     format = format.replace('hh', formatters['hh']);
     format = format.replace('mm', formatters['mm']);
     format = format.replace('ss', formatters['ss']);
     format = format.replace('a', formatters['a']);
-    format = format.replace('ddd', formatters['ddd']);
+   
 
     return format;
   };
