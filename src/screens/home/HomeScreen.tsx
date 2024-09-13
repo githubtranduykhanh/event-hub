@@ -16,6 +16,10 @@ import * as Location from 'expo-location';
 import { AddressModel } from '~/models/AddressModel'
 import { addRegion } from '~/redux/features/app/appSlice'
 import { LoadingModal } from '~/modals'
+import { apiGetEvents } from '~/apis'
+import { ApiHelper } from '~/apis/helper'
+
+
 
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -43,10 +47,39 @@ const HomeScreen = ({navigation}:any) => {
         console.log('Permission to access location was denied');
         return;
       }
-      const location = await Location.getCurrentPositionAsync({});
-      if(location) await reverseGeocode(location)
+      const currentPosition = await Location.getCurrentPositionAsync({});
+      if(currentPosition) {
+        setLocation(currentPosition)
+        await reverseGeocode(currentPosition)
+      }
     })();
   }, []);
+
+
+
+  useEffect(() => {
+    (async () => {
+      if(location){
+        try {
+          const res = await apiGetEvents({
+            limit:5,
+            sort:'-createdAt',
+            lat:location?.coords.latitude,
+            lng:location?.coords.longitude,
+            distance:5
+          })
+          const data = await res.data
+          console.log('==========useEffect') 
+          data.data?.forEach((item) => {
+            console.log(item.price) 
+          })
+           
+        } catch (error) {
+          console.log(ApiHelper.getMesErrorFromServer(error)) 
+        }
+      }
+    })();
+  }, [location]);
 
   const reverseGeocode = async (currentPosition:Location.LocationObject) => { 
     if (currentPosition) {
@@ -67,7 +100,25 @@ const HomeScreen = ({navigation}:any) => {
     }
   }
  
-
+  const handelEvent = async () =>{
+    try {
+      const res = await apiGetEvents({
+        limit:5,
+        sort:'-createdAt',
+        lat:location?.coords.latitude,
+        lng:location?.coords.longitude,
+        distance:5
+      })
+      const data = await res.data
+      console.log('==========') 
+      data.data?.forEach((item) => {
+        console.log(item.price) 
+      })
+       
+    } catch (error) {
+      console.log(ApiHelper.getMesErrorFromServer(error)) 
+    }
+  }
   return (
     <>
     <View style={[globalStyles.container]}>
@@ -93,7 +144,7 @@ const HomeScreen = ({navigation}:any) => {
                   </RowComponent>
                   <TextComponent style={{textAlign:'center'}} text={  currentLocation? `${currentLocation.city}, ${currentLocation.isoCountryCode}` :'New Yourk, USA'} font={typography.fontFamily.medium} color={colors.white} />
                 </View>
-                <CircleComponent size={36} color='#5D56F3'>
+                <CircleComponent size={36} color='#5D56F3' onPress={handelEvent}>
                   <View>
                     <Notification size={typography.fontSizeExtraLarge} variant='Outline' color={colors.white} />
                     <View style={{

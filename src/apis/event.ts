@@ -1,9 +1,13 @@
-import { EventModel } from "~/models";
+import { EventModel, EventQueryParams } from "~/models";
 import { API_METHOD, ApiResponse, EVENT_API_ENDPOINT, URL_API_ENDPOINT } from "./apiInterface";
 import axiosClient from "./axiosClient";
 
 
-
+export const apiGetEvents = (params?:EventQueryParams) => axiosClient<ApiResponse<EventModel[]>>({
+    url: EVENT_API_ENDPOINT.GET_ALL,
+    method: API_METHOD.GET,
+    params
+})
 
 
 export const apiAddNewEvent = (eventModel:EventModel) => axiosClient<ApiResponse<[]>>({

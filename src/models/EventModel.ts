@@ -10,6 +10,9 @@ export interface Position {
     lng:number;
 }
 
+
+
+
 export interface EventModel {
     _id?:string;
     title: string;
@@ -27,6 +30,33 @@ export interface EventModel {
     followers?:string[];
 }
 
+export interface EventQueryParams {
+    title?: string;                  // Tìm kiếm theo tiêu đề sự kiện
+    category?: string;               // Lọc theo danh mục sự kiện
+    users?: string;                  // Lọc theo người dùng (chuỗi, ví dụ: 'user1,user2')
+    filterType?: 'in' | 'all';       // Loại lọc (chỉ có 'in' hoặc 'all')
+    startAt?: string;                // Ngày bắt đầu (dạng ISO string)
+    endAt?: string;                  // Ngày kết thúc (dạng ISO string)
+    sort?: string;                   // Sắp xếp (ví dụ: 'date,-title' để sắp xếp theo ngày tăng dần và tiêu đề giảm dần)
+    fields?: string;                 // Các trường cần lấy (ví dụ: 'title,date,location')
+    page?: number;                   // Số trang (mặc định là 1 nếu không có)
+    limit?: number;                  // Số lượng kết quả trên mỗi trang (mặc định là 10 nếu không có)
+    lat?:number;   
+    lng?:number;
+    distance?:number;
+
+
+    
+    // Các tham số với toán tử so sánh
+    'startAt[gte]'?: string;         // Ngày bắt đầu lớn hơn hoặc bằng
+    'startAt[gt]'?: string;          // Ngày bắt đầu lớn hơn
+    'endAt[lte]'?: string;           // Ngày kết thúc nhỏ hơn hoặc bằng
+    'endAt[lt]'?: string;            // Ngày kết thúc nhỏ hơn
+    'price[gte]'?: number;           // Giá lớn hơn hoặc bằng
+    'price[gt]'?: number;            // Giá lớn hơn
+    'price[lte]'?: number;           // Giá nhỏ hơn hoặc bằng
+    'price[lt]'?: number;            // Giá nhỏ hơn
+}
 
  
 
