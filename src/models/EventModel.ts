@@ -32,7 +32,7 @@ export interface EventModel {
 
 export interface EventQueryParams {
     title?: string;                  // Tìm kiếm theo tiêu đề sự kiện
-    category?: string;               // Lọc theo danh mục sự kiện
+    categories?: string;               // Lọc theo danh mục sự kiện
     users?: string;                  // Lọc theo người dùng (chuỗi, ví dụ: 'user1,user2')
     filterType?: 'in' | 'all';       // Loại lọc (chỉ có 'in' hoặc 'all')
     startAt?: string;                // Ngày bắt đầu (dạng ISO string)
@@ -48,6 +48,11 @@ export interface EventQueryParams {
 
     
     // Các tham số với toán tử so sánh
+
+    'date[gte]'?: string;
+    'date[gt]'?: string;
+    'date[lte]'?: string;
+    'date[lt]'?: string;
     'startAt[gte]'?: string;         // Ngày bắt đầu lớn hơn hoặc bằng
     'startAt[gt]'?: string;          // Ngày bắt đầu lớn hơn
     'endAt[lte]'?: string;           // Ngày kết thúc nhỏ hơn hoặc bằng

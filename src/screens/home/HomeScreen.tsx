@@ -7,7 +7,7 @@ import { removeAuth } from '~/redux/features/auth/authSlice'
 import { removeFromStorage } from '~/utils/storage'
 import { colors, globalStyles, typography } from '~/styles'
 import { StatusBar } from 'expo-status-bar'
-import { ButtonComponent, CategoriesList, CircleComponent, EventItem, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
+import { ButtonComponent, CategoriesList, CircleComponent, EventItem, LoadingComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
 import { Notification, SearchNormal1, Sort } from 'iconsax-react-native'
@@ -18,8 +18,30 @@ import { addRegion } from '~/redux/features/app/appSlice'
 import { LoadingModal } from '~/modals'
 import { apiGetEvents } from '~/apis'
 import { ApiHelper } from '~/apis/helper'
+import { EventModel } from '~/models'
+import { TextHelper } from '~/utils/text'
 
 
+interface ItemLoadingComponent {
+  isLoading:boolean;
+  mes:string;
+}
+
+interface LoadingComponent {
+  upcomingEvents:ItemLoadingComponent;
+  nearbyEvents:ItemLoadingComponent;
+}
+
+const initLoadingComponent:LoadingComponent = {
+  upcomingEvents:{
+    isLoading:false,
+    mes:'Data upcoming not found !'
+  },
+  nearbyEvents:{
+    isLoading:false,
+    mes:'Data nearby not found !'
+  }
+}
 
 const HomeScreen = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>()
@@ -27,7 +49,9 @@ const HomeScreen = ({navigation}:any) => {
   const { fullName, email, role } = useSelector((state: RootState) => state.auth.user)
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [currentLocation, setCurrentLocation] = useState<Location.LocationGeocodedAddress | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoadingComponent, setIsLoadingComponent] = useState<LoadingComponent>(initLoadingComponent)
+  const [upcomingEvents, setUpcomingEvents] = useState<EventModel[]>([]);
+  const [nearbyEvents, setNearbyEvents] = useState<EventModel[]>([]);
   const handleLogout = async () => {
     await removeFromStorage('auth')
     dispatch(removeAuth())
@@ -53,6 +77,25 @@ const HomeScreen = ({navigation}:any) => {
         await reverseGeocode(currentPosition)
       }
     })();
+
+    (async () => {
+        setIsLoadingComponent(prve => ({...prve,upcomingEvents:{...prve.upcomingEvents,isLoading:true}}))
+        try {
+          const res = await apiGetEvents({
+            limit:5,
+            'date[gte]':new Date().toISOString(),
+          })
+          const data = await res.data
+          if(data.status && data.data && data.data.length > 0) setUpcomingEvents(data.data)
+        } catch (error) {
+          console.log(ApiHelper.getMesErrorFromServer(error)) 
+        } finally {
+          setIsLoadingComponent(prev => ({
+            ...prev,
+            upcomingEvents: { ...prev.upcomingEvents, isLoading: false },
+          }))
+        }
+    })();
   }, []);
 
 
@@ -60,22 +103,24 @@ const HomeScreen = ({navigation}:any) => {
   useEffect(() => {
     (async () => {
       if(location){
+        setIsLoadingComponent(prve => ({...prve,nearbyEvents:{...prve.nearbyEvents,isLoading:true}}))
         try {
           const res = await apiGetEvents({
             limit:5,
-            sort:'-createdAt',
+            'date[gte]':new Date().toISOString(),
             lat:location?.coords.latitude,
             lng:location?.coords.longitude,
             distance:5
           })
           const data = await res.data
-          console.log('==========useEffect') 
-          data.data?.forEach((item) => {
-            console.log(item.price) 
-          })
-           
+          if(data.status && data.data && data.data.length > 0) setNearbyEvents(data.data) 
         } catch (error) {
           console.log(ApiHelper.getMesErrorFromServer(error)) 
+        } finally {
+          setIsLoadingComponent(prev => ({
+            ...prev,
+            nearbyEvents: { ...prev.nearbyEvents, isLoading: false },
+          }))
         }
       }
     })();
@@ -102,17 +147,14 @@ const HomeScreen = ({navigation}:any) => {
  
   const handelEvent = async () =>{
     try {
+      console.log(TextHelper.formatDateTime(new Date('2024-01-14T08:55:00.000Z'),'ddd MMMM, yy'))
       const res = await apiGetEvents({
-        limit:5,
-        sort:'-createdAt',
-        lat:location?.coords.latitude,
-        lng:location?.coords.longitude,
-        distance:5
+        categories:'food'
       })
       const data = await res.data
-      console.log('==========') 
+      console.log('categoriesfood==========') 
       data.data?.forEach((item) => {
-        console.log(item.price) 
+        console.log(item.date) 
       })
        
     } catch (error) {
@@ -198,12 +240,15 @@ const HomeScreen = ({navigation}:any) => {
             >
             <SpaceComponent height={20}/>  
             <TabBarComponent title='Upcoming Events' onPress={()=>{}}/>
-            <FlatList               
+            {upcomingEvents.length <= 0 
+            ? (<LoadingComponent isLoading={isLoadingComponent.upcomingEvents.isLoading} mes={isLoadingComponent.upcomingEvents.mes}/>)
+            :( <FlatList               
               showsHorizontalScrollIndicator={false}
               horizontal 
-              data={Array.from({length:5})}
-              renderItem={({item,index}) => <EventItem item={itemEvent} type='card' key={`EventItem-${index}`} />}
-            />
+              data={upcomingEvents}
+              renderItem={({item,index}) => <EventItem item={item} type='card' key={`EventItem-${item._id}`} />}
+            />)
+            }
 
             <SpaceComponent height={20}/>
             <RowComponent styles={
@@ -254,17 +299,19 @@ const HomeScreen = ({navigation}:any) => {
             <SpaceComponent height={24}/>
 
             <TabBarComponent title='Nearby You' onPress={()=>{}}/>
-            <FlatList 
-              showsHorizontalScrollIndicator={false}
-              horizontal 
-              data={Array.from({length:5})}
-              renderItem={({item,index}) => <EventItem item={itemEvent} type='card' key={`EventItem-${index}`} />}
-            />
+            {nearbyEvents.length <= 0 
+              ? (<LoadingComponent isLoading={isLoadingComponent.nearbyEvents.isLoading} mes={isLoadingComponent.nearbyEvents.mes}/>)
+              :(  <FlatList 
+                showsHorizontalScrollIndicator={false}
+                horizontal 
+                data={nearbyEvents}
+                renderItem={({item,index}) => <EventItem item={item} type='card' key={`EventItem-${index}`} />}
+              />)
+            }
           </ScrollView>
         </View>
       </SafeAreaView>
     </View>
-    <LoadingModal visible={isLoading}/>
     </>
   )
 }

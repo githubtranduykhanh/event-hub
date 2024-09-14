@@ -1,5 +1,5 @@
 import { View, Text, ImageBackground, SafeAreaView, ScrollView, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { AvatarGroup, ButtonComponent, CardComponent, ContainerComponent, HeaderComponent, RowComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
 import { colors, globalStyles, typography } from '~/styles'
 import {MaterialIcons} from '@expo/vector-icons';
@@ -8,14 +8,34 @@ import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 import { LinearGradient } from 'expo-linear-gradient';
 import { EventModel } from '~/models';
 import { TextHelper } from '~/utils/text';
+import { RootState } from '~/redux/store';
+import { useSelector } from 'react-redux';
+import { StatusBar } from 'expo-status-bar';
+import { apiPutFollowersEvents } from '~/apis';
+import { ApiHelper } from '~/apis/helper';
 
 
 const EventDetail = ({navigation,route}:any) => {
   const item = route.params.item as EventModel
+  const {_id} = useSelector((state:RootState) => state.auth.user)
+  const [followers,setFollowers] = useState<string[]>(item.followers ?? [])
+  const isUserLength = item.users.length > 0
+
+
+  const handelFollowers = () => {
+    if(item._id) apiPutFollowersEvents(item._id)
+      .then(res => res.data)
+      .then(data => {
+        if(data && data.status && data.data) setFollowers(data.data)
+      })
+      .catch(error => console.log(ApiHelper.getMesErrorFromServer(error)))
+  }
+
 
   return (
     
     <ContainerComponent isSafeAreaView={false}>
+      <StatusBar style='light'/>
       <ImageBackground 
         style={{height:244,zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)'}}
         resizeMode='cover'
@@ -23,11 +43,14 @@ const EventDetail = ({navigation,route}:any) => {
         source={{uri:item.imageUrl}}>
         <SafeAreaView style={{flex:1}}>
           <HeaderComponent color={colors.white} back title='Event Details' 
-            icon={<CardComponent 
-              color='rgba(255, 255, 255, 0.30)'
-              styles={{alignItems:'center',margin:0,marginBottom:0,padding:10,borderRadius:10}}>
-                <MaterialIcons name="bookmark" size={20} color={colors.white} />
-            </CardComponent>}
+            icon={
+              <CardComponent 
+                  onPress={handelFollowers}
+                  color={(_id && followers.includes(_id)) ? '#ffffffB3' :'rgba(255, 255, 255, 0.30)'}
+                  styles={{alignItems:'center',margin:0,marginBottom:0,padding:10,borderRadius:10}}>
+                    <MaterialIcons name="bookmark" size={20} color={(_id && followers.includes(_id)) ? '#F0635A' :colors.white} />
+              </CardComponent>
+            }
           />
           <RowComponent 
           justify='space-between'
@@ -35,7 +58,7 @@ const EventDetail = ({navigation,route}:any) => {
             [globalStyles.shadowBottom,{
               backgroundColor:colors.white,
               position:'absolute',
-              bottom:-30,
+              bottom:isUserLength ? -30 : -33,
               left:40,
               paddingHorizontal:14,
               paddingVertical:13,
@@ -43,8 +66,8 @@ const EventDetail = ({navigation,route}:any) => {
               width:295,
             }]
           }>
-            <AvatarGroup textSize={15} imageSize={34}/>
-            <ButtonComponent style={{paddingHorizontal:18,paddingVertical:6,borderRadius:7}} textFont={typography.fontFamily.regular} textSize={12} text={'Invite'.toUpperCase()} type='primary'/>
+            <AvatarGroup users={item.users} textSize={15} imageSize={34}/>
+            <ButtonComponent style={{paddingHorizontal:18,paddingVertical:isUserLength ? 6 : 15 ,borderRadius:isUserLength ? 7 : 20,flex:isUserLength ? undefined : 1}} textFont={isUserLength ? typography.fontFamily.regular : typography.fontFamily.bold} textSize={12} text={'Invite'.toUpperCase()} type='primary'/>
           </RowComponent>
         </SafeAreaView>     
       </ImageBackground>

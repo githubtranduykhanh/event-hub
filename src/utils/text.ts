@@ -34,35 +34,24 @@ export class TextHelper {
     const isPM = hours >= 12;
 
     const formatters: Record<string, string> = {
+        'a': isPM ? 'PM' : 'AM',
         'yyyy': String(year),
         'yy': String(year).slice(-2),
         'MMMM': monthsOfYear[month],
         'MMM': monthsOfYear[month].slice(0, 3),
         'MM': String(month + 1).padStart(2, '0'),
+        'ddd': daysOfWeek[dateTime.getDay()],
         'dd': String(day).padStart(2, '0'),
         'HH': String(hours).padStart(2, '0'),
         'hh': String(hours % 12 || 12).padStart(2, '0'),
         'mm': String(minutes).padStart(2, '0'),
         'ss': String(seconds).padStart(2, '0'),
-        'a': isPM ? 'PM' : 'AM',
-        'ddd': daysOfWeek[dateTime.getDay()]
     };
 
-    // Thay thế theo thứ tự ưu tiên từ dài đến ngắn
-    format = format.replace('yyyy', formatters['yyyy']);
-    format = format.replace('yy', formatters['yy']);
-    format = format.replace('MMMM', formatters['MMMM']); 
-    format = format.replace('MMM', formatters['MMM']);
-    format = format.replace('MM', formatters['MM']);
-    format = format.replace('ddd', formatters['ddd']);
-    format = format.replace('dd', formatters['dd']);
-    format = format.replace('HH', formatters['HH']);
-    format = format.replace('hh', formatters['hh']);
-    format = format.replace('mm', formatters['mm']);
-    format = format.replace('ss', formatters['ss']);
-    format = format.replace('a', formatters['a']);
-   
+    // Tạo biểu thức chính quy động cho tất cả các mẫu định dạng
+    const regex = new RegExp(Object.keys(formatters).join('|'), 'g');
 
-    return format;
+    // Thay thế các mẫu định dạng trong chuỗi format
+    return format.replace(regex, match => formatters[match]);
   };
 }

@@ -5,13 +5,15 @@ import TextComponent from './TextComponent';
 import { appInfo, colors, typography } from '~/styles';
 import AvatarGroup from './AvatarGroup';
 import RowComponent from './RowComponent';
-import { Location } from 'iconsax-react-native';
+import { Data, Location } from 'iconsax-react-native';
 import SpaceComponent from './SpaceComponent';
 import {MaterialIcons} from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { endAt } from 'firebase/firestore';
 import { EventModel } from '~/models';
 import { TextHelper } from '~/utils/text';
+import { useSelector } from 'react-redux';
+import { RootState } from '~/redux/store';
 interface Props {
     item:EventModel;
     type:'card' | 'list';
@@ -22,17 +24,14 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
 
   const navication:any = useNavigation()
 
+  const {_id} = useSelector((state:RootState) => state.auth.user)
+
   return (
       type === 'card' 
       ? <CardComponent 
       styles={{width:appInfo.size.WIDTH * 0.6}}
       isShadow
-      onPress={()=> navication.navigate('EventDetail',{item: {
-        ...item,
-        startAt: item.startAt.toISOString(), // Chuyển Date thành chuỗi
-        endAt: item.endAt.toISOString(),
-        date: item.date.toISOString(),
-      },})}
+      onPress={()=> navication.navigate('EventDetail',{item})}
       >
       <ImageBackground 
       style={{
@@ -41,7 +40,7 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
         overflow:'hidden',
         height:131,
       }}
-      source={require('../../assets/images/event-image.png')}
+      source={{uri:item.imageUrl ?? require('../../assets/images/event-image.png')}}
       imageStyle={{
         resizeMode:'cover'
       }}
@@ -50,21 +49,25 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
           <CardComponent 
             color='#ffffffB3'
             styles={{alignItems:'center',margin:0,paddingHorizontal:6,paddingVertical:3,width:45,height:45}}>
-            <TextComponent text='10' title size={18} font={typography.fontFamily.bold} color='#F0635A'/>
-            <TextComponent text={'June'.toUpperCase()} title size={10} color='#F0635A'/>
+            <TextComponent text={TextHelper.formatDateTime(new Date(item.date),'dd')} title size={18} font={typography.fontFamily.bold} color='#F0635A'/>
+            <TextComponent text={TextHelper.formatDateTime(new Date(item.date),'MMMM').slice(0,5)} title size={10} color='#F0635A'/>
           </CardComponent>
-          <CardComponent 
-          color='#ffffffB3'
-          styles={{alignItems:'center',margin:0,padding:8}}>
-            <MaterialIcons name="bookmark" size={20} color="#F0635A" />
-          </CardComponent>
+          {
+            _id  && item.followers?.includes(_id) && (
+              <CardComponent 
+                color='#ffffffB3'
+                styles={{alignItems:'center',margin:0,padding:8}}>
+                  <MaterialIcons name="bookmark" size={20} color="#F0635A" />
+              </CardComponent>
+            )
+          }
         </RowComponent>
       </ImageBackground>
       <SpaceComponent height={14}/>
           <View style={{paddingHorizontal:7,paddingBottom:8,paddingTop:0}}>
             <TextComponent numOfLine={1} text={item.title} title size={18} />
             <SpaceComponent height={10}/>
-            <AvatarGroup/>
+            <AvatarGroup users={item.users}/>
             <SpaceComponent height={10}/>
             <RowComponent>
               <Location size={18} color={colors.text3} variant='Bold'/>

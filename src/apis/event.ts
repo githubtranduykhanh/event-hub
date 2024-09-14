@@ -10,6 +10,12 @@ export const apiGetEvents = (params?:EventQueryParams) => axiosClient<ApiRespons
 })
 
 
+export const apiPutFollowersEvents = (idEvent:string) => axiosClient<ApiResponse<string[]>>({
+    url: EVENT_API_ENDPOINT.FOLLOWERS + '/' + idEvent,
+    method: API_METHOD.PUT,
+})
+
+
 export const apiAddNewEvent = (eventModel:EventModel) => axiosClient<ApiResponse<[]>>({
     url: EVENT_API_ENDPOINT.ADD_NEW_EVENT,
     method: API_METHOD.POST,
