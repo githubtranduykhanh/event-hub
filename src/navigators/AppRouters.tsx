@@ -8,22 +8,32 @@ import { AppDispatch, RootState } from '~/redux/store'
 import { addAuth } from '~/redux/features/auth/authSlice'
 import { getFromStorage } from '~/utils/storage'
 import { SplashScreen } from '~/screens'
+import { getFollowersUser } from '~/redux/features/auth/authActions'
+import { ApiHelper } from '~/apis/helper'
 
 const AppRouters = () => {
     const dispatch = useDispatch<AppDispatch>()
-    const { accessToken } = useSelector((state:RootState) => state.auth.user)
+    const { user:{accessToken}} = useSelector((state:RootState) => state.auth)
     const [isShowSplash,setIsShowSplash] = useState(true)
 
     useEffect(() => {
-        checkLogin()
-      const timeout = setTimeout(()=>{
+        (async ()=>{
+          try {
+            await checkLogin()
+          } catch (error) {
+            console.log(ApiHelper.getMesErrorFromServer(error)) 
+          }
+          finally {
+            setIsShowSplash(false)
+          }
+        })();
+     /*  const timeout = setTimeout(()=>{
         setIsShowSplash(false)
       },1500)
   
-      return () => clearTimeout(timeout)
+      return () => clearTimeout(timeout) */
     },[])
 
- 
     const checkLogin = async () => {
         const storedUser = await getFromStorage('auth');
         const isRemember = await getFromStorage('isRemember');
@@ -32,7 +42,7 @@ const AppRouters = () => {
         console.log('======================')
         console.log('Is Remember:',isRemember)
         console.log('======================')
-        isRemember && storedUser &&  dispatch(addAuth(storedUser))
+        isRemember && storedUser &&  dispatch(addAuth(storedUser)) && dispatch(getFollowersUser())
     }
 
   return (

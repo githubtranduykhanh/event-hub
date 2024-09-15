@@ -27,7 +27,16 @@ export enum EVENT_API_ENDPOINT {
     GET_ALL = URL_API_ENDPOINT.EVENTS,
     ADD_NEW_EVENT = URL_API_ENDPOINT.EVENTS + '/add-new',
     DISTANCE = URL_API_ENDPOINT.EVENTS + '/by-distance',
-    FOLLOWERS = URL_API_ENDPOINT.EVENTS + '/followers'
+    FOLLOWERS = URL_API_ENDPOINT.EVENTS + '/followers',
+    
+}
+
+
+
+export enum USER_API_ENDPOINT {
+    ADD_NEW_EVENT = URL_API_ENDPOINT.EVENTS + '/add-new',
+    FOLLOWERS = URL_API_ENDPOINT.USERS + '/followers',
+    FOLLOWERS_USER = URL_API_ENDPOINT.USERS + '/followers-user'
 }
 
 

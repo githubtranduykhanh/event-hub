@@ -1,5 +1,6 @@
 // src/utils/storage.ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserSlice } from '~/redux/features/auth/authSlice';
 
 const STORAGE_KEY = '@app_data';
 
@@ -12,11 +13,28 @@ export const saveToStorage = async (key: string, value: any) => {
     }
 };
 
+
+
+// Lưu dữ liệu vào AsyncStorage
+export const updateFollowerUserToStorage = async (key: string, followers:string[]) => {
+    try {
+        const userData = await getFromStorage(key)
+        if(userData){
+            userData.followers = followers
+            await saveToStorage(key,userData)
+        }
+    } catch (error) {
+        console.error('Error saving to AsyncStorage:', error);
+    }
+};
+
+
+
 // Lấy dữ liệu từ AsyncStorage
-export const getFromStorage = async (key: string) => {
+export const getFromStorage = async (key: string): Promise<UserSlice | null> => {
     try {
         const value = await AsyncStorage.getItem(`${STORAGE_KEY}_${key}`);
-        return value ? JSON.parse(value) : null;
+        return value ? JSON.parse(value) as UserSlice : null;
     } catch (error) {
         console.error('Error getting from AsyncStorage:', error);
         return null;

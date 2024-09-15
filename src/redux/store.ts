@@ -9,6 +9,11 @@ export const store = configureStore({
   },
 });
 
+
+export const authSelector = (state:RootState) => state.auth
+
+export const appSelector = (state:RootState) => state.app
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

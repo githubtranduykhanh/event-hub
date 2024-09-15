@@ -8,33 +8,44 @@ import ArrowRight from '../../../assets/svgs/arrow-right.svg'
 import { LinearGradient } from 'expo-linear-gradient';
 import { EventModel } from '~/models';
 import { TextHelper } from '~/utils/text';
-import { RootState } from '~/redux/store';
-import { useSelector } from 'react-redux';
+import { AppDispatch, RootState,authSelector } from '~/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
 import { apiPutFollowersEvents } from '~/apis';
 import { ApiHelper } from '~/apis/helper';
+import { updateUserFollowers } from '~/redux/features/auth/authSlice';
+import { LoadingModal } from '~/modals';
 
 
 const EventDetail = ({navigation,route}:any) => {
+  const dispatch = useDispatch<AppDispatch>();
   const item = route.params.item as EventModel
-  const {_id} = useSelector((state:RootState) => state.auth.user)
-  const [followers,setFollowers] = useState<string[]>(item.followers ?? [])
+  const {user:{followers}} = useSelector(authSelector)
   const isUserLength = item.users.length > 0
+  const isFollowers = item?._id && followers && followers.includes(item._id) ? true  : false
+
+  const [isLoading,setIsLoading] = useState<boolean>(false)
+
 
 
   const handelFollowers = () => {
-    if(item._id) apiPutFollowersEvents(item._id)
+    if(item._id) {
+      setIsLoading(true)
+      apiPutFollowersEvents(item._id)
       .then(res => res.data)
       .then(data => {
-        if(data && data.status && data.data) setFollowers(data.data)
+        if(data && data.status && data.data) dispatch(updateUserFollowers(data.data))
       })
       .catch(error => console.log(ApiHelper.getMesErrorFromServer(error)))
+      .finally(()=>setIsLoading(false))
+    }
   }
 
-
+  
   return (
     
-    <ContainerComponent isSafeAreaView={false}>
+    <>
+      <ContainerComponent isSafeAreaView={false}>
       <StatusBar style='light'/>
       <ImageBackground 
         style={{height:244,zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)'}}
@@ -46,9 +57,9 @@ const EventDetail = ({navigation,route}:any) => {
             icon={
               <CardComponent 
                   onPress={handelFollowers}
-                  color={(_id && followers.includes(_id)) ? '#ffffffB3' :'rgba(255, 255, 255, 0.30)'}
+                  color={isFollowers ? '#ffffffB3' :'rgba(255, 255, 255, 0.30)'}
                   styles={{alignItems:'center',margin:0,marginBottom:0,padding:10,borderRadius:10}}>
-                    <MaterialIcons name="bookmark" size={20} color={(_id && followers.includes(_id)) ? '#F0635A' :colors.white} />
+                    <MaterialIcons name="bookmark" size={20} color={isFollowers ? '#F0635A' :colors.white} />
               </CardComponent>
             }
           />
@@ -156,6 +167,8 @@ const EventDetail = ({navigation,route}:any) => {
           />
       </LinearGradient>
     </ContainerComponent>
+    <LoadingModal visible={isLoading}/>
+    </>
   )
 }
 

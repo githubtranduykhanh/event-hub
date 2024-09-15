@@ -24,8 +24,9 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
 
   const navication:any = useNavigation()
 
-  const {_id} = useSelector((state:RootState) => state.auth.user)
-
+  const {user:{_id,followers}} = useSelector((state:RootState) => state.auth)
+  const isFollowers = item?._id && followers && followers.includes(item._id) ? true  : false
+  
   return (
       type === 'card' 
       ? <CardComponent 
@@ -53,7 +54,7 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
             <TextComponent text={TextHelper.formatDateTime(new Date(item.date),'MMMM').slice(0,5)} title size={10} color='#F0635A'/>
           </CardComponent>
           {
-            _id  && item.followers?.includes(_id) && (
+            isFollowers && (
               <CardComponent 
                 color='#ffffffB3'
                 styles={{alignItems:'center',margin:0,padding:8}}>
@@ -84,11 +85,13 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
         <View style={{flex:1}}>
             <RowComponent justify='space-between'>
               <TextComponent size={typography.fontSizeSmall} color={colors.primary} text={`${TextHelper.formatDateTime(new Date(item.date),'ddd MMMM, yy')} - ${TextHelper.formatDateTime(new Date(item.startAt),'hh:mm a')}`}/>
-              <CardComponent 
-              color='#ffffffB3'
-              styles={{alignItems:'center',margin:0,padding:0}}>
-                <MaterialIcons name="bookmark" size={20} color="#F0635A" />
-              </CardComponent>
+              {
+                isFollowers && (<CardComponent 
+                  color='#ffffffB3'
+                  styles={{alignItems:'center',margin:0,padding:0}}>
+                    <MaterialIcons name="bookmark" size={20} color="#F0635A" />
+                  </CardComponent>)
+              }
             </RowComponent>
             <SpaceComponent height={4}/>
             <TextComponent numOfLine={2} text={item.title} title size={15} />

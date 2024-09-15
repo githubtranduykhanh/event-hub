@@ -1,6 +1,6 @@
 import { UserSlice } from '~/redux/features/auth/authSlice';
 import axiosClient from './axiosClient'
-import { ApiResponse } from './apiInterface';
+import { API_METHOD, ApiResponse, EVENT_API_ENDPOINT } from './apiInterface';
 
 
 
@@ -25,6 +25,9 @@ export const apiSentCodeEmail = (data:{ email: string;title?:string }) => axiosC
     method:'post',
     data 
 })
+
+
+
 
 export const apiRessetPassword = (data:{ codes:number[], email:string, newPassword:string, confirmPassword:string }) => axiosClient<ApiResponse<UserSlice>>({
     url:'/auth/resset-password',
