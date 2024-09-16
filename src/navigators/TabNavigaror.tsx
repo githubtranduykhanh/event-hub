@@ -10,6 +10,7 @@ import { colors, globalStyles, typography } from '~/styles'
 import { CircleComponent, TextComponent } from '~/components'
 import {MaterialIcons} from '@expo/vector-icons';
 import { AddSquare, Calendar, Location, Profile } from 'iconsax-react-native'
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
 
 
 const TabNavigaror = () => {

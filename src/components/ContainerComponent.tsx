@@ -14,11 +14,13 @@ interface Props {
   imageBackgroundStyle?:StyleProp<ViewStyle>;
   imageStyle?:StyleProp<ImageStyle>;
   isSafeAreaView?:boolean;
+  navigateName?:string;
+  popToTop?:boolean;
 }
 
 
 
-const ContainerComponent: React.FC<Props> = ({ isSafeAreaView = true ,back,isImageBackground, isScroll, title, children,imageBackgroundSource,imageBackgroundStyle,imageStyle }) => {
+const ContainerComponent: React.FC<Props> = ({ isSafeAreaView = true,navigateName,popToTop ,back,isImageBackground, isScroll, title, children,imageBackgroundSource,imageBackgroundStyle,imageStyle }) => {
 
   const returnContainer = isScroll ? <ScrollView style={[globalStyles.container]}>{children}</ScrollView> : <View  style={[globalStyles.container]}>{children}</View>
  
@@ -32,12 +34,12 @@ const ContainerComponent: React.FC<Props> = ({ isSafeAreaView = true ,back,isIma
             {isSafeAreaView  
             ? <SafeAreaView style={[globalStyles.container]}>
                 <View style={{flex:1}}>
-                <HeaderComponent back={back} title={title}/>
+                <HeaderComponent back={back} title={title} navigateName={navigateName} popToTop={popToTop}/>
                 {returnContainer}
                 </View>
               </SafeAreaView> 
             : <View style={{flex:1}}>
-              <HeaderComponent back={back} title={title}/>
+              <HeaderComponent back={back} title={title} navigateName={navigateName} popToTop={popToTop}/>
               {returnContainer}
               </View>
             }
@@ -46,12 +48,12 @@ const ContainerComponent: React.FC<Props> = ({ isSafeAreaView = true ,back,isIma
       : isSafeAreaView 
       ? <SafeAreaView style={[globalStyles.container]}>
           <View style={{flex:1}}>
-            <HeaderComponent back={back} title={title} />
+            <HeaderComponent back={back} title={title} navigateName={navigateName} popToTop={popToTop}/>
             {returnContainer}
           </View>
         </SafeAreaView> 
       : <View style={{flex:1}}>
-          <HeaderComponent back={back} title={title} />
+          <HeaderComponent back={back} title={title} navigateName={navigateName} popToTop={popToTop}/>
           {returnContainer}
         </View>
   )

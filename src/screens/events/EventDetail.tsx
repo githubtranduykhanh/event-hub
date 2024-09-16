@@ -1,5 +1,5 @@
-import { View, Text, ImageBackground, SafeAreaView, ScrollView, Image } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ImageBackground, SafeAreaView, ScrollView, Image, Animated } from 'react-native'
+import React, { useRef, useState } from 'react'
 import { AvatarGroup, ButtonComponent, CardComponent, ContainerComponent, HeaderComponent, RowComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
 import { colors, globalStyles, typography } from '~/styles'
 import {MaterialIcons} from '@expo/vector-icons';
@@ -17,13 +17,15 @@ import { updateUserFollowers } from '~/redux/features/auth/authSlice';
 import { LoadingModal } from '~/modals';
 
 
+const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+
 const EventDetail = ({navigation,route}:any) => {
   const dispatch = useDispatch<AppDispatch>();
   const item = route.params.item as EventModel
   const {user:{followers}} = useSelector(authSelector)
   const isUserLength = item.users.length > 0
   const isFollowers = item?._id && followers && followers.includes(item._id) ? true  : false
-
+  const scrollY = useRef(new Animated.Value(0)).current;
   const [isLoading,setIsLoading] = useState<boolean>(false)
 
 
@@ -41,19 +43,26 @@ const EventDetail = ({navigation,route}:any) => {
     }
   }
 
+
+  const imageHeight = scrollY.interpolate({
+    inputRange: [0, 200], // Adjust the scroll range as needed
+    outputRange: [244, 150], // Adjust the height of ImageBackground as needed
+    extrapolate: 'clamp',
+  });
+
   
   return (
     
     <>
       <ContainerComponent isSafeAreaView={false}>
       <StatusBar style='light'/>
-      <ImageBackground 
-        style={{height:244,zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)'}}
+      <AnimatedImageBackground 
+        style={{zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)', height: imageHeight}}
         resizeMode='cover'
-        imageStyle={{opacity:0.5}}
+        imageStyle={{opacity:0.5,height:'100%'}}
         source={{uri:item.imageUrl}}>
         <SafeAreaView style={{flex:1}}>
-          <HeaderComponent color={colors.white} back title='Event Details' 
+          <HeaderComponent color={colors.white} back title='Event Details'
             icon={
               <CardComponent 
                   onPress={handelFollowers}
@@ -81,9 +90,10 @@ const EventDetail = ({navigation,route}:any) => {
             <ButtonComponent style={{paddingHorizontal:18,paddingVertical:isUserLength ? 6 : 15 ,borderRadius:isUserLength ? 7 : 20,flex:isUserLength ? undefined : 1}} textFont={isUserLength ? typography.fontFamily.regular : typography.fontFamily.bold} textSize={12} text={'Invite'.toUpperCase()} type='primary'/>
           </RowComponent>
         </SafeAreaView>     
-      </ImageBackground>
+      </AnimatedImageBackground>
       <ScrollView 
       showsVerticalScrollIndicator={false}
+      onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: false })}
       style={{
         marginHorizontal:20
       }}>
