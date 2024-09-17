@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getFollowersUser, loginUser, registerUser, ressetPasswordUser } from './authActions';
+import { getFollowedEventUser, loginUser, registerUser, ressetPasswordUser } from './authActions';
 import { ValidationError } from '~/apis/apiInterface';
 
 
@@ -9,7 +9,8 @@ export interface UserSlice {
     role: number;
     fullName: string;
     photoUrl: string;
-    followers:string[];
+    expoPushToken:string;
+    followedEvents:string[];
     accessToken: string;
 }
 
@@ -28,7 +29,8 @@ const initialState: AuthState<UserSlice> = {
         fullName: '',
         photoUrl: '',
         accessToken: '',
-        followers:[]
+        expoPushToken:'',
+        followedEvents:[]
     },
     isLoading: false,
     errorMessage: null,
@@ -45,8 +47,8 @@ export const authSlice = createSlice({
                 ...action.payload,
             }
         },
-        updateUserFollowers: (state, action: PayloadAction<string[]>) => {
-            state.user.followers = action.payload
+        updateUserFollowedEvents: (state, action: PayloadAction<string[]>) => {
+            state.user.followedEvents = action.payload
         },
         removeAuth:(state)=>{
             state.user = initialState.user
@@ -117,16 +119,16 @@ export const authSlice = createSlice({
                 state.errorMessage = action.payload?.message || 'Resset Password failed';
                 state.errors = action.payload?.errors || {}; // Cập nhật lỗi chi tiết
             });  
-        builder.addCase(getFollowersUser.pending, (state) => {
+        builder.addCase(getFollowedEventUser.pending, (state) => {
                 state.isLoading = true;   
                 state.errorMessage = null;          
             })
-            .addCase(getFollowersUser.fulfilled, (state, action: PayloadAction<string[]>) => {
+            .addCase(getFollowedEventUser.fulfilled, (state, action: PayloadAction<string[]>) => {
                 state.isLoading = false;
-                state.user.followers = action.payload;    
+                state.user.followedEvents = action.payload;    
                 state.errorMessage = null;   
             })
-            .addCase(getFollowersUser.rejected, (state, action) => {
+            .addCase(getFollowedEventUser.rejected, (state, action) => {
                 state.isLoading = false;
                 state.errorMessage = action.payload?.message || 'Get followers user failed';
                 state.errors = action.payload?.errors || {}; // Cập nhật lỗi chi tiết
@@ -134,6 +136,6 @@ export const authSlice = createSlice({
     },
 });
 
-export const {updateUserFollowers,addAuth,removeAuth,resetAuth,resetErrorMessage,resetErrorMessageAndErrors,resetErrors,resetIsLoading,resetIsLoadingAndErrorMessageAndErrors } = authSlice.actions;
+export const {updateUserFollowedEvents,addAuth,removeAuth,resetAuth,resetErrorMessage,resetErrorMessageAndErrors,resetErrors,resetIsLoading,resetIsLoadingAndErrorMessageAndErrors } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -36,6 +36,17 @@ const globalStyles = StyleSheet.create({
         backgroundColor: colors.white,
         padding: 16,
     },
+    buttonOuline: {
+        flexDirection: 'row',
+        borderRadius: 10,
+        borderWidth:1.5,
+        borderColor:colors.primary,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.white,
+        paddingHorizontal:19,
+        paddingVertical:12
+    },
     inputContainer: {
         flexDirection: 'row',
         borderRadius: 12,
@@ -139,6 +150,10 @@ const globalStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    centerItem:{
+        justifyContent:'center',
+        alignItems:'center'
+    }
 })
 
 export default globalStyles

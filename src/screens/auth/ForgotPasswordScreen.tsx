@@ -132,7 +132,7 @@ const ForgotPasswordScreen = () => {
       .catch(error => {
         if (error.response && error.response.data) {
           console.log(error.response.data.mes)
-          Alert.alert('Error', error.response.data.mes)
+          Alert.alert('Error Sent Code Email', error.response.data.mes)
         } else {
           console.log({ message: 'An unknown error has occurred' })
         }

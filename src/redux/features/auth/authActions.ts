@@ -17,7 +17,6 @@ export const loginUser = createAsyncThunk<UserSlice, { email: string; password: 
     async ({ email, password,isRemember }, thunkAPI) => {
         try {
             const response = await apiLogin({ email, password })
-            console.log('loginUser',response)
             if (response.data.status) {
                 const userData = response.data.data as UserSlice;    
                 // Lưu vào AsyncStorage
@@ -95,7 +94,7 @@ export const ressetPasswordUser = createAsyncThunk<UserSlice, {codes:number[], e
 
 
 // Tạo một async thunk để gọi API đặt lại mật khẩu
-export const getFollowersUser = createAsyncThunk<string[],void,{ rejectValue: ApiResponseError }>(
+export const getFollowedEventUser = createAsyncThunk<string[],void,{ rejectValue: ApiResponseError }>(
     'auth/followersUser',
     async (_,thunkAPI) => {
         try {

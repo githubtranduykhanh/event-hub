@@ -36,7 +36,9 @@ export enum EVENT_API_ENDPOINT {
 export enum USER_API_ENDPOINT {
     ADD_NEW_EVENT = URL_API_ENDPOINT.EVENTS + '/add-new',
     FOLLOWERS = URL_API_ENDPOINT.USERS + '/followers',
-    FOLLOWERS_USER = URL_API_ENDPOINT.USERS + '/followers-user'
+    FOLLOWERS_USER = URL_API_ENDPOINT.USERS + '/followers-user',
+    EXPO_PUSH_TOKEN = URL_API_ENDPOINT.USERS + '/expoPushToken',
+    PROFILE = URL_API_ENDPOINT.USERS + '/profile'
 }
 
 

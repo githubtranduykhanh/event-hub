@@ -1,6 +1,6 @@
 import { UserSlice } from '~/redux/features/auth/authSlice';
 import axiosClient from './axiosClient'
-import { UsersModel } from '~/models/UserModel';
+import { IUserProfile, UsersSelectModel } from '~/models/UserModel';
 import { EventModel } from '~/models';
 import { API_METHOD, ApiResponse, USER_API_ENDPOINT } from './apiInterface';
 
@@ -8,7 +8,7 @@ import { API_METHOD, ApiResponse, USER_API_ENDPOINT } from './apiInterface';
 
 
 
-export const apiUsers = () => axiosClient<ApiResponse<UsersModel[]>>({
+export const apiUsers = () => axiosClient<ApiResponse<UsersSelectModel[]>>({
     url:'/users/',
     method:'get',
 })
@@ -24,5 +24,19 @@ export const apiGetFollowersUser = () => axiosClient<ApiResponse<string[]>>({
     method:API_METHOD.GET, 
 })
 
+
+
+
+export const apiPostExpoPushToken = (data:{expoPushToken:string}) => axiosClient<ApiResponse<[]>>({
+    url: USER_API_ENDPOINT.EXPO_PUSH_TOKEN,
+    method: API_METHOD.POST,
+    data
+})
+
+
+export const apiGetProfileUser = (idUser:string) => axiosClient<ApiResponse<IUserProfile>>({
+    url:USER_API_ENDPOINT.PROFILE + '/' + idUser,
+    method:API_METHOD.GET, 
+})
 
     

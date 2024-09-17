@@ -14,30 +14,44 @@ import { removeAuth } from '~/redux/features/auth/authSlice';
 
 const DrawerCustom = ({navigation}:any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const {photoUrl,fullName} = useSelector((state:RootState) => state.auth.user)
+  const {photoUrl,fullName,_id} = useSelector((state:RootState) => state.auth.user)
 
   const atName = fullName || 'Ashfak Sayem'
 
-  const handleAvatar = () => {
-    navigation.closeDrawer()
-    navigation.navigate('Profile',{screen:'ProfileScreen'})
-  }
 
   const handleItemMenu = async (item:ProfileMenuItem) => {
-    if(item.title === 'Sign Out'){
-      await removeFromStorage('isRemember')
-      await removeFromStorage('auth')
-      dispatch(removeAuth())
-    }else{
-      navigation.closeDrawer()
+    switch (item.key) {
+      case 'SignOut':
+        await handleSignOut()
+        break;
+      case 'MyProfile':
+        handleMyProfile()
+        break;
+      default:
+        navigation.closeDrawer()
+        break;
     }
+  }
+
+  const handleSignOut = async () =>{
+    await removeFromStorage('isRemember')
+    await removeFromStorage('auth')
+    dispatch(removeAuth())
+  }
+
+  const handleMyProfile = async () =>{
+    navigation.navigate('Profile',
+      {
+        screen:'ProfileScreen',
+        params:{idUser: '66bf1f35d1b377b4a9d9e11b'}
+      })
   }
  
 
   return (
     <SafeAreaView style={{flex:1}}>
        <View style={{flex:1,paddingLeft:26}}>
-          <TouchableOpacity onPress={handleAvatar}>
+          <TouchableOpacity onPress={handleMyProfile}>
               {photoUrl 
               ? (<Image style={{
                 resizeMode:'contain',

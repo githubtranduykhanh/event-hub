@@ -24,8 +24,8 @@ const EventItem:React.FC<Props> = ({item,type = 'card'}) => {
 
   const navication:any = useNavigation()
 
-  const {user:{_id,followers}} = useSelector((state:RootState) => state.auth)
-  const isFollowers = item?._id && followers && followers.includes(item._id) ? true  : false
+  const {user:{_id,followedEvents}} = useSelector((state:RootState) => state.auth)
+  const isFollowers = item?._id && followedEvents && followedEvents.includes(item._id) ? true  : false
   
   return (
       type === 'card' 

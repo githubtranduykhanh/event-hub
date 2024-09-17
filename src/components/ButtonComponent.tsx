@@ -7,7 +7,7 @@ interface Props {
     flex?:'auto' | 'flex-end' | 'flex-start' | 'center';  
     icon?:ReactNode;
     text:string;
-    type?:'primary' | 'text' | 'link';
+    type:'primary' | 'text' | 'link' | 'ouline';
     color?:string;
     style?:StyleProp<ViewStyle>;
     textFont?:string
@@ -46,11 +46,27 @@ const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,styl
          {icon && iconFlex === 'right' && icon}
     </TouchableOpacity>
   ) 
+  : type === 'ouline' 
+  ? (<TouchableOpacity onPress={onPress} style={[globalStyles.buttonOuline,style]}>
+      {icon && iconFlex !== 'right' && icon}
+      <TextComponent 
+      text={text} 
+      size={textSize ?? 16}
+      color={textColor ?? colors.white} 
+      style={[{
+        marginLeft:icon && iconFlex === 'left' ? 12 : 0,
+        marginRight:icon && iconFlex === 'right' ? 12 : 0,
+      },textStyle]}
+      font={textFont ?? typography.fontFamily.medium}
+      flex={icon && iconFlex === 'right' ? 1 : 0}
+      />
+      {icon && iconFlex === 'right' && icon}
+  </TouchableOpacity>)
   : (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} style={[style]}>
       <TextComponent text={text} size={textSize} color={type === 'link' ? colors.link : colors.text}/>
-    </TouchableOpacity>
-  )
+    </TouchableOpacity>)
+  
 }
 
 export default ButtonComponent

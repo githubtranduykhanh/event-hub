@@ -1,4 +1,4 @@
-import { View, Text, Platform } from 'react-native'
+import { View, Text, Platform, TouchableOpacity } from 'react-native'
 import React, { ReactNode } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { AddNewScreen, HomeScreen } from '../screens'
@@ -7,14 +7,17 @@ import EventNavigator from './EventNavigator'
 import MapNavigator from './MapNavigator'
 import ProfileNavigator from './ProfileNavigator'
 import { colors, globalStyles, typography } from '~/styles'
-import { CircleComponent, TextComponent } from '~/components'
+import { CircleComponent, CustomTabBarButton, TextComponent } from '~/components'
 import {MaterialIcons} from '@expo/vector-icons';
 import { AddSquare, Calendar, Location, Profile } from 'iconsax-react-native'
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native'
+import { useSelector } from 'react-redux'
+import { authSelector } from '~/redux/store'
 
 
-const TabNavigaror = () => {
+const TabNavigaror = ({navigation}:any) => {
     const Tab = createBottomTabNavigator()
+   const {user:{_id}} = useSelector(authSelector)
   return (
     <Tab.Navigator 
       screenOptions={({route}) => ({ 
@@ -64,6 +67,22 @@ const TabNavigaror = () => {
               marginBottom: Platform.OS === 'android' ? 12 : 0
             }}
         />)),
+        tabBarButton: (props) => {
+          if (route.name === 'Profile') {
+            return (
+              <CustomTabBarButton
+                {...props}
+                onPress={() => {
+                  navigation.navigate('Profile', {
+                    screen: 'ProfileScreen',
+                    params: { idUser: _id }, // Pass userId here
+                  });
+                }}
+              />
+            );
+          }
+          return <CustomTabBarButton {...props} />;
+        }
       })}
     >     
         <Tab.Screen name='Explore' component={ExploreNavigator}/>

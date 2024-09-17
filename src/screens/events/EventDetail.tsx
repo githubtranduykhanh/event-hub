@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
 import { apiPutFollowersEvents } from '~/apis';
 import { ApiHelper } from '~/apis/helper';
-import { updateUserFollowers } from '~/redux/features/auth/authSlice';
+import { updateUserFollowedEvents } from '~/redux/features/auth/authSlice';
 import { LoadingModal } from '~/modals';
 
 
@@ -22,13 +22,11 @@ const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground
 const EventDetail = ({navigation,route}:any) => {
   const dispatch = useDispatch<AppDispatch>();
   const item = route.params.item as EventModel
-  const {user:{followers}} = useSelector(authSelector)
+  const {user:{followedEvents}} = useSelector(authSelector)
   const isUserLength = item.users.length > 0
-  const isFollowers = item?._id && followers && followers.includes(item._id) ? true  : false
+  const isFollowers = item?._id && followedEvents && followedEvents.includes(item._id) ? true  : false
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isLoading,setIsLoading] = useState<boolean>(false)
-
-
 
   const handelFollowers = () => {
     if(item._id) {
@@ -36,7 +34,7 @@ const EventDetail = ({navigation,route}:any) => {
       apiPutFollowersEvents(item._id)
       .then(res => res.data)
       .then(data => {
-        if(data && data.status && data.data) dispatch(updateUserFollowers(data.data))
+        if(data && data.status && data.data) dispatch(updateUserFollowedEvents(data.data))
       })
       .catch(error => console.log(ApiHelper.getMesErrorFromServer(error)))
       .finally(()=>setIsLoading(false))
@@ -54,8 +52,8 @@ const EventDetail = ({navigation,route}:any) => {
   return (
     
     <>
-      <ContainerComponent isSafeAreaView={false}>
-      <StatusBar style='light'/>
+      
+      <ContainerComponent isSafeAreaView={false} statusBarStyle='light'>
       <AnimatedImageBackground 
         style={{zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)', height: imageHeight}}
         resizeMode='cover'
@@ -123,7 +121,10 @@ const EventDetail = ({navigation,route}:any) => {
           </RowComponent>
           <SpaceComponent height={18}/>
           <RowComponent justify='space-between' align='center'>
-            <RowComponent styles={{flex:1}}>
+            <RowComponent styles={{flex:1}} onPress={() => navigation.navigate('Profile',{
+              screen:'ProfileScreen',
+              params:{idUser:item.authorId}
+            })}>
               <Image style={{
                 width:44,
                 height:44,

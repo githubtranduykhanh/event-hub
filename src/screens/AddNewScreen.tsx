@@ -13,7 +13,7 @@ import { randomUUID } from 'expo-crypto'
 import { FileHelper } from '~/utils/file'
 import { LoadingModal } from '~/modals'
 import { apiAddNewEvent, apiUsers } from '~/apis'
-import { UsersModel } from '~/models/UserModel'
+
 
 
 const keyAndErrMess:ValidateEventKeyAndErrMess[] = [

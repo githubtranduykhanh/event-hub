@@ -31,10 +31,10 @@ export const updateFollowerUserToStorage = async (key: string, followers:string[
 
 
 // Lấy dữ liệu từ AsyncStorage
-export const getFromStorage = async (key: string): Promise<UserSlice | null> => {
+export const getFromStorage = async (key: string) => {
     try {
         const value = await AsyncStorage.getItem(`${STORAGE_KEY}_${key}`);
-        return value ? JSON.parse(value) as UserSlice : null;
+        return value ? JSON.parse(value) : null;
     } catch (error) {
         console.error('Error getting from AsyncStorage:', error);
         return null;
