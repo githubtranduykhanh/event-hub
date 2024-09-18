@@ -114,7 +114,6 @@ const UploadImagePicker:React.FC<Props> = ({onSelect,image}) => {
         onSelect('url',imageURL)
         setIsVisibleModalAddUrl(false)
     }
-   
     return (
         <>
             <TouchableOpacity
@@ -124,13 +123,13 @@ const UploadImagePicker:React.FC<Props> = ({onSelect,image}) => {
                     borderRadius: 12,
                     borderWidth: 1,
                     borderStyle: 'dashed',
-                    alignItems:image ? undefined : 'center'
+                    alignItems:image ? undefined : 'center',
                 }}>
 
                 {image
-                    ? <ImageBackground
+                    ? (<ImageBackground
                         source={{ uri: image }}
-                        style={{ flex: 1, height: 150, overflow: 'hidden', borderRadius: 10 }}
+                        style={{width:'100%',height: 150, overflow: 'hidden', borderRadius: 10 }}
                         resizeMode='cover'
                     >
                         {showOption && <RowComponent styles={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }} justify='space-around' align='center'>
@@ -152,8 +151,8 @@ const UploadImagePicker:React.FC<Props> = ({onSelect,image}) => {
                                 <CloseCircle size={22} color={colors.white} />
                             </TouchableOpacity>
                         </RowComponent>}
-                    </ImageBackground>
-                    : <TextComponent text='Upload Image' />}
+                    </ImageBackground>)
+                    : (<TextComponent text='Upload Image' />)}
             </TouchableOpacity>
             <Portal>
                 <Modalize

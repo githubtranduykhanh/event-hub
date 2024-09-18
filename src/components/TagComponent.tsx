@@ -13,9 +13,10 @@ interface Props {
     styles?:StyleProp<ViewStyle>;
     textStyles?:StyleProp<TextStyle>;
     textSize?:number;
+    textFont?:string;
 }
 
-const TagComponent:React.FC<Props> = ({onPress,lable,icon,bgColor,textColor,styles,textStyles,textSize}) => {
+const TagComponent:React.FC<Props> = ({onPress,textFont,lable,icon,bgColor,textColor,styles,textStyles,textSize}) => {
   return (
     <TouchableOpacity 
         onPress={onPress}
@@ -27,7 +28,7 @@ const TagComponent:React.FC<Props> = ({onPress,lable,icon,bgColor,textColor,styl
             alignItems:'center'
     },styles]}>
         {icon && icon}
-        <TextComponent text={lable} style={[{marginLeft:icon ? 5 : 0},textStyles]} size={textSize ?? 13} color={textColor ?? colors.white}/>
+        <TextComponent text={lable} font={textFont} style={[{marginLeft:icon ? 5 : 0},textStyles]} size={textSize ?? 13} color={textColor ?? colors.white}/>
     </TouchableOpacity>
   )
 }

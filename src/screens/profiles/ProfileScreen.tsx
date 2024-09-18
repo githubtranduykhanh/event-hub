@@ -28,7 +28,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
       apiGetProfileUser(idUser)
         .then((res) => res.data)
         .then((data) => {
-          if (data.status && data.data) setUserProfile(data.data);
+          if (data.status && data.data) setUserProfile(prve => ({...prve,...data.data}));
         })
         .catch((err) => ApiHelper.getMesErrorFromServer(err));
     }
@@ -92,7 +92,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
       </View>
       <SpaceComponent height={22} />
       {
-        _id === idUser ? (<AboutProfile/>) :(<EditProfile/>)
+        _id === idUser ? (<EditProfile profile={userProfile}/>)  : (<AboutProfile/>)
       }
     </ContainerComponent>
   );

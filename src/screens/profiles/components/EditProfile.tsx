@@ -1,13 +1,30 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
+import { ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
 import {Feather} from '@expo/vector-icons';
 import { colors, typography } from '~/styles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-const EditProfile = () => {
+import { Tag } from 'iconsax-react-native';
+import { randomUUID } from 'expo-crypto';
+import { useNavigation } from '@react-navigation/native';
+import { IUserProfile } from '~/models/UserModel';
+
+interface IProps {
+    profile:IUserProfile
+}
+
+const EditProfile:React.FC<IProps> = ({profile}) => {
+    const navigation:any =  useNavigation()
+
   return (
     <SectionComponent>
         <ButtonComponent
+            onPress={() => navigation.navigate('Profile', {
+                screen: 'EditProfileScreen',
+                params:{
+                    profile
+                }
+            })}
             style={{alignSelf:'center'}}  
             type='ouline'
             icon={
@@ -59,6 +76,18 @@ const EditProfile = () => {
                 </RowComponent>
             }
         />
+        <SpaceComponent height={9}/>
+        <RowComponent styles={{flexWrap:'wrap'}}>
+            {Array.from({length:6}).map((item)=>(
+                <TagComponent 
+                    key={randomUUID()} 
+                    lable='Music' 
+                    textSize={13} 
+                    textFont={typography.fontFamily.medium} 
+                    styles={{marginRight:5,marginBottom:5,paddingHorizontal:15,paddingVertical:7}}
+                />
+            ))}
+        </RowComponent>
     </SectionComponent>
   )
 }
