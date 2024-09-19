@@ -4,19 +4,29 @@ import { AvatarComponent, ButtonComponent, ContainerComponent, InputComponent, L
 import { IUserProfile } from '~/models/UserModel'
 import { colors, globalStyles, typography } from '~/styles'
 import _ from 'lodash';
-import { apiSentCodeEmail } from '~/apis'
-import { LoadingModal, VericationEmailModal } from '~/modals'
+import { apiPutEmailProfileUser, apiPutMyProfileUser, apiSentCodeEmail } from '~/apis'
+import { LoadingModal, SuccessModal, VericationEmailModal } from '~/modals'
 import { CloseCircle } from 'iconsax-react-native'
 import { Validate } from '~/utils/validate'
+import { ApiHelper } from '~/apis/helper'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '~/redux/store'
+import { addProfile } from '~/redux/features/profile/profileSlice'
+import { addAuth } from '~/redux/features/auth/authSlice'
+import { FileHelper } from '~/utils/file'
 const EditProfileScreen = ({ navigation, route }: any) => {
     const { profile } = route.params
+    const dispatch = useDispatch<AppDispatch>()
     const [isVericationEmailModal, setIsVericationEmailModal] = useState<boolean>(false)
     const [currentNumbers, setCurrentNumbers] = useState<number[]>([]);
     const [newEmail, setNewEmail] = useState<string>('');
     const [userProfile, setUserProfile] = useState<IUserProfile>(profile as IUserProfile);
     const [fileSelected, setFileSelected] = useState<string | null>(null)
+    const [isLoadingUpdateProfile, setIsLoadingUpdateProfile] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [isModelInputEmail, setModelInputEmail] = useState<boolean>(false)
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const [uploadProgress, setUploadProgress] = useState<number>(0);  // Track progress
     const handleChangeValue = (key: string, value: string | undefined) => {
         setUserProfile(prev => {
             const prevData = prev as any; // Ép kiểu sang 'any' để tránh lỗi
@@ -41,16 +51,50 @@ const EditProfileScreen = ({ navigation, route }: any) => {
         handleChangeValue('photoUrl', imageString)
     }
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         if (_.isEqual(userProfile, profile)) {
             console.log('All values inside userProfile are the same as profile');
         } else {
             console.log('userProfile has been modified');
-            if (userProfile.email !== profile.email) {
-
-            } else {
-
+            if(fileSelected) {
+                const urlImage = await FileHelper.uploadImageToFirebase(fileSelected, (progress) => setUploadProgress(progress))
+                if(!urlImage) {
+                  Alert.alert('Upload image failed !')
+                  return
+                } 
+                userProfile.photoUrl = urlImage
             }
+            setIsLoadingUpdateProfile(true)
+            apiPutMyProfileUser({
+                photoUrl:userProfile.photoUrl ?? '',
+                familyName:userProfile.familyName ?? '',
+                givenName:userProfile.givenName ?? '',
+                fullName:userProfile.fullName  ?? '',
+                bio:userProfile.bio ?? '',
+            })
+            .then((res)=> res.data)
+            .then((data)=>{
+                if (data.status) {
+                    dispatch(addAuth({
+                        photoUrl:userProfile.photoUrl ?? '',
+                        fullName:userProfile.fullName  ?? '',            
+                    }))
+                    dispatch(addProfile({
+                        photoUrl:userProfile.photoUrl ?? '',
+                        familyName:userProfile.familyName ?? '',
+                        givenName:userProfile.givenName ?? '',
+                        fullName:userProfile.fullName  ?? '',
+                        bio:userProfile.bio ?? '',
+                    }))
+                    setModalVisible(true)
+                } else Alert.alert('Error', data.mes)
+            })
+            .catch(err =>{
+                console.log(ApiHelper.getMesErrorFromServer(err))
+            })
+            .finally(()=>{
+                setIsLoadingUpdateProfile(false)
+            })
         }
     }
     const handelSendCode = () => {
@@ -84,11 +128,24 @@ const EditProfileScreen = ({ navigation, route }: any) => {
           
     }
     const handleFinally = (email: string) => {
-        console.log('handleFinally', email)
+        apiPutEmailProfileUser({email})
+            .then((res) => res.data)
+            .then((data)=>{
+                if(data.status){
+                    setIsVericationEmailModal(false)
+                    setNewEmail('')
+                    setModalVisible(true)
+                    dispatch(addAuth({email}))
+                }else Alert.alert('Error', data.mes)
+            })
+            .catch((err)=> console.log(ApiHelper.getMesErrorFromServer(err)))
     }
     return (
         <>
+           
+            <LoadingPosition visible={isLoadingUpdateProfile} zIndex={2}/> 
             <ContainerComponent isScroll back title={userProfile.fullName ?? userProfile.email}>
+                
                 <SectionComponent>
                     <UploadImagePicker image={userProfile.photoUrl ?? ''} onSelect={handleOnSelectUploadImagePicker} />
                 </SectionComponent>
@@ -102,10 +159,13 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                     <InputComponent allowClear placeholder='Family Name' value={userProfile.familyName ?? ''} onChange={(val) => handleChangeValue('familyName', val)} />
                 </SectionComponent>
                 <SectionComponent>
+                    <InputComponent allowClear multiline numberOfLines={3} placeholder='About' value={userProfile.bio ?? ''} onChange={(val) => handleChangeValue('bio', val)} />
+                </SectionComponent>
+                <SectionComponent>
                     <ButtonComponent text='Update' onPress={handleUpdate} type='primary' />
                 </SectionComponent>
                 <SectionComponent>
-                    <ButtonComponent text='Update Email' onPress={() => setModelInputEmail(true)} type='primary' />
+                    <ButtonComponent text='Update Email'  onPress={() => setModelInputEmail(true)} type='ouline' />
                 </SectionComponent>
             </ContainerComponent>
            
@@ -139,7 +199,9 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                     </View>
                 </SafeAreaView>
             </Modal>
-            {isVericationEmailModal && <VericationEmailModal onClose={() => setIsVericationEmailModal(false)} numbers={currentNumbers} onFinally={handleFinally} email={newEmail} />}
+            <LoadingModal visible={uploadProgress > 0 && uploadProgress < 100}/>
+            <SuccessModal timeout={2000} visible={modalVisible} onClose={() => setModalVisible(false)} />
+            <VericationEmailModal visible={isVericationEmailModal} onClose={() => setIsVericationEmailModal(false)} numbers={currentNumbers} onFinally={handleFinally} email={newEmail} />
         </>
     )
 }

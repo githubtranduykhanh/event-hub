@@ -8,27 +8,47 @@ import {
   TextComponent,
 } from "~/components";
 import { Feather } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
-import { authSelector } from "~/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, authSelector, profileSelector } from "~/redux/store";
 import { StatusBar } from "expo-status-bar";
 import { colors, globalStyles, typography } from "~/styles";
 import { apiGetProfileUser } from "~/apis";
 import { ApiHelper } from "~/apis/helper";
 import { IUserProfile, userProfileData } from "~/models/UserModel";
 import { AboutProfile, EditProfile } from "./components";
+import { addProfile } from "~/redux/features/profile/profileSlice";
 
 const ProfileScreen = ({ navigation, route }: any) => {
   const { idUser } = route.params;
+  const dispatch = useDispatch<AppDispatch>()
   const {
     user: { _id },
   } = useSelector(authSelector);
-  const [userProfile, setUserProfile] = useState<IUserProfile>(userProfileData);
+
+  const {userProfile} = useSelector(profileSelector);
+  
   useEffect(() => {
     if (idUser) {
       apiGetProfileUser(idUser)
         .then((res) => res.data)
         .then((data) => {
-          if (data.status && data.data) setUserProfile(prve => ({...prve,...data.data}));
+          console.log(data.data)
+          if (data.status && data.data) {
+            const {_id,email,followedEvents,photoUrl = '',givenName = '',familyName = '',followers,following,fullName,interests,bio} = data.data
+            dispatch(addProfile({
+              _id,
+              email,
+              followedEvents,
+              photoUrl,
+              fullName,
+              givenName,
+              familyName,
+              bio,
+              followers,
+              following,
+              interests
+            }))
+          }
         })
         .catch((err) => ApiHelper.getMesErrorFromServer(err));
     }

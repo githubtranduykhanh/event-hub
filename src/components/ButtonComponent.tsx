@@ -52,7 +52,7 @@ const ButtonComponent:React.FC<Props> = ({disable,flex,icon,text,type,color,styl
       <TextComponent 
       text={text} 
       size={textSize ?? 16}
-      color={textColor ?? colors.white} 
+      color={textColor ?? colors.primary} 
       style={[{
         marginLeft:icon && iconFlex === 'left' ? 12 : 0,
         marginRight:icon && iconFlex === 'right' ? 12 : 0,

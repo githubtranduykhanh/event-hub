@@ -10,6 +10,7 @@ export interface UsersSelectModel {
 
 
 export interface IUserProfile {
+    _id: string;
     fullName?: string;
     givenName?: string;
     familyName?: string;
@@ -24,6 +25,7 @@ export interface IUserProfile {
 
 
 export const userProfileData: IUserProfile = {
+    _id:"",
     fullName: "",
     givenName: "",
     familyName: "",

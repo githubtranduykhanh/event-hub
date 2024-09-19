@@ -38,7 +38,9 @@ export enum USER_API_ENDPOINT {
     FOLLOWERS = URL_API_ENDPOINT.USERS + '/followers',
     FOLLOWERS_USER = URL_API_ENDPOINT.USERS + '/followers-user',
     EXPO_PUSH_TOKEN = URL_API_ENDPOINT.USERS + '/expoPushToken',
-    PROFILE = URL_API_ENDPOINT.USERS + '/profile'
+    PROFILE = URL_API_ENDPOINT.USERS + '/profile',
+    EMAIL_PROFILE = URL_API_ENDPOINT.USERS + '/profile-email',
+    MY_PROFILE = URL_API_ENDPOINT.USERS + '/my-profile'
 }
 
 

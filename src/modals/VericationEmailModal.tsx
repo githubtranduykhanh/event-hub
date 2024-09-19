@@ -16,6 +16,7 @@ interface IInputs {
 }
 
 interface IProps {
+    visible:boolean;
     numbers: number[];
     email: string;
     onFinally: (email: string) => void;
@@ -24,7 +25,7 @@ interface IProps {
 
 
 
-const VericationEmailModal: React.FC<IProps> = ({ onClose,onFinally, numbers = [], email = '' }) => {
+const VericationEmailModal: React.FC<IProps> = ({ visible,onClose,onFinally, numbers = [], email = '' }) => {
 
     // Khởi tạo trạng thái với giá trị từ route.params
     const [currentNumbers, setCurrentNumbers] = useState<number[]>(numbers);
@@ -48,24 +49,44 @@ const VericationEmailModal: React.FC<IProps> = ({ onClose,onFinally, numbers = [
     const ref4 = useRef<any>();
 
 
-
+    useEffect(() => {
+        if(!visible) {
+            setDisplayVerication(false)
+            setTextErrorMessage(null)
+            setTimeLeft(60)
+            setInputs({
+                number1: '',
+                number2: '',
+                number3: '',
+                number4: ''
+            })
+        }
+    },[visible])
 
 
     useEffect(() => {
-        // Nếu thời gian còn lại là 0 thì không cần chạy bộ đếm ngược
-        if (timeLeft <= 0) {
-            setDisplayVerication(true)
-            return
+        if(numbers) setCurrentNumbers(numbers)
+    },[numbers])
+
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout
+        if(visible){
+            // Nếu thời gian còn lại là 0 thì không cần chạy bộ đếm ngược
+            if (timeLeft <= 0) {
+                setDisplayVerication(true)
+                return
+            }
+
+            // Tạo một bộ đếm thời gian (timer)
+            timer = setInterval(() => {
+                setTimeLeft(prevTime => prevTime - 1);
+            }, 1000); // Cập nhật mỗi giây
         }
-
-        // Tạo một bộ đếm thời gian (timer)
-        const timer = setInterval(() => {
-            setTimeLeft(prevTime => prevTime - 1);
-        }, 1000); // Cập nhật mỗi giây
-
+        
         // Dọn dẹp bộ đếm thời gian khi component bị hủy hoặc khi thời gian còn lại là 0
         return () => clearInterval(timer);
-    }, [timeLeft]);
+    }, [timeLeft,visible]);
 
 
 
@@ -80,6 +101,7 @@ const VericationEmailModal: React.FC<IProps> = ({ onClose,onFinally, numbers = [
     }
 
     const handleContinue = () => {
+        console.log(currentNumbers)
         if (Object.values(inputs).every((value, index) => +value === currentNumbers[index])) {
             onFinally(email)
         } else {
@@ -122,7 +144,7 @@ const VericationEmailModal: React.FC<IProps> = ({ onClose,onFinally, numbers = [
             transparent
             statusBarTranslucent
             animationType='slide'
-            visible={true}
+            visible={visible}
         >
             <SafeAreaView style={[globalStyles.modalOverlay, {zIndex: 3,justifyContent: 'flex-start' }]}>
                 <LoadingModal visible={isLoadingVerication} />
@@ -142,7 +164,7 @@ const VericationEmailModal: React.FC<IProps> = ({ onClose,onFinally, numbers = [
                             <SectionComponent>
                                 <TextComponent text='Verification' title />
                                 <TextComponent lineHeight={25}
-                                    text={`We’ve send you the verification code on ${TextHelper.maskEmail(email)}`} />
+                                    text={`We’ve send you the verification code on ${visible && email && TextHelper.maskEmail(email)}`} />
                                 <SpaceComponent height={26} />
                                 <RowComponent styles={{ justifyContent: 'space-around' }}>
                                     <InputComponent
