@@ -6,17 +6,18 @@ import { TextComponent } from '~/components'
 interface Props {
     visible:boolean;
     message?:string;
+    zIndex?:number;
 }
 
 
-const LoadingModal:React.FC<Props> = ({visible,message}) => {
+const LoadingModal:React.FC<Props> = ({visible,message,zIndex}) => {
   return (
     <Modal
       transparent
       visible={visible}
       animationType='fade'
     >
-        <View style={globalStyles.modal}>
+        <View style={[globalStyles.modal,{zIndex}]}>
             <ActivityIndicator size={30} color={colors.white}/>
             <TextComponent text={message ||'Loading'} color={colors.white} font={typography.fontFamily.medium} size={typography.fontSizeSmall}/>
         </View>  

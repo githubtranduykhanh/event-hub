@@ -124,7 +124,7 @@ const VericationEmailModal: React.FC<IProps> = ({ onClose,onFinally, numbers = [
             animationType='slide'
             visible={true}
         >
-            <SafeAreaView style={[globalStyles.modalOverlay, { justifyContent: 'flex-start' }]}>
+            <SafeAreaView style={[globalStyles.modalOverlay, {zIndex: 3,justifyContent: 'flex-start' }]}>
                 <LoadingModal visible={isLoadingVerication} />
                 <View style={{ paddingHorizontal: 10 }}>
                     <RowComponent justify='flex-end' styles={{ width: '100%' }}>

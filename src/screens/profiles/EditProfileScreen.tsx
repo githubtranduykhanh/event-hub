@@ -1,6 +1,6 @@
-import { View, Text, Alert, Modal, SafeAreaView, TouchableOpacity } from 'react-native'
+import { View, Text, Alert, Modal, SafeAreaView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import { AvatarComponent, ButtonComponent, ContainerComponent, InputComponent, RowComponent, SectionComponent, SpaceComponent, TextComponent, UploadImagePicker } from '~/components'
+import { AvatarComponent, ButtonComponent, ContainerComponent, InputComponent, LoadingPosition, RowComponent, SectionComponent, SpaceComponent, TextComponent, UploadImagePicker } from '~/components'
 import { IUserProfile } from '~/models/UserModel'
 import { colors, globalStyles, typography } from '~/styles'
 import _ from 'lodash';
@@ -59,6 +59,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
             return;
         }
         
+        setIsLoading(true)
         apiSentCodeEmail({ email: userProfile.email })
             .then(res => res.data)
             .then(data => {
@@ -69,7 +70,6 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                 } else Alert.alert('Error', data.mes)
             })
             .catch(error => {
-                setIsLoading(false)
                 if (error.response && error.response.data) {
                     console.log(error.response.data.mes)
                     Alert.alert('Error', error.response.data.mes)
@@ -78,6 +78,10 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                     console.log({ message: 'An unknown error has occurred' })
                 }
             })
+            .finally(()=>{    
+                setIsLoading(false)
+            })
+          
     }
     const handleFinally = (email: string) => {
         console.log('handleFinally', email)
@@ -104,14 +108,16 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                     <ButtonComponent text='Update Email' onPress={() => setModelInputEmail(true)} type='primary' />
                 </SectionComponent>
             </ContainerComponent>
+           
             <Modal
                 transparent
                 statusBarTranslucent
                 animationType='slide'
                 visible={isModelInputEmail}
+               
             >
-
-                <SafeAreaView style={[globalStyles.modalOverlay, { justifyContent: 'flex-start' }]}>
+                <SafeAreaView style={[globalStyles.modalOverlay, {justifyContent: 'flex-start' }]}>
+                    <LoadingPosition visible={isLoading} zIndex={2}/> 
                     <View style={{ paddingHorizontal: 30 }}>
                         <RowComponent justify='flex-end' styles={{ width: '100%' }}>
                             <TouchableOpacity onPress={() => setModelInputEmail(false)}>
