@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import * as Location from 'expo-location';
+import { getCategoriesApp } from './appActions';
+import { CategoryModel } from '~/models/CategoryModel';
+import { ValidationError } from '~/apis/apiInterface';
 
 interface Region extends Location.LocationGeocodedAddress {
     latitude: number;
@@ -7,9 +10,10 @@ interface Region extends Location.LocationGeocodedAddress {
 }
 interface AppState {
     region: Region;
+    categories:CategoryModel[]
     isLoading: boolean,
     errorMessage: string | null;
-    errors: Record<string, string>; // Thêm để lưu lỗi chi tiết
+    errors: Record<string, string> | ValidationError[]; // Thêm để lưu lỗi chi tiết
 }
 
 const initialState: AppState = {
@@ -29,6 +33,7 @@ const initialState: AppState = {
         timezone: null,
         formattedAddress:null
     },
+    categories:[],
     isLoading: false,
     errorMessage: null,
     errors:{}
@@ -60,6 +65,24 @@ export const appSlice = createSlice({
             state.errorMessage = null
         },
     },
+    extraReducers: (builder) => {
+        builder
+            .addCase(getCategoriesApp.pending, (state) => {
+                state.isLoading = true;  
+                state.errorMessage = null;        
+            })
+            .addCase(getCategoriesApp.fulfilled, (state, action: PayloadAction<CategoryModel[]>) => {
+                state.isLoading = false;
+                state.categories = action.payload;
+                state.errorMessage = null;   
+            })
+            .addCase(getCategoriesApp.rejected, (state, action) => {
+                state.isLoading = false;
+                state.errorMessage = action.payload?.message || 'Get Categories failed';
+                state.errors = action.payload?.errors || {}; // Cập nhật lỗi chi tiết
+            });
+        
+    }
 });
 
 export const { 

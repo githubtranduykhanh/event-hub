@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "~/redux/store";
+import { appSelector, RootState } from "~/redux/store";
 import MapView, { LatLng, Marker, Polyline } from "react-native-maps";
 import { StatusBar } from "expo-status-bar";
 import { appInfo, colors, globalStyles, typography } from "~/styles";
@@ -21,7 +21,8 @@ import { apiByDistance } from "~/apis";
 import { ApiHelper } from "~/apis/helper";
 import { EventModel } from "~/models";
 import { randomUUID } from "expo-crypto";
-import { Categories } from "~/constants/categories";
+import { renderIconCategories } from "~/constants/categories";
+
 
 interface RouteCoordinates {
   event:EventModel;
@@ -34,6 +35,8 @@ const MapScreen = ({navigation}:any) => {
   const { city, latitude, longitude, isoCountryCode } = useSelector(
     (state: RootState) => state.app.region
   );
+
+  const {categories} = useSelector(appSelector)
   const mapRef = useRef<MapView>(null);
   const [search, setSearch] = useState<string>("");
   const debouncedQuery = useDebounce(search, 500);
@@ -201,7 +204,7 @@ const MapScreen = ({navigation}:any) => {
         mapType='standard'
       >
         {eventDistance && eventDistance.length > 0 && eventDistance.map((event) =>  {
-              const categoryItem = Categories(true).find(item => item.key === event.categories[0])
+              const categoryItem = categories.find(item => item.key === event.categories[0])
 
               return (
                 <Marker 
@@ -224,7 +227,7 @@ const MapScreen = ({navigation}:any) => {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                      {categoryItem?.icon}
+                      {categoryItem && renderIconCategories(categoryItem?.iconLibrary,categoryItem?.iconName,categoryItem?.iconSize,categoryItem?.iconColor,true)}
                     </View>
                   </MarkerCustom>
                 </Marker>

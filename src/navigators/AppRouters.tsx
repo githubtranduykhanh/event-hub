@@ -12,6 +12,7 @@ import { getFollowedEventUser } from '~/redux/features/auth/authActions'
 import { ApiHelper } from '~/apis/helper'
 import NotificationService from '~/services/NotificationService'
 import { apiPostExpoPushToken } from '~/apis'
+import { getCategoriesApp } from '~/redux/features/app/appActions'
 
 
 
@@ -51,7 +52,10 @@ const AppRouters = () => {
 
 
   useEffect(()=>{
-    if(accessToken) dispatch(getFollowedEventUser())
+    if(accessToken) {
+      dispatch(getFollowedEventUser())
+      dispatch(getCategoriesApp())
+    }
   },[accessToken])
 
 

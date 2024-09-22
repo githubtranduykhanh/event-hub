@@ -32,7 +32,6 @@ const ProfileScreen = ({ navigation, route }: any) => {
       apiGetProfileUser(idUser)
         .then((res) => res.data)
         .then((data) => {
-          console.log(data.data)
           if (data.status && data.data) {
             const {_id,email,followedEvents,photoUrl = '',givenName = '',familyName = '',followers,following,fullName,interests,bio} = data.data
             dispatch(addProfile({
@@ -112,7 +111,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
       </View>
       <SpaceComponent height={22} />
       {
-        _id === idUser ? (<EditProfile profile={userProfile}/>)  : (<AboutProfile/>)
+        _id === idUser ? (<EditProfile userProfile={userProfile}/>)  : (<AboutProfile/>)
       }
     </ContainerComponent>
   );

@@ -8,7 +8,7 @@ export interface Category {
     icon: ReactNode;
     iconColor: string;
 }
-export const Categories = (isColor?:boolean): Category[] => {
+/* export const Categories = (isColor?:boolean): Category[] => {
     return [
         {
           key: 'sport',
@@ -53,4 +53,23 @@ export const Categories = (isColor?:boolean): Category[] => {
           title: 'Art',
         },
     ]
-}
+} */
+
+
+
+
+export const renderIconCategories = (iconLibrary: string, iconName: any, iconSize: number | undefined, iconColor: string,isColor?:boolean):ReactNode => {
+  switch (iconLibrary) {
+    case 'Ionicons':
+      return <Ionicons name={iconName} size={iconSize} color={isColor ? colors.white :iconColor} />;
+    case 'FontAwesome':
+      return <FontAwesome name={iconName} size={iconSize} color={isColor ? colors.white :iconColor} />;
+    case 'CustomSVG':
+      if (iconName === 'ChefForkSVG') {
+        return <ChefForkSVG fill={isColor ? colors.white :iconColor} stroke={isColor ? colors.white :iconColor} />;
+      }
+      return null; // Trường hợp không tìm thấy icon SVG
+    default:
+      return null; // Trường hợp không tìm thấy thư viện icon
+  }
+};

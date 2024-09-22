@@ -12,8 +12,9 @@ import { ApiHelper } from '~/apis/helper'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '~/redux/store'
 import { addProfile } from '~/redux/features/profile/profileSlice'
-import { addAuth } from '~/redux/features/auth/authSlice'
+import { addAuth, UserSlice } from '~/redux/features/auth/authSlice'
 import { FileHelper } from '~/utils/file'
+import { getFromStorage, saveToStorage } from '~/utils/storage'
 const EditProfileScreen = ({ navigation, route }: any) => {
     const { profile } = route.params
     const dispatch = useDispatch<AppDispatch>()
@@ -73,7 +74,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                 bio:userProfile.bio ?? '',
             })
             .then((res)=> res.data)
-            .then((data)=>{
+            .then(async (data)=>{
                 if (data.status) {
                     dispatch(addAuth({
                         photoUrl:userProfile.photoUrl ?? '',
@@ -86,6 +87,13 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                         fullName:userProfile.fullName  ?? '',
                         bio:userProfile.bio ?? '',
                     }))
+                    const user = await getFromStorage('auth');
+                    if(user){
+                        const userData = user as UserSlice
+                        userData.fullName = userProfile.fullName  ?? ''
+                        userData.photoUrl = userProfile.photoUrl ?? ''
+                        await saveToStorage('auth', userData) 
+                    }
                     setModalVisible(true)
                 } else Alert.alert('Error', data.mes)
             })
@@ -144,7 +152,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
         <>
            
             <LoadingPosition visible={isLoadingUpdateProfile} zIndex={2}/> 
-            <ContainerComponent isScroll back title={userProfile.fullName ?? userProfile.email}>
+            <ContainerComponent isScroll back title={profile.fullName ?? profile.email}>
                 
                 <SectionComponent>
                     <UploadImagePicker image={userProfile.photoUrl ?? ''} onSelect={handleOnSelectUploadImagePicker} />
@@ -167,6 +175,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                 <SectionComponent>
                     <ButtonComponent text='Update Email'  onPress={() => setModelInputEmail(true)} type='ouline' />
                 </SectionComponent>
+                <SpaceComponent height={200}/>
             </ContainerComponent>
            
             <Modal
@@ -200,7 +209,7 @@ const EditProfileScreen = ({ navigation, route }: any) => {
                 </SafeAreaView>
             </Modal>
             <LoadingModal visible={uploadProgress > 0 && uploadProgress < 100}/>
-            <SuccessModal timeout={2000} visible={modalVisible} onClose={() => setModalVisible(false)} />
+            <SuccessModal timeout={1000} visible={modalVisible} onClose={() => setModalVisible(false)} />
             <VericationEmailModal visible={isVericationEmailModal} onClose={() => setIsVericationEmailModal(false)} numbers={currentNumbers} onFinally={handleFinally} email={newEmail} />
         </>
     )

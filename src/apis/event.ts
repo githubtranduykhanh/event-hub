@@ -1,6 +1,7 @@
 import { EventModel, EventQueryParams } from "~/models";
 import { API_METHOD, ApiResponse, EVENT_API_ENDPOINT, URL_API_ENDPOINT } from "./apiInterface";
 import axiosClient from "./axiosClient";
+import { CategoryModel } from "~/models/CategoryModel";
 
 
 export const apiGetEvents = (params?:EventQueryParams) => axiosClient<ApiResponse<EventModel[]>>({
@@ -25,4 +26,10 @@ export const apiByDistance = (params:{lat:number,lng:number,distance:number}) =>
     url: EVENT_API_ENDPOINT.DISTANCE,
     method: API_METHOD.GET,
     params
+})
+
+
+export const apiGetCategories = () => axiosClient<ApiResponse<CategoryModel[]>>({
+    url: EVENT_API_ENDPOINT.CATEGORIES,
+    method: API_METHOD.GET,
 })

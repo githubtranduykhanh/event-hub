@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { ButtonComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
 import {Feather} from '@expo/vector-icons';
 import { colors, typography } from '~/styles';
@@ -8,21 +8,42 @@ import { Tag } from 'iconsax-react-native';
 import { randomUUID } from 'expo-crypto';
 import { useNavigation } from '@react-navigation/native';
 import { IUserProfile } from '~/models/UserModel';
+import { ModalizeSelect } from '~/modals';
+import { apiGetCategories, apiPutInterestProfileUser } from '~/apis';
+import { ApiHelper } from '~/apis/helper';
+import { CategoryModel } from '~/models/CategoryModel';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, appSelector, profileSelector } from '~/redux/store';
+import { interestProfileUser } from '~/redux/features/profile/profileActions';
 
-interface IProps {
-    profile:IUserProfile
+interface IProps{
+    userProfile:IUserProfile
 }
 
-const EditProfile:React.FC<IProps> = ({profile}) => {
+const EditProfile:React.FC<IProps> = ({userProfile}) => {
+    const {categories} = useSelector(appSelector)
     const navigation:any =  useNavigation()
+    const dispatch = useDispatch<AppDispatch>();
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [selected, setSelected] = useState<string[]>(userProfile.interests??[]);
+   
+    useEffect(()=>{
+        if(userProfile.interests) setSelected(userProfile.interests)
+    },[userProfile.interests])
 
-  return (
+
+    const hanldeOnSelectedInterest = (val:string[]) => {
+        dispatch(interestProfileUser({interests:val}))
+    }
+
+
+    return (
     <SectionComponent>
         <ButtonComponent
             onPress={() => navigation.navigate('Profile', {
                 screen: 'EditProfileScreen',
                 params:{
-                    profile
+                    profile:userProfile
                 }
             })}
             style={{alignSelf:'center'}}  
@@ -64,7 +85,9 @@ const EditProfile:React.FC<IProps> = ({profile}) => {
             title ='Interest'
             onPress={()=> console.log('Change')}
             rightTouchable={
-                <RowComponent>
+                <RowComponent
+                onPress={()=> setModalVisible(true)}
+                >
                     <Feather name="edit-3" size={16} color={colors.primary} />
                     <SpaceComponent width={5}/>
                     <TextComponent 
@@ -78,16 +101,27 @@ const EditProfile:React.FC<IProps> = ({profile}) => {
         />
         <SpaceComponent height={9}/>
         <RowComponent styles={{flexWrap:'wrap'}}>
-            {Array.from({length:6}).map((item)=>(
+            {categories && categories.filter((category) => userProfile.interests?.includes(category.key)).map(interes => (
                 <TagComponent 
+                    bgColor={interes.iconColor}
                     key={randomUUID()} 
-                    lable='Music' 
+                    lable={interes.title} 
                     textSize={13} 
                     textFont={typography.fontFamily.medium} 
                     styles={{marginRight:5,marginBottom:5,paddingHorizontal:15,paddingVertical:7}}
                 />
             ))}
         </RowComponent>
+        <ModalizeSelect 
+            visible={isModalVisible} 
+            values={categories.map(item => ({lable:item.title,value:item.key}))}
+            selected={selected}
+            multible
+            onClose={()=> setModalVisible(false)}
+            onSelect={hanldeOnSelectedInterest}
+            setSelected={setSelected}
+        />
+        
     </SectionComponent>
   )
 }

@@ -1,13 +1,14 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { Category } from '~/constants/categories'
+import { Category, renderIconCategories } from '~/constants/categories'
 import RowComponent from './RowComponent';
 import TextComponent from './TextComponent';
 import SpaceComponent from './SpaceComponent';
 import { colors, globalStyles } from '~/styles';
+import { CategoryModel } from '~/models/CategoryModel';
 
 interface CategoriesItemProps {
-    item: Category;
+    item: CategoryModel;
     isColor?:boolean;
     isShadowBox?:boolean;
 }
@@ -19,7 +20,7 @@ const CategoriesItem: React.FC<CategoriesItemProps> = ({ item,isColor,isShadowBo
             backgroundColor:isColor ? item.iconColor : colors.white
         }]
       }>
-        {item.icon}
+        {renderIconCategories(item.iconLibrary, item.iconName, item.iconSize, item.iconColor,isColor)}
         <SpaceComponent width={8} />
         <TextComponent text={item.title} color={isColor ? colors.white : colors.gray} />
       </RowComponent>

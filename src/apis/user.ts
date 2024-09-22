@@ -46,6 +46,13 @@ export const apiPutEmailProfileUser = (data:{email:string}) => axiosClient<ApiRe
 })
 
 
+export const apiPutInterestProfileUser = (data:{interests:string[]}) => axiosClient<ApiResponse<string[]>>({
+    url:USER_API_ENDPOINT.INTEREST_PROFILE,
+    method:API_METHOD.PUT, 
+    data
+})
+
+
 export const apiPutMyProfileUser = (data:{
     photoUrl:string,
     familyName:string,

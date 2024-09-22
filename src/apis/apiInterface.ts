@@ -28,7 +28,7 @@ export enum EVENT_API_ENDPOINT {
     ADD_NEW_EVENT = URL_API_ENDPOINT.EVENTS + '/add-new',
     DISTANCE = URL_API_ENDPOINT.EVENTS + '/by-distance',
     FOLLOWERS = URL_API_ENDPOINT.EVENTS + '/followers',
-    
+    CATEGORIES = URL_API_ENDPOINT.EVENTS + '/categories',
 }
 
 
@@ -40,7 +40,8 @@ export enum USER_API_ENDPOINT {
     EXPO_PUSH_TOKEN = URL_API_ENDPOINT.USERS + '/expoPushToken',
     PROFILE = URL_API_ENDPOINT.USERS + '/profile',
     EMAIL_PROFILE = URL_API_ENDPOINT.USERS + '/profile-email',
-    MY_PROFILE = URL_API_ENDPOINT.USERS + '/my-profile'
+    MY_PROFILE = URL_API_ENDPOINT.USERS + '/my-profile',
+    INTEREST_PROFILE = URL_API_ENDPOINT.USERS + '/profile-interest',
 }
 
 
