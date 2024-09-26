@@ -12,6 +12,7 @@ export interface UserSlice {
     expoPushToken:string;
     followedEvents:string[];
     accessToken: string;
+    refreshToken:string;
 }
 
 interface AuthState<T> {
@@ -29,6 +30,7 @@ const initialState: AuthState<UserSlice> = {
         fullName: '',
         photoUrl: '',
         accessToken: '',
+        refreshToken:'',
         expoPushToken:'',
         followedEvents:[]
     },

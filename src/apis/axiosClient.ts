@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import queryString from 'query-string';
 import Constants from 'expo-constants';
-import { getFromStorage } from '~/utils/storage';
+import { getFromStorage, saveToStorage } from '~/utils/storage';
 import { UserSlice } from '~/redux/features/auth/authSlice';
 
 
@@ -34,14 +34,42 @@ instance.interceptors.request.use(
 // Interceptor cho phản hồi (response)
 instance.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     // Xử lý lỗi phản hồi
     if (error.response) {
       const { status,data } = error.response;
-      if (status === 401) {
+      const originalRequest = error.config;
+      if (originalRequest  && status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
         // Xử lý lỗi không được xác thực
         const errorData = data as {success:boolean,mes:string}
-        console.error(data ? errorData.mes :'Unauthorized access - please login');
+       
+        if(errorData.mes === 'TokenExpiredError'){
+            const storedUser:UserSlice = await getFromStorage('auth');
+            if(storedUser && storedUser.refreshToken){
+              try {
+                const response = await axios.post(`${instance.defaults.baseURL}/auth/refresh-token`, {
+                  token: storedUser.refreshToken,
+                });
+    
+                if (response.status === 200) {
+                  const { accessToken, refreshToken } = response.data;
+    
+                  // Cập nhật token mới vào AsyncStorage
+                  await saveToStorage('auth', { ...storedUser, accessToken, refreshToken });
+    
+                  // Cập nhật lại token trong header và thực hiện lại request
+                  originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                  return instance(originalRequest); // Thực hiện lại request với token mới
+                }
+              } catch (refreshError) {
+                console.error('Error refreshing token: ', refreshError);
+                return Promise.reject(refreshError);
+              }
+            }
+        }else{
+          console.error(data ? errorData.mes :'Unauthorized access - please login');
+        }
       } else if (status === 403) {
         // Xử lý lỗi cấm truy cập
         console.error('Access forbidden - you do not have permission');
