@@ -95,7 +95,13 @@ const TabNavigaror = ({navigation}:any) => {
             },
           })}
         />
-        <Tab.Screen name='Profile' component={ProfileNavigator}/>
+        <Tab.Screen name='Profile' component={ProfileNavigator}
+          options={({ route }) => ({
+            tabBarStyle: {
+              display: 'none',
+            },
+          })}
+        />
     </Tab.Navigator>
   )
 }

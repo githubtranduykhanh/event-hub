@@ -22,7 +22,7 @@ const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground
 const EventDetail = ({navigation,route}:any) => {
   const dispatch = useDispatch<AppDispatch>();
   const item = route.params.item as EventModel
-  const {user:{followedEvents}} = useSelector(authSelector)
+  const {user:{_id,followedEvents}} = useSelector(authSelector)
   const isUserLength = item.users.length > 0
   const isFollowers = item?._id && followedEvents && followedEvents.includes(item._id) ? true  : false
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -136,7 +136,7 @@ const EventDetail = ({navigation,route}:any) => {
                 <TextComponent size={12} color={colors.subColor} text='36 Guild Street London, UK'/>
               </View>
             </RowComponent>
-            <ButtonComponent 
+            {item.authorId !== _id && <ButtonComponent 
               style={{paddingHorizontal:18,paddingVertical:6,borderRadius:7}} 
               color={`${colors.primary}4D`}
               textColor={colors.primary}
@@ -144,7 +144,7 @@ const EventDetail = ({navigation,route}:any) => {
               textSize={12} 
               text={'Follow'} 
               type='primary'
-            />
+            />}
           </RowComponent>
           <SpaceComponent height={23}/>
           <TabBarComponent title='About Event'/>

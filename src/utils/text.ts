@@ -54,4 +54,11 @@ export class TextHelper {
     // Thay thế các mẫu định dạng trong chuỗi format
     return format.replace(regex, match => formatters[match]);
   };
+
+  static limitStringLength(str:string,startString:number = 0, desiredLength:number = 10, padChar:string = ''):string{
+    if (str.length > desiredLength) {
+      return str.substring(startString, desiredLength) + padChar; // Thêm dấu "..." vào cuối chuỗi nếu cắt bớt
+    }
+    return str;
+  }
 }

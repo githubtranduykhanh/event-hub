@@ -15,6 +15,7 @@ import { CategoryModel } from '~/models/CategoryModel';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, appSelector, profileSelector } from '~/redux/store';
 import { interestProfileUser } from '~/redux/features/profile/profileActions';
+import { TextHelper } from '~/utils/text';
 
 interface IProps{
     userProfile:IUserProfile
@@ -66,10 +67,10 @@ const EditProfile:React.FC<IProps> = ({userProfile}) => {
             fontSize:typography.fontSizeMedium,
             lineHeight:25,
             color:colors.text,
-           
         }}>
-            Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase.
-            <TouchableOpacity 
+            {userProfile.bio && TextHelper.limitStringLength(userProfile.bio,0,50)}           
+            {userProfile.bio && userProfile.bio?.length > 50 
+            && (<TouchableOpacity 
             onPress={()=>console.log('Read More')}
             >
                     <TextComponent 
@@ -78,7 +79,7 @@ const EditProfile:React.FC<IProps> = ({userProfile}) => {
                         color={colors.primary}
                         text=' Read More'
                     />
-            </TouchableOpacity>
+            </TouchableOpacity>)}
         </Text>
          <SpaceComponent height={20}/>
         <TabBarComponent 

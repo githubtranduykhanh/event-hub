@@ -66,6 +66,7 @@ const ModalizeSelect:React.FC<IProps> = ({visible,values,multible,minimum,onSele
     return (
         <Portal>
             <Modalize
+                adjustToContentHeight
                 onClose={onClose}
                 ref={modalizeRef}
                 HeaderComponent={
