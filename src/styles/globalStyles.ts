@@ -153,6 +153,18 @@ const globalStyles = StyleSheet.create({
     centerItem:{
         justifyContent:'center',
         alignItems:'center'
+    },
+    btnAbout:{
+        paddingHorizontal:23,
+        paddingVertical:14,
+        borderWidth:1,
+        borderColor:colors.primary,
+        borderRadius:10,
+        width:154,
+    },
+    btnAboutText:{
+        fontSize:typography.fontSizeMedium,
+        lineHeight:25
     }
 })
 

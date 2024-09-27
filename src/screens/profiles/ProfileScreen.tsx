@@ -113,7 +113,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
       </View>
       <SpaceComponent height={22} />
       {
-        _id === idUser ? (<EditProfile userProfile={userProfile}/>)  : (<AboutProfile/>)
+        _id === idUser ? (<EditProfile userProfile={userProfile}/>)  : (<AboutProfile userProfile={userProfile}/>)
       }
     </ContainerComponent>
   );

@@ -25,6 +25,20 @@ export const apiGetFollowersUser = () => axiosClient<ApiResponse<string[]>>({
 })
 
 
+export const apiPostFollowersUser = (data:{idFollow:string}) => axiosClient<ApiResponse<string[]>>({
+    url:USER_API_ENDPOINT.FOLLOWERS,
+    method:API_METHOD.POST, 
+    data
+})
+
+
+export const apiPostUnFollowersUser = (data:{idFollow:string}) => axiosClient<ApiResponse<string[]>>({
+    url:USER_API_ENDPOINT.UN_FOLLOWERS,
+    method:API_METHOD.POST, 
+    data
+})
+
+
 
 
 export const apiPostExpoPushToken = (data:{expoPushToken:string}) => axiosClient<ApiResponse<[]>>({
