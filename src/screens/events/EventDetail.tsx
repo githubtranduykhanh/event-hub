@@ -123,20 +123,20 @@ const EventDetail = ({navigation,route}:any) => {
           <RowComponent justify='space-between' align='center'>
             <RowComponent styles={{flex:1}} onPress={() => navigation.navigate('Profile',{
               screen:'ProfileScreen',
-              params:{idUser:item.authorId}
+              params:{idUser:item?.author?._id}
             })}>
               <Image style={{
                 width:44,
                 height:44,
                 borderRadius:12
-              }} source={{uri:item.imageUrl}} resizeMode='cover' />
+              }} source={{uri:item?.author?.photoUrl}} resizeMode='cover' />
               <SpaceComponent width={14}/>
               <View style={{flex:1}}>
-                <TextComponent font={typography.fontFamily.medium} size={15} lineHeight={25} text='Gala Convention Center'/>
-                <TextComponent size={12} color={colors.subColor} text='36 Guild Street London, UK'/>
+                <TextComponent font={typography.fontFamily.medium} size={15} lineHeight={25} text={item.author?.fullName ?? ''}/>
+                <TextComponent size={12} color={colors.subColor} text={item.author?.email ?? ''}/>
               </View>
             </RowComponent>
-            {item.authorId !== _id && <ButtonComponent 
+            {item?.author && item?.author?._id !== _id && <ButtonComponent 
               style={{paddingHorizontal:18,paddingVertical:6,borderRadius:7}} 
               color={`${colors.primary}4D`}
               textColor={colors.primary}

@@ -56,10 +56,12 @@ const ProfileScreen = ({ navigation, route }: any) => {
   return (
     <ContainerComponent
       back
-      title="Profile"
+      title={_id === idUser ? 'Profile' : undefined}
       iconHeader={
-        <TouchableOpacity>
-          <Feather name="more-vertical" size={24} color="black" />
+        _id === idUser 
+        ? undefined 
+        :<TouchableOpacity>
+        <Feather name="more-vertical" size={24} color="black" />
         </TouchableOpacity>
       }
       statusBarStyle="dark"

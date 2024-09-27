@@ -1,3 +1,4 @@
+import { IUserProfile } from "./UserModel";
 
 export interface Location {
     address: string;
@@ -23,7 +24,8 @@ export interface EventModel {
     imageUrl: string;
     users: string[];
     categories:string[];
-    authorId: string;
+    authorId:string;
+    author?: IUserProfile;
     startAt: Date;  // Unix timestamp (milliseconds since epoch)
     endAt: Date;    // Unix timestamp (milliseconds since epoch)
     date: Date;     // Unix timestamp (milliseconds since epoch)
@@ -44,7 +46,7 @@ export interface EventQueryParams {
     lat?:number;   
     lng?:number;
     distance?:number;
-
+    author?:boolean;
 
     
     // Các tham số với toán tử so sánh
