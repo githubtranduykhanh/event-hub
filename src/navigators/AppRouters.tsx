@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from '~/redux/store'
 import { addAuth, UserSlice } from '~/redux/features/auth/authSlice'
 import { getFromStorage, saveToStorage } from '~/utils/storage'
 import { SplashScreen } from '~/screens'
-import { getFollowedEventUser } from '~/redux/features/auth/authActions'
+import { getDataDefaultUser } from '~/redux/features/auth/authActions'
 import { ApiHelper } from '~/apis/helper'
 import NotificationService from '~/services/NotificationService'
 import { apiPostExpoPushToken } from '~/apis'
@@ -53,7 +53,7 @@ const AppRouters = () => {
 
   useEffect(()=>{
     if(accessToken) {
-      dispatch(getFollowedEventUser())
+      dispatch(getDataDefaultUser())
       dispatch(getCategoriesApp())
     }
   },[accessToken])

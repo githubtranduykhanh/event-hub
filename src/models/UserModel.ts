@@ -21,6 +21,7 @@ export interface IUserProfile {
     following?: string[];
     followers?: string[];
     interests?: string[];
+    type?: 'Organizer' | 'Individual';
 }
 
 
@@ -36,5 +37,6 @@ export const userProfileData: IUserProfile = {
     following: [],
     followers: [],
     interests: [],
+    type:'Individual'
 };
   

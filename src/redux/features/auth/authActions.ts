@@ -1,6 +1,6 @@
 // src/features/auth/authActions.ts
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { apiGetFollowersUser, apiLogin,apiRegister, apiRessetPassword } from '~/apis';
+import { apiGetDataDefaultUser, apiLogin,apiRegister, apiRessetPassword } from '~/apis';
 import { UserSlice } from './authSlice'; // Đường dẫn đến file slice của bạn
 
 import { saveToStorage } from '~/utils/storage';
@@ -94,26 +94,38 @@ export const ressetPasswordUser = createAsyncThunk<UserSlice, {codes:number[], e
 
 
 // Tạo một async thunk để gọi API đặt lại mật khẩu
-export const getFollowedEventUser = createAsyncThunk<string[],void,{ rejectValue: ApiResponseError }>(
-    'auth/followersUser',
+export const getDataDefaultUser = createAsyncThunk<{
+    followedEvents: string[];
+    followers: string[];
+    following: string[];
+},void,{ rejectValue: ApiResponseError }>(
+    'auth/getDataDefaultUser',
     async (_,thunkAPI) => {
         try {
-            const response = await apiGetFollowersUser()
+            const response = await apiGetDataDefaultUser()
             if (response.data.status) {
-                return response.data.data ?? [];
+                return response.data.data ?? {
+                    followedEvents: [],
+                    followers: [],
+                    following: []
+                  };
             } else {
-                return thunkAPI.rejectWithValue({ message: response.data.mes || 'Resset Password failed' })
+                return thunkAPI.rejectWithValue({ message: response.data.mes || 'Get Data Default User failed' })
             }
         } catch (error:any) {
            // Xử lý lỗi bất kỳ từ axios
             if (error.response && error.response.data) {
-                return thunkAPI.rejectWithValue({ message: error.response.data.mes || 'Resset Password failed' })
+                return thunkAPI.rejectWithValue({ message: error.response.data.mes || 'Get Data Default User failed' })
             } else {
                 return thunkAPI.rejectWithValue({ message: 'An unknown error has occurred' })
             }
         }
     }
 )
+
+
+
+
 
 
 

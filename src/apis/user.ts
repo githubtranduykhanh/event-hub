@@ -19,20 +19,30 @@ export const apiPutFollowersEvents = (idEvent:string) => axiosClient<ApiResponse
     method: API_METHOD.PUT,
 })
 
-export const apiGetFollowersUser = () => axiosClient<ApiResponse<string[]>>({
-    url:USER_API_ENDPOINT.FOLLOWERS_USER,
+export const apiGetDataDefaultUser = () => axiosClient<ApiResponse<{
+    followedEvents:string[],
+    followers:string[],
+    following:string[],
+}>>({
+    url:USER_API_ENDPOINT.DATA_DEFAULT,
     method:API_METHOD.GET, 
 })
 
 
-export const apiPostFollowersUser = (data:{idFollow:string}) => axiosClient<ApiResponse<string[]>>({
+export const apiPostFollowersUser = (data:{idFollow:string}) => axiosClient<ApiResponse<{
+    followUser:string[],
+    myFollowingUser:string[],
+}>>({
     url:USER_API_ENDPOINT.FOLLOWERS,
     method:API_METHOD.POST, 
     data
 })
 
 
-export const apiPostUnFollowersUser = (data:{idFollow:string}) => axiosClient<ApiResponse<string[]>>({
+export const apiPostUnFollowersUser = (data:{idFollow:string}) => axiosClient<ApiResponse<{
+    followUser:string[],
+    myFollowingUser:string[],
+}>>({
     url:USER_API_ENDPOINT.UN_FOLLOWERS,
     method:API_METHOD.POST, 
     data

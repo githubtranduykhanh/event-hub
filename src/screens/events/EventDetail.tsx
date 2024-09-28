@@ -1,5 +1,5 @@
 import { View, Text, ImageBackground, SafeAreaView, ScrollView, Image, Animated } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { AvatarGroup, ButtonComponent, CardComponent, ContainerComponent, HeaderComponent, RowComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
 import { colors, globalStyles, typography } from '~/styles'
 import {MaterialIcons} from '@expo/vector-icons';
@@ -11,9 +11,9 @@ import { TextHelper } from '~/utils/text';
 import { AppDispatch, RootState,authSelector } from '~/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { StatusBar } from 'expo-status-bar';
-import { apiPutFollowersEvents } from '~/apis';
+import { apiPostFollowersUser, apiPutFollowersEvents } from '~/apis';
 import { ApiHelper } from '~/apis/helper';
-import { updateUserFollowedEvents } from '~/redux/features/auth/authSlice';
+import { updateUserFollowedEvents, updateUserFollowing } from '~/redux/features/auth/authSlice';
 import { LoadingModal } from '~/modals';
 
 
@@ -21,12 +21,17 @@ const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground
 
 const EventDetail = ({navigation,route}:any) => {
   const dispatch = useDispatch<AppDispatch>();
-  const item = route.params.item as EventModel
-  const {user:{_id,followedEvents}} = useSelector(authSelector)
+  const [item,setItem] = useState<EventModel>(route.params.item)
+  const {user:{_id,followedEvents,following}} = useSelector(authSelector)
   const isUserLength = item.users.length > 0
   const isFollowers = item?._id && followedEvents && followedEvents.includes(item._id) ? true  : false
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isLoading,setIsLoading] = useState<boolean>(false)
+
+  useEffect(()=>{
+    setItem(route.params.item)
+  },[route.params.item])
+
 
   const handelFollowers = () => {
     if(item._id) {
@@ -38,6 +43,23 @@ const EventDetail = ({navigation,route}:any) => {
       })
       .catch(error => console.log(ApiHelper.getMesErrorFromServer(error)))
       .finally(()=>setIsLoading(false))
+    }
+  }
+
+
+  const handleFollowAuthor = () => {
+    if(item?.author){
+      setIsLoading(true)
+      apiPostFollowersUser({idFollow:item?.author._id})
+      .then((res)=>res.data)
+      .then(data => {
+        if(data.status && data.data) {
+          setItem(prve => prve.author ? ({...prve,author:{...prve.author,followers:data.data?.followUser}}) : prve);
+          dispatch(updateUserFollowing(data.data.myFollowingUser))
+        }
+      })
+      .catch((err)=>console.log('apiPostFollowersUser',ApiHelper.getMesErrorFromServer(err)))
+      .finally(()=> setIsLoading(false))
     }
   }
 
@@ -133,10 +155,11 @@ const EventDetail = ({navigation,route}:any) => {
               <SpaceComponent width={14}/>
               <View style={{flex:1}}>
                 <TextComponent font={typography.fontFamily.medium} size={15} lineHeight={25} text={item.author?.fullName ?? ''}/>
-                <TextComponent size={12} color={colors.subColor} text={item.author?.email ?? ''}/>
+                <TextComponent size={12} color={colors.subColor} text={item.author?.type ?? 'Individual'}/>
               </View>
             </RowComponent>
-            {item?.author && item?.author?._id !== _id && <ButtonComponent 
+            {item?.author && !following?.includes(item?.author?._id)  && <ButtonComponent 
+              onPress={handleFollowAuthor}
               style={{paddingHorizontal:18,paddingVertical:6,borderRadius:7}} 
               color={`${colors.primary}4D`}
               textColor={colors.primary}

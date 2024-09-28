@@ -17,18 +17,22 @@ import { ApiHelper } from "~/apis/helper";
 import { IUserProfile, userProfileData } from "~/models/UserModel";
 import { AboutProfile, EditProfile } from "./components";
 import { addProfile } from "~/redux/features/profile/profileSlice";
+import { LoadingModal } from "~/modals";
 
 const ProfileScreen = ({ navigation, route }: any) => {
   const { idUser } = route.params;
   const dispatch = useDispatch<AppDispatch>()
+  
   const {
     user: { _id },
   } = useSelector(authSelector);
 
   const {userProfile} = useSelector(profileSelector);
+  const [isLoadingModal,setIsLoadingModal] = useState<boolean>(false)
   
   useEffect(() => {
     if (idUser) {
+      setIsLoadingModal(true)
       apiGetProfileUser(idUser)
         .then((res) => res.data)
         .then((data) => {
@@ -49,7 +53,8 @@ const ProfileScreen = ({ navigation, route }: any) => {
             }))
           }
         })
-        .catch((err) => ApiHelper.getMesErrorFromServer(err));
+        .catch((err) => ApiHelper.getMesErrorFromServer(err))
+        .finally(()=>setIsLoadingModal(false))
     }
   }, [idUser]);
 
@@ -115,6 +120,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
       {
         _id === idUser ? (<EditProfile userProfile={userProfile}/>)  : (<AboutProfile userProfile={userProfile}/>)
       }
+      <LoadingModal visible={isLoadingModal}/>
     </ContainerComponent>
   );
 };

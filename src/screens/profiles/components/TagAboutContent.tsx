@@ -47,7 +47,7 @@ const TagAboutContent: React.FC<IProps> = ({ tagSelected,userProfile }) => {
                     <FlatList                     
                         data={userProfile.followedEvents}
                         keyExtractor={(item) => item._id ?? randomUUID()}
-                        renderItem={({ item }) => <EventItem item={item} type='list'/>}
+                        renderItem={({ item }) => <EventItem item={item} type='list-short' />}
                     />
                 </View>
             )

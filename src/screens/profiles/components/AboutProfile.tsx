@@ -14,6 +14,7 @@ import { addProfile } from '~/redux/features/profile/profileSlice';
 import { LoadingModal } from '~/modals';
 import { TextHelper } from '~/utils/text';
 import TagAboutContent from './TagAboutContent';
+import { updateUserFollowing } from '~/redux/features/auth/authSlice';
 
 
 
@@ -35,8 +36,9 @@ const AboutProfile:React.FC<IProps> = ({userProfile}) => {
       .then(data => {
         if(data.status && data.data){
           dispatch(addProfile({
-            followers:data.data
+            followers:data.data.followUser
           }))
+          dispatch(updateUserFollowing(data.data.myFollowingUser))
         }
       })
       .catch((err)=>console.log('apiPostFollowersUser',ApiHelper.getMesErrorFromServer(err)))
@@ -51,8 +53,9 @@ const AboutProfile:React.FC<IProps> = ({userProfile}) => {
     .then(data => {
       if(data.status && data.data){
         dispatch(addProfile({
-          followers:data.data
+          followers:data.data.followUser
         }))
+        dispatch(updateUserFollowing(data.data.myFollowingUser))
       }
     })
     .catch((err)=>console.log('apiPostUnFollowersUser',ApiHelper.getMesErrorFromServer(err)))
