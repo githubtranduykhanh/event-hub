@@ -21,9 +21,10 @@ const AppRouters = () => {
   const dispatch = useDispatch<AppDispatch>()
   const { user: { accessToken } } = useSelector((state: RootState) => state.auth)
   const [isShowSplash, setIsShowSplash] = useState(true)
+  const notificationService = NotificationService.getInstance();
 
   useEffect(() => {
-    const notificationService = NotificationService.getInstance();
+   
     (async () => {
       try {
         await checkLogin(notificationService)
@@ -55,10 +56,29 @@ const AppRouters = () => {
     if(accessToken) {
       dispatch(getDataDefaultUser())
       dispatch(getCategoriesApp())
+      checkExpoPushToken(notificationService)
     }
   },[accessToken])
 
+  const checkExpoPushToken = async (notificationService: NotificationService) => {
+    const storedUser = await getFromStorage('auth');
+    if(!storedUser.expoPushToken){
+      const token = await notificationService.registerForPushNotificationsAsync();
 
+      if (token) {
+        apiPostExpoPushToken({ expoPushToken: token })
+          .then(res => res.data)
+          .then(async (data) => {
+            if (data.status) {
+              storedUser.expoPushToken = token
+              await saveToStorage('auth', storedUser)
+              dispatch(addAuth(storedUser))
+            }
+          }).catch((err) => console.log(ApiHelper.getMesErrorFromServer(err)))
+      }
+    }
+   
+  } 
 
   const checkLogin = async (notificationService: NotificationService) => {
     let storedUser = await getFromStorage('auth');
@@ -66,23 +86,22 @@ const AppRouters = () => {
     console.log('======================')
     console.log('Stored User: ', storedUser)
     console.log('======================')
-    console.log('Is Remember:', isRemember)
-    console.log('======================')
     if (!isRemember || !storedUser) return
     storedUser = storedUser as UserSlice
-
-    const token = await notificationService.registerForPushNotificationsAsync();
-
-    if (token && !storedUser.expoPushToken) {
-      apiPostExpoPushToken({ expoPushToken: token })
-        .then(res => res.data)
-        .then(async (data) => {
-          if (data.status) {
-            storedUser.expoPushToken = token
-            await saveToStorage('auth', storedUser)
-          }
-        }).catch((err) => console.log(ApiHelper.getMesErrorFromServer(err)))
+    if(!storedUser.expoPushToken){
+      const token = await notificationService.registerForPushNotificationsAsync();
+      if (token) {
+        apiPostExpoPushToken({ expoPushToken: token })
+          .then(res => res.data)
+          .then(async (data) => {
+            if (data.status) {
+              storedUser.expoPushToken = token
+              await saveToStorage('auth', storedUser)
+            }
+          }).catch((err) => console.log(ApiHelper.getMesErrorFromServer(err)))
+      }
     }
+    
     dispatch(addAuth(storedUser))
   }
   

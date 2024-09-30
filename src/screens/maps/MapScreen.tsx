@@ -84,7 +84,7 @@ const MapScreen = ({navigation}:any) => {
     }
   }, [debouncedQuery]);
 
-  const handeleFocusMap = (searchResults: SearchResultHereApi) => {
+  const handleFocusMap = (searchResults: SearchResultHereApi) => {
     setMarkerSelected(searchResults);
     const centerContent = {
       latitude: searchResults.position.lat,
@@ -162,7 +162,7 @@ const MapScreen = ({navigation}:any) => {
                 data={searchResults}
                 renderItem={({ item, index }) => (
                   <TouchableOpacity
-                    onPress={() => handeleFocusMap(item)}
+                    onPress={() => handleFocusMap(item)}
                     style={{ paddingHorizontal: 12, paddingVertical: 10 }}
                     key={`results-searh-${item.id}`}
                   >

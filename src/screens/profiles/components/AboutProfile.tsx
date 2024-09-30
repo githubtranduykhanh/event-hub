@@ -65,7 +65,7 @@ const AboutProfile:React.FC<IProps> = ({userProfile}) => {
   return (
     <View style={{flex:1}}>
       <RowComponent justify='center'>
-        {userProfile.followers?.includes(user._id) 
+        {user.following?.includes(userProfile._id) 
           ? <ButtonComponent
               onPress={handleUnFollow}
               style={[globalStyles.btnAbout]}

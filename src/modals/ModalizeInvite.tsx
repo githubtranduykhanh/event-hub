@@ -1,7 +1,7 @@
-import { View, Text, ScrollView } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { View, Text, ScrollView, Share, Alert } from 'react-native'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Modalize } from 'react-native-modalize';
-import { AvatarComponent, ButtonComponent, InputComponent, RowComponent, SpaceComponent, TextComponent } from '~/components';
+import { AvatarComponent, ButtonComponent, InputComponent, RowComponent, SpaceComponent, TextComponent, UserComponent } from '~/components';
 import { Portal } from 'react-native-portalize';
 import { colors, globalStyles, typography } from '~/styles';
 import { useDebounce } from '~/hooks';
@@ -24,6 +24,7 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
   const modalizeRef = useRef<Modalize>(null);
   const [search, setSearch] = useState<string>('')
   const [friends, setFriends] = useState<IUserProfile[]>([])
+  const [userSelected, setUserSelected] = useState<string[]>([])
   const debounceSearch = useDebounce(search, 500)
   useEffect(() => {
     if (visible) {
@@ -42,8 +43,49 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
       else console.log(data)
     })
     .catch((err) => console.log(ApiHelper.getMesErrorFromServer(err)))
-  },[])
+  },[user.following])
 
+
+  const filteredFriends = useMemo(() => {
+    const searchValue = debounceSearch.toLowerCase().trim();
+    if (!searchValue) return friends;
+  
+    return friends.filter((friend) => {
+      const friendName = friend.fullName?.toLowerCase().trim();
+      return friendName?.includes(searchValue);
+    });
+  }, [debounceSearch, friends]);
+
+
+  const handleUserSelected = (id:string) =>{
+    setUserSelected((prev) =>
+      prev.includes(id) ? prev.filter((userId) => userId !== id) : [...prev, id]
+    );
+  }
+
+  const handleInvite = async () =>{
+    try {
+      const result = await Share.share({
+        message: 'Check out this awesome content!',
+        url: 'https://example.com', // Nếu bạn muốn chia sẻ một URL, có thể thêm vào đây
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // Nếu có activityType, người dùng đã chia sẻ nội dung trong một ứng dụng cụ thể
+          console.log('Shared with activity type:', result.activityType);
+        } else {
+          // Người dùng đã chia sẻ nội dung
+          console.log('Shared successfully');
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // Người dùng đã hủy chia sẻ
+        console.log('Share dismissed');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to share content.');
+    }
+  }
   return (
     <Portal>
             <Modalize
@@ -71,6 +113,7 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
                 FooterComponent={
                     <View style={{paddingVertical:30,paddingHorizontal:35}}>
                         <ButtonComponent
+                          onPress={handleInvite}
                           style={[globalStyles.btnPrimary,{
                             padding:19
                           }]} 
@@ -87,27 +130,7 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
                 }
             >
               <ScrollView style={{flex:1,paddingHorizontal:20,paddingVertical:5}}>
-                   {friends.map((friend) => (
-                      <RowComponent  key={randomUUID()}>
-                        <RowComponent styles={{flex:1}}>
-                          <AvatarComponent size={45} fullName={friend.fullName} photoUrl={friend.photoUrl}/>
-                          <SpaceComponent width={11}/>
-                          <View>
-                            <TextComponent 
-                            text={friend.fullName ?? friend.email}
-                            size={typography.fontSizeSmall}
-                            font={typography.fontFamily.medium}
-                            />
-                            <TextComponent 
-                              text={`${NumberHelper.formatLargeNumber(friend.followers?.length ?? 0)} Follwers`}
-                              size={13}
-                            />
-                          </View>
-                         
-                        </RowComponent>
-                        <AntDesign name="checkcircle" size={20} color={colors.primary} />
-                      </RowComponent>
-                    ))}
+                   {filteredFriends.map((friend) => (<UserComponent checked={userSelected.includes(friend._id)} key={randomUUID()} userInfo={friend} onPress={()=>handleUserSelected(friend._id)}/>))}
               </ScrollView>
             </Modalize>
         </Portal>
