@@ -63,6 +63,13 @@ export const apiGetProfileUser = (idUser:string) => axiosClient<ApiResponse<IUse
     method:API_METHOD.GET, 
 })
 
+
+
+export const apiGetFriendUser = () => axiosClient<ApiResponse<IUserProfile[]>>({
+    url:USER_API_ENDPOINT.FRIEND,
+    method:API_METHOD.GET, 
+})
+
 export const apiPutEmailProfileUser = (data:{email:string}) => axiosClient<ApiResponse<[]>>({
     url:USER_API_ENDPOINT.EMAIL_PROFILE,
     method:API_METHOD.PUT, 

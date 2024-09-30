@@ -17,6 +17,7 @@ interface IProps {
   size: number;
   viewStyles?: StyleProp<ViewStyle>;
   imageStyles?:  StyleProp<ImageStyle>;
+  borderRadius?:number;
   onPress?: () => void;
 }
 
@@ -26,6 +27,7 @@ const AvatarComponent: React.FC<IProps> = ({
   size,
   imageStyles,
   viewStyles,
+  borderRadius,
   onPress,
 }) => {
   return (
@@ -36,7 +38,7 @@ const AvatarComponent: React.FC<IProps> = ({
             resizeMode: "contain",
             width: size,
             height: size,
-            borderRadius: 50,
+            borderRadius: borderRadius ?? 50,
           },imageStyles]}
           source={{ uri: photoUrl }}
         />
@@ -45,7 +47,7 @@ const AvatarComponent: React.FC<IProps> = ({
           style={[{
             width: size,
             height: size,
-            borderRadius: 50,
+            borderRadius: borderRadius ?? 50,
             backgroundColor: colors.primary,
             justifyContent: "center",
             alignItems: "center",

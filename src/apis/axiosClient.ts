@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import Constants from 'expo-constants';
 import { getFromStorage, saveToStorage } from '~/utils/storage';
 import { UserSlice } from '~/redux/features/auth/authSlice';
+import { ApiHelper } from './helper';
 
 
 // Tạo một instance của Axios
@@ -49,9 +50,9 @@ instance.interceptors.response.use(
             if(storedUser && storedUser.refreshToken){
               try {
                 const response = await axios.post(`${instance.defaults.baseURL}/auth/refresh-token`, {
-                  token: storedUser.refreshToken,
+                  refreshToken: storedUser.refreshToken,
                 });
-    
+                
                 if (response.status === 200) {
                   const { accessToken, refreshToken } = response.data;
     
@@ -63,7 +64,7 @@ instance.interceptors.response.use(
                   return instance(originalRequest); // Thực hiện lại request với token mới
                 }
               } catch (refreshError) {
-                console.error('Error refreshing token: ', refreshError);
+                console.error('Error refreshing token: ', ApiHelper.getMesErrorFromServer(refreshError).err);
                 return Promise.reject(refreshError);
               }
             }

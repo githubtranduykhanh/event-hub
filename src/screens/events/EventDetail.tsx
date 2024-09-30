@@ -1,6 +1,6 @@
 import { View, Text, ImageBackground, SafeAreaView, ScrollView, Image, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { AvatarGroup, ButtonComponent, CardComponent, ContainerComponent, HeaderComponent, RowComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
+import { AvatarComponent, AvatarGroup, ButtonComponent, CardComponent, ContainerComponent, HeaderComponent, RowComponent, SpaceComponent, TabBarComponent, TextComponent } from '~/components'
 import { colors, globalStyles, typography } from '~/styles'
 import {MaterialIcons} from '@expo/vector-icons';
 import { Calendar,Location } from 'iconsax-react-native';
@@ -14,7 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import { apiPostFollowersUser, apiPutFollowersEvents } from '~/apis';
 import { ApiHelper } from '~/apis/helper';
 import { updateUserFollowedEvents, updateUserFollowing } from '~/redux/features/auth/authSlice';
-import { LoadingModal } from '~/modals';
+import { LoadingModal, ModalizeInvite } from '~/modals';
 
 
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
@@ -27,6 +27,8 @@ const EventDetail = ({navigation,route}:any) => {
   const isFollowers = item?._id && followedEvents && followedEvents.includes(item._id) ? true  : false
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isLoading,setIsLoading] = useState<boolean>(false)
+  const [isModalInvite,setIsModalInvite] = useState<boolean>(false)
+
 
   useEffect(()=>{
     setItem(route.params.item)
@@ -107,7 +109,13 @@ const EventDetail = ({navigation,route}:any) => {
             }]
           }>
             <AvatarGroup users={item.users} textSize={15} imageSize={34}/>
-            <ButtonComponent style={{paddingHorizontal:18,paddingVertical:isUserLength ? 6 : 15 ,borderRadius:isUserLength ? 7 : 20,flex:isUserLength ? undefined : 1}} textFont={isUserLength ? typography.fontFamily.regular : typography.fontFamily.bold} textSize={12} text={'Invite'.toUpperCase()} type='primary'/>
+            <ButtonComponent 
+              onPress={()=>setIsModalInvite(true)}
+              style={{paddingHorizontal:18,paddingVertical:isUserLength ? 6 : 15 ,borderRadius:isUserLength ? 7 : 20,flex:isUserLength ? undefined : 1}} 
+              textFont={isUserLength ? typography.fontFamily.regular : typography.fontFamily.bold} 
+              textSize={12} 
+              text={'Invite'.toUpperCase()} 
+              type='primary'/>
           </RowComponent>
         </SafeAreaView>     
       </AnimatedImageBackground>
@@ -147,11 +155,17 @@ const EventDetail = ({navigation,route}:any) => {
               screen:'ProfileScreen',
               params:{idUser:item?.author?._id}
             })}>
-              <Image style={{
+              {/* <Image style={{
                 width:44,
                 height:44,
                 borderRadius:12
-              }} source={{uri:item?.author?.photoUrl}} resizeMode='cover' />
+              }} source={{uri:item?.author?.photoUrl}} resizeMode='cover' /> */}
+              <AvatarComponent
+                size={44}
+                borderRadius={12}
+                fullName={item.author?.familyName}
+                photoUrl={item.author?.photoUrl}
+              />
               <SpaceComponent width={14}/>
               <View style={{flex:1}}>
                 <TextComponent font={typography.fontFamily.medium} size={15} lineHeight={25} text={item.author?.fullName ?? ''}/>
@@ -202,6 +216,7 @@ const EventDetail = ({navigation,route}:any) => {
       </LinearGradient>
     </ContainerComponent>
     <LoadingModal visible={isLoading}/>
+    <ModalizeInvite visible={isModalInvite} onClose={()=>setIsModalInvite(false)}/>
     </>
   )
 }

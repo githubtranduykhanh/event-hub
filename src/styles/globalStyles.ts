@@ -165,6 +165,14 @@ const globalStyles = StyleSheet.create({
     btnAboutText:{
         fontSize:typography.fontSizeMedium,
         lineHeight:25
+    },
+    btnPrimary:{
+        maxWidth:271,
+        alignSelf:'center'
+    },
+    btnPrimaryText:{
+        textAlign: 'center',
+        marginRight: 0
     }
 })
 
