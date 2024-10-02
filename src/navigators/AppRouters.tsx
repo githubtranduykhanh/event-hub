@@ -11,14 +11,16 @@ import { SplashScreen } from '~/screens'
 import { getDataDefaultUser } from '~/redux/features/auth/authActions'
 import { ApiHelper } from '~/apis/helper'
 import NotificationService from '~/services/NotificationService'
-import { apiPostExpoPushToken } from '~/apis'
+import { apiGetEventById, apiPostExpoPushToken } from '~/apis'
 import { getCategoriesApp } from '~/redux/features/app/appActions'
+import { useNavigation } from '@react-navigation/native'
 
 
 
 
 const AppRouters = () => {
   const dispatch = useDispatch<AppDispatch>()
+  const navigation: any = useNavigation()
   const { user: { accessToken } } = useSelector((state: RootState) => state.auth)
   const [isShowSplash, setIsShowSplash] = useState(true)
   const notificationService = NotificationService.getInstance();
@@ -45,7 +47,16 @@ const AppRouters = () => {
     notificationService.addNotificationResponseReceivedListener(response => {
       console.log('Notification response received while app is open:', response);
       const idEvent = response.notification.request.content.data.idEvent;
-      console.log('Notification clicked, idEvent:', idEvent);
+      if(idEvent){
+        apiGetEventById(idEvent)
+        .then((res) => res.data)
+        .then((data)=>{
+          if(data.status && data.data) {
+            navigation.navigate('EventDetail', { item:data.data })
+          }else console.log(data.mes)
+        })
+        .catch((err) => console.log(ApiHelper.getMesErrorFromServer(err)))
+      }
     });
 
     return () => {

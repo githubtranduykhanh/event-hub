@@ -32,6 +32,14 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo.png",
+          "color": "#ffffff",
+          "defaultChannel": "default"
+        }
       ]
     ],
     "extra": {

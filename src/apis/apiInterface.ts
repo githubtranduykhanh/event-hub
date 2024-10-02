@@ -29,6 +29,7 @@ export enum EVENT_API_ENDPOINT {
     DISTANCE = URL_API_ENDPOINT.EVENTS + '/by-distance',
     FOLLOWERS = URL_API_ENDPOINT.EVENTS + '/followers',
     CATEGORIES = URL_API_ENDPOINT.EVENTS + '/categories',
+    GET_BY_ID = URL_API_ENDPOINT.EVENTS + '/',
 }
 
 

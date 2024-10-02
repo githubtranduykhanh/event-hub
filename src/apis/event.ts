@@ -11,6 +11,12 @@ export const apiGetEvents = (params?:EventQueryParams) => axiosClient<ApiRespons
 })
 
 
+export const apiGetEventById = (id:string) => axiosClient<ApiResponse<EventModel>>({
+    url: EVENT_API_ENDPOINT.GET_BY_ID + id,
+    method: API_METHOD.GET,
+})
+
+
 
 
 export const apiAddNewEvent = (eventModel:EventModel) => axiosClient<ApiResponse<[]>>({
