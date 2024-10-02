@@ -15,7 +15,7 @@ export interface Position {
 
 
 export interface EventModel {
-    _id?:string;
+    _id:string;
     title: string;
     description: string;
     location: Location;

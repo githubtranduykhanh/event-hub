@@ -45,6 +45,7 @@ export enum USER_API_ENDPOINT {
     MY_PROFILE = URL_API_ENDPOINT.USERS + '/my-profile',
     INTEREST_PROFILE = URL_API_ENDPOINT.USERS + '/profile-interest',
     FRIEND = URL_API_ENDPOINT.USERS + '/friend',
+    SEND_INVITE_NOTIFICATION = URL_API_ENDPOINT.USERS + '/send-invite-notification',
 }
 
 

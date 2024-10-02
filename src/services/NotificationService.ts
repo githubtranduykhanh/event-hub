@@ -3,6 +3,16 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
+// Thiết lập handler để hiển thị thông báo khi app đang mở
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,      // Cho phép hiển thị thông báo
+    shouldPlaySound: true,      // Cho phép phát âm thanh
+    shouldSetBadge: false,      // Không thay đổi badge
+  }),
+});
+
+
 export default class NotificationService {
   private static _instance: NotificationService;
   private _notificationListener: any;

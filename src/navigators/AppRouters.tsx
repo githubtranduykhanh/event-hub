@@ -39,11 +39,13 @@ const AppRouters = () => {
 
 
     notificationService.addNotificationReceivedListener(notification => {
-      console.log(notification);
+      console.log('Notification received while app is open:', notification);
     });
 
     notificationService.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+      console.log('Notification response received while app is open:', response);
+      const idEvent = response.notification.request.content.data.idEvent;
+      console.log('Notification clicked, idEvent:', idEvent);
     });
 
     return () => {

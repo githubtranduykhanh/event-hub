@@ -216,7 +216,7 @@ const EventDetail = ({navigation,route}:any) => {
       </LinearGradient>
     </ContainerComponent>
     <LoadingModal visible={isLoading}/>
-    <ModalizeInvite visible={isModalInvite} onClose={()=> setIsModalInvite(false)}/>
+    <ModalizeInvite event={item} visible={isModalInvite} onClose={()=> setIsModalInvite(false)}/>
     </>
   )
 }

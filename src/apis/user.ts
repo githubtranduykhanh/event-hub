@@ -77,6 +77,18 @@ export const apiPutEmailProfileUser = (data:{email:string}) => axiosClient<ApiRe
 })
 
 
+export const apiPostInviteNotificationUser = (data:{
+    messageTitle:string,
+    messageBody:string,
+    idUsers:string[],
+    idEvent:string,
+}) => axiosClient<ApiResponse<[]>>({
+    url:USER_API_ENDPOINT.SEND_INVITE_NOTIFICATION,
+    method:API_METHOD.POST, 
+    data
+})
+
+
 export const apiPutInterestProfileUser = (data:{interests:string[]}) => axiosClient<ApiResponse<string[]>>({
     url:USER_API_ENDPOINT.INTEREST_PROFILE,
     method:API_METHOD.PUT, 

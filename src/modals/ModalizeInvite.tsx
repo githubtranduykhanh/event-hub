@@ -9,22 +9,26 @@ import { SearchNormal1 } from 'iconsax-react-native';
 import ArrowRight from '../../assets/svgs/arrow-right.svg'
 import { useSelector } from 'react-redux';
 import { authSelector } from '~/redux/store';
-import { apiGetFriendUser } from '~/apis';
+import { apiGetFriendUser, apiPostInviteNotificationUser } from '~/apis';
 import { ApiHelper } from '~/apis/helper';
 import { IUserProfile } from '~/models/UserModel';
 import { randomUUID } from 'expo-crypto';
 import { NumberHelper } from '~/utils/number';
 import {AntDesign} from '@expo/vector-icons';
+import LoadingModal from './LoadingModal';
+import { EventModel } from '~/models';
 interface IProps {
   onClose:()=>void;
   visible:boolean;
+  event:EventModel;
 }
-const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
+const ModalizeInvite:React.FC<IProps> = ({visible,onClose,event}) => {
   const {user} = useSelector(authSelector)
   const modalizeRef = useRef<Modalize>(null);
   const [search, setSearch] = useState<string>('')
   const [friends, setFriends] = useState<IUserProfile[]>([])
   const [userSelected, setUserSelected] = useState<string[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const debounceSearch = useDebounce(search, 500)
   useEffect(() => {
     if (visible) {
@@ -64,6 +68,31 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
   }
 
   const handleInvite = async () =>{
+    if(userSelected.length <= 0) {
+      Alert.alert('Error','Selected user')
+      return
+    }
+    
+    setIsLoading(true)
+    try {
+      const res = await  apiPostInviteNotificationUser({
+        messageTitle:`${user.fullName} Invite ${event.title}`,
+        messageBody:'Invite Notification',
+        idUsers:userSelected,
+        idEvent:event._id
+      })
+      const data = res.data
+      if(data.status) Alert.alert('Susse',data.mes)
+      else Alert.alert('Error', data.mes)
+    } catch (err) {
+      console.log(ApiHelper.getMesErrorFromServer(err))
+    } finally {
+      setIsLoading(false)
+    }
+    
+  }
+
+  const ShareInvite  = async () => {
     try {
       const result = await Share.share({
         message: 'Check out this awesome content!',
@@ -87,6 +116,7 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
     }
   }
   return (
+    <>
     <Portal>
             <Modalize
                 handlePosition='inside'
@@ -133,7 +163,9 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose}) => {
                    {filteredFriends.map((friend) => (<UserComponent checked={userSelected.includes(friend._id)} key={randomUUID()} userInfo={friend} onPress={()=>handleUserSelected(friend._id)}/>))}
               </ScrollView>
             </Modalize>
-        </Portal>
+    </Portal>
+    <LoadingModal visible={isLoading}/>
+    </>
   )
 }
 
