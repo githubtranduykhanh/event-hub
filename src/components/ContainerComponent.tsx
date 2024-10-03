@@ -3,7 +3,8 @@ import React, { ReactNode } from 'react'
 import {  globalStyles } from '../styles';
 import { memo } from 'react';
 import HeaderComponent from '../components/HeaderComponent'
-import { StatusBar, StatusBarStyle } from 'expo-status-bar';
+import { StatusBarStyle } from 'react-native';
+import { useStatusBar } from '~/hooks';
 
 interface Props {
   isImageBackground?: boolean;
@@ -23,13 +24,13 @@ interface Props {
 
 
 
-const ContainerComponent: React.FC<Props> = ({statusBarStyle, isSafeAreaView = true,iconHeader,navigateName,popToTop ,back,isImageBackground, isScroll, title, children,imageBackgroundSource,imageBackgroundStyle,imageStyle }) => {
-
+const ContainerComponent: React.FC<Props> = ({statusBarStyle = 'dark-content', isSafeAreaView = true,iconHeader,navigateName,popToTop ,back,isImageBackground, isScroll, title, children,imageBackgroundSource,imageBackgroundStyle,imageStyle }) => {
+  useStatusBar(statusBarStyle)
   const returnContainer = isScroll ? <ScrollView style={[globalStyles.container]}>{children}</ScrollView> : <View  style={[globalStyles.container]}>{children}</View>
  
   return (
       <>
-      {statusBarStyle && <StatusBar style={statusBarStyle}/>}
+      
       {
         isImageBackground
         ? <ImageBackground 

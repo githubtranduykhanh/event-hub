@@ -69,7 +69,7 @@ const ProfileScreen = ({ navigation, route }: any) => {
         <Feather name="more-vertical" size={24} color="black" />
         </TouchableOpacity>
       }
-      statusBarStyle="dark"
+      statusBarStyle='dark-content'
     >
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <AvatarComponent

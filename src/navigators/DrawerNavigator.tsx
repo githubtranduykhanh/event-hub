@@ -3,7 +3,7 @@ import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import TabNavigaror from './TabNavigaror';
 import { DrawerCustom } from '~/components';
-import { EventDetail } from '~/screens';
+import { EventDetail, EventSeeAll } from '~/screens';
 
 const DrawerNavigator = () => {
     const Drawer = createDrawerNavigator();
@@ -14,6 +14,7 @@ const DrawerNavigator = () => {
         }} drawerContent={props => <DrawerCustom {...props} />}>
         <Drawer.Screen name="TabNavigaror" component={TabNavigaror} />
         <Drawer.Screen name='EventDetail' component={EventDetail} />
+        <Drawer.Screen name='EventSeeAll' component={EventSeeAll} />
     </Drawer.Navigator>
   )
 }

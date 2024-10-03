@@ -160,7 +160,10 @@ const ModalizeInvite:React.FC<IProps> = ({visible,onClose,event}) => {
                 }
             >
               <ScrollView style={{flex:1,paddingHorizontal:20,paddingVertical:5}}>
-                   {filteredFriends.map((friend) => (<UserComponent checked={userSelected.includes(friend._id)} key={randomUUID()} userInfo={friend} onPress={()=>handleUserSelected(friend._id)}/>))}
+                  {filteredFriends.length > 0 
+                   ?filteredFriends.map((friend) => (<UserComponent checked={userSelected.includes(friend._id)} key={randomUUID()} userInfo={friend} onPress={()=>handleUserSelected(friend._id)}/>))
+                   :<TextComponent text='No friend'/>
+                  }
               </ScrollView>
             </Modalize>
     </Portal>

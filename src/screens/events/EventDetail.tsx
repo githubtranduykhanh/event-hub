@@ -77,7 +77,7 @@ const EventDetail = ({navigation,route}:any) => {
     
     <>
       
-      <ContainerComponent isSafeAreaView={false} statusBarStyle='light'>
+      <ContainerComponent isSafeAreaView={false} statusBarStyle='light-content'>
       <AnimatedImageBackground 
         style={{zIndex:1,backgroundColor: 'rgba(0, 0, 0, 0.6)', height: imageHeight}}
         resizeMode='cover'

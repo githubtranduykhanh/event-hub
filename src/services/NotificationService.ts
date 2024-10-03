@@ -76,6 +76,11 @@ export default class NotificationService {
     });
   }
 
+  // Lấy phản hồi của thông báo cuối cùng khi app khởi động lại
+  public async getLastNotificationResponseAsync(): Promise<Notifications.NotificationResponse | null> {
+    return await Notifications.getLastNotificationResponseAsync();
+  }
+
   // Xóa các listener khi không cần thiết
   public removeListeners() {
     if (this._notificationListener) {

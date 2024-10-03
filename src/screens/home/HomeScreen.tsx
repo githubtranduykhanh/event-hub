@@ -1,4 +1,4 @@
-import { View, Text, Button, SafeAreaView, TouchableOpacity, ScrollView, FlatList, ImageBackground, Image } from 'react-native'
+import { View, Text, Button, SafeAreaView, TouchableOpacity, ScrollView, FlatList, ImageBackground, Image, StatusBar } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from '~/redux/store'
 import { removeAuth } from '~/redux/features/auth/authSlice'
 import { removeFromStorage } from '~/utils/storage'
 import { colors, globalStyles, typography } from '~/styles'
-import { StatusBar } from 'expo-status-bar'
+
 import { ButtonComponent, CategoriesList, CircleComponent, EventItem, LoadingComponent, RowComponent, SectionComponent, SpaceComponent, TabBarComponent, TagComponent, TextComponent } from '~/components'
 import { MenuSVG } from 'assets/svgs'
 import { AntDesign } from '@expo/vector-icons';
@@ -20,6 +20,7 @@ import { apiGetEvents } from '~/apis'
 import { ApiHelper } from '~/apis/helper'
 import { EventModel } from '~/models'
 import { TextHelper } from '~/utils/text'
+import { useStatusBar } from '~/hooks'
 
 
 interface ItemLoadingComponent {
@@ -45,7 +46,7 @@ const initLoadingComponent: LoadingComponent = {
 
 const HomeScreen = ({ navigation }: any) => {
   const dispatch = useDispatch<AppDispatch>()
-
+  useStatusBar('light-content')
   const { fullName, email, photoUrl, _id } = useSelector((state: RootState) => state.auth.user)
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [currentLocation, setCurrentLocation] = useState<Location.LocationGeocodedAddress | null>(null);
@@ -149,7 +150,9 @@ const HomeScreen = ({ navigation }: any) => {
 
 
   useEffect(() => {
+    
     (async () => {
+      
       if (location) {
         setIsLoadingComponent(prve => ({ ...prve, nearbyEvents: { ...prve.nearbyEvents, isLoading: true } }))
         try {
@@ -213,7 +216,7 @@ const HomeScreen = ({ navigation }: any) => {
   return (
     <>
       <View style={[globalStyles.container]}>
-        <StatusBar style='light' translucent />
+        
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
           <View style={{ flex: 1, backgroundColor: colors.white }}>
             <View style={{
@@ -288,7 +291,7 @@ const HomeScreen = ({ navigation }: any) => {
               style={{ flex: 1, marginHorizontal: 24, marginTop: 18 }}
             >
               <SpaceComponent height={20} />
-              <TabBarComponent title='Upcoming Events' onPress={() => { }} />
+              <TabBarComponent title='Upcoming Events' onPress={() => navigation.navigate('EventSeeAll',{filter:'Upcoming Events'})} />
               {upcomingEvents.length <= 0
                 ? (<LoadingComponent isLoading={isLoadingComponent.upcomingEvents.isLoading} mes={isLoadingComponent.upcomingEvents.mes} />)
                 : (<FlatList
@@ -347,7 +350,7 @@ const HomeScreen = ({ navigation }: any) => {
               </RowComponent>
               <SpaceComponent height={24} />
 
-              <TabBarComponent title='Nearby You' onPress={() => { }} />
+              <TabBarComponent title='Nearby You' onPress={() => navigation.navigate('EventSeeAll',{filter:'Nearby You'})} />
               {nearbyEvents.length <= 0
                 ? (<LoadingComponent isLoading={isLoadingComponent.nearbyEvents.isLoading} mes={isLoadingComponent.nearbyEvents.mes} />)
                 : (<FlatList

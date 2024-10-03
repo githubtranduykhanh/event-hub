@@ -163,9 +163,7 @@ const AddNewScreen = ({navigation}:any) => {
   
   return (
     <>
-    <ContainerComponent isScroll>
-      <StatusBar style='dark' />
-      
+    <ContainerComponent isScroll  statusBarStyle='dark-content'>
       <SectionComponent>
         <TextComponent title text='Add New'/>
       </SectionComponent>

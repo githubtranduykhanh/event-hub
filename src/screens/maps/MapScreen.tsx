@@ -15,7 +15,7 @@ import { appInfo, colors, globalStyles, typography } from "~/styles";
 import { CardComponent, CategoriesList, EventItem, InputComponent, MarkerCustom, RowComponent, SpaceComponent, TextComponent } from "~/components";
 import { ArrowCircleLeft2, ArrowLeft, ArrowLeft2, SearchNormal1 } from "iconsax-react-native";
 import { decode, fetchSearchGeocode, getRoute, SearchResultHereApi } from "~/apis/hereapi";
-import { useDebounce } from "~/hooks";
+import { useDebounce, useStatusBar } from "~/hooks";
 import {MaterialIcons} from '@expo/vector-icons';
 import { apiByDistance } from "~/apis";
 import { ApiHelper } from "~/apis/helper";
@@ -32,6 +32,7 @@ interface RouteCoordinates {
 
 
 const MapScreen = ({navigation}:any) => {
+  useStatusBar('dark-content')
   const { city, latitude, longitude, isoCountryCode } = useSelector(
     (state: RootState) => state.app.region
   );
@@ -126,7 +127,7 @@ const MapScreen = ({navigation}:any) => {
 
   return (
     <View style={{ flex: 1}}>
-      <StatusBar style="dark" />
+      
       <SafeAreaView
         style={{ position: "absolute", top: 0, right: 0, left: 0, zIndex: 2,}}
       >
