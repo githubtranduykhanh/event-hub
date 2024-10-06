@@ -1,15 +1,17 @@
-import { View, Text } from 'react-native'
+import { View, Text, DimensionValue, StyleProp, ViewStyle } from 'react-native'
 import React from 'react'
 
 interface Props {
-    width?:number;
-    height?:number;
+    width?:DimensionValue | undefined;
+    height?:DimensionValue | undefined;
+    color?:string;
+    style?: StyleProp<ViewStyle>
 }
 
 
-const SpaceComponent : React.FC<Props> = ({width,height}) => {    
+const SpaceComponent : React.FC<Props> = ({width,height,color,style}) => {    
   return (
-    <View style={{width,height}}>  
+    <View style={[{width,height,backgroundColor:color},style]}>  
     </View>
   )
 }

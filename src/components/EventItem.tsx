@@ -86,7 +86,7 @@ const EventItem: React.FC<Props> = ({ item, type = 'card' }) => {
         <RowComponent
           onPress={() => navication.navigate('EventDetail', { item })}
           styles={{ backgroundColor: colors.white, paddingHorizontal: 9, paddingVertical: 7, borderRadius: 16 }}>
-          <Image source={{ uri: item.imageUrl }} style={{ width: 79, height: '100%', borderRadius: 10 }} resizeMode='cover' />
+          <Image source={{ uri: item.imageUrl }} style={{ width: 79, height: 92, borderRadius: 10 }} resizeMode='cover' />
           <SpaceComponent width={17} />
           <View style={{ flex: 1 }}>
             <RowComponent justify='space-between'>

@@ -8,7 +8,6 @@ const ExploreNavigator = () => {
     return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name='HomeScreen' component={HomeScreen}/>
-          <Stack.Screen name='SearchEvents' component={SearchEvents}/>
       </Stack.Navigator>
     )
 }
