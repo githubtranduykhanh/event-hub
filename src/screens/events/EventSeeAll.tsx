@@ -10,6 +10,7 @@ import { appSelector } from '~/redux/store';
 import { ApiHelper } from '~/apis/helper';
 import { EventModel } from '~/models';
 import { randomUUID } from 'expo-crypto';
+import { ModalizeFilters } from '~/modals';
 
 const EventSeeAll = ({navigation,route}:any) => {
   const {filter}:{filter:string} = route.params
@@ -19,6 +20,7 @@ const EventSeeAll = ({navigation,route}:any) => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false); // Tải thêm dữ liệu
+
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // Làm mới dữ liệu
   useFocusEffect(
     useCallback(() => {
@@ -163,6 +165,7 @@ const EventSeeAll = ({navigation,route}:any) => {
               onRefresh={handleRefresh} // Hàm làm mới khi kéo xuống
             />
         </SectionComponent>
+       
     </ContainerComponent>
   )
 }

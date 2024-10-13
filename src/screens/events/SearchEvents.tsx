@@ -27,6 +27,7 @@ import { apiGetEvents } from "~/apis";
 import { ApiHelper } from "~/apis/helper";
 import { set } from "lodash";
 import { useDebounce } from "~/hooks";
+import { ModalizeFilters } from "~/modals";
 
 const SearchEvents = ({ navigation, route }: any) => {
   const { isFilter }: { isFilter: boolean } = route.params;
@@ -37,6 +38,7 @@ const SearchEvents = ({ navigation, route }: any) => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false); // Tải thêm dữ liệu
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false); // Làm mới dữ liệu
+  const [isModalFilters, setIsModalFilters] = useState<boolean>(false); // Tải thêm dữ liệu
   const searchDebounce = useDebounce(search,500)
   // Hàm để tải thêm sự kiện
   const loadMoreEvents = (page: number) => {
@@ -157,6 +159,7 @@ const SearchEvents = ({ navigation, route }: any) => {
             />
           </RowComponent>
           <TagComponent
+            onPress={()=>setIsModalFilters(true)}
             bgColor={colors.primary}
             lable="Filters"
             icon={
@@ -188,6 +191,7 @@ const SearchEvents = ({ navigation, route }: any) => {
           onRefresh={handleRefresh} // Hàm làm mới khi kéo xuống
         />
       </SectionComponent>
+      <ModalizeFilters visible={isModalFilters} onClose={()=>setIsModalFilters(false)}/>
     </ContainerComponent>
   );
 };

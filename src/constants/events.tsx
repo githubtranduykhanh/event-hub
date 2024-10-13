@@ -4,6 +4,7 @@ import { EventModel } from "~/models"
 
 
 export const itemEvent:EventModel = {
+    _id:'',
     title: 'International Band Music Concert',
     description:
       'Enjoy your favorite dishe and a lovely your friends and family and have a great time. Food from local food trucks will be available for purchase.',
@@ -27,6 +28,7 @@ export const itemEvent:EventModel = {
 
 
 export const initEvent:EventModel = {
+  _id:'',
   title: '',
   description:'',
   location: {

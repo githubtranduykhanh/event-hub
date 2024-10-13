@@ -66,7 +66,8 @@ export const renderIconCategories = (iconLibrary: string, iconName: any, iconSiz
       return <FontAwesome name={iconName} size={iconSize} color={isColor ? colors.white :iconColor} />;
     case 'CustomSVG':
       if (iconName === 'ChefForkSVG') {
-        return <ChefForkSVG fill={isColor ? colors.white :iconColor} stroke={isColor ? colors.white :iconColor} />;
+        const size = iconSize ? iconSize - 10 : iconSize
+        return <ChefForkSVG fill={isColor ? colors.white :iconColor} width={size} height={size} stroke={isColor ? colors.white :iconColor} />;
       }
       return null; // Trường hợp không tìm thấy icon SVG
     default:
