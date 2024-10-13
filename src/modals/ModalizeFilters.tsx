@@ -179,7 +179,7 @@ const ModalizeFilters: React.FC<IProps> = ({ visible, onClose }) => {
            
            
           </RowComponent>
-          <DateTimePickerComponent label='Date' testID='date' mode='date' dateSelected={calender} onSelect={(date,key) => setCalender(date)}/>
+          <DateTimePickerComponent styles={{borderColor:colors.gray}}  testID='date' mode='date' dateSelected={calender} onSelect={(date,key) => setCalender(date)}/>
         </ScrollView>
       </Modalize>
     </Portal>
