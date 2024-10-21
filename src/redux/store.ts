@@ -21,4 +21,6 @@ export const profileSelector = (state:RootState) => state.profile
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
+export const appDispatch: AppDispatch = store.dispatch;
+
 export default store;

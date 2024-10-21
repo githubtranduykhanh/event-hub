@@ -1,9 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError, InternalAxiosRequestConfig } from 'axios';
 import queryString from 'query-string';
 import Constants from 'expo-constants';
-import { getFromStorage, saveToStorage } from '~/utils/storage';
-import { UserSlice } from '~/redux/features/auth/authSlice';
+import { getFromStorage, removeFromStorage, saveToStorage } from '~/utils/storage';
+import { removeAuth, UserSlice } from '~/redux/features/auth/authSlice';
 import { ApiHelper } from './helper';
+import { appDispatch } from '~/redux/store';
 
 
 // Tạo một instance của Axios
@@ -64,7 +65,12 @@ instance.interceptors.response.use(
                   return instance(originalRequest); // Thực hiện lại request với token mới
                 }
               } catch (refreshError) {
-                console.error('Error refreshing token: ', ApiHelper.getMesErrorFromServer(refreshError).err);
+                const errorData = ApiHelper.getMesErrorFromServer(refreshError)
+                console.error('Error refreshing token: ', errorData.err);
+                if(errorData.err.mes === 'jwt expired') {
+                  await removeFromStorage('isRemember')
+                  await removeFromStorage('auth')
+                }
                 return Promise.reject(refreshError);
               }
             }

@@ -10,6 +10,7 @@ const colors = {
     gray3: '#E4DFDF',
     gray4: '#9d9898',
     gray5: '#d9d9d9',
+    gray6: '#E5E5E5',
     link: '#5669FF',
     danger: '#e74c3c',
     subColor:'#747688',

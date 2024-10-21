@@ -4,9 +4,11 @@ import { Modalize } from "react-native-modalize";
 import { Portal } from "react-native-portalize";
 import {
   ButtonComponent,
+  ChoiceLocation,
   CircleComponent,
   DateTimePickerComponent,
   InputComponent,
+  PriceRangeSlider,
   RowComponent,
   SpaceComponent,
   TextComponent,
@@ -15,9 +17,10 @@ import { SearchNormal1 } from "iconsax-react-native";
 import { colors, globalStyles, typography } from "~/styles";
 import ArrowRight from "../../assets/svgs/arrow-right.svg";
 import { useSelector } from "react-redux";
-import { appSelector } from "~/redux/store";
+import { appSelector, RootState } from "~/redux/store";
 import { randomUUID } from "expo-crypto";
 import { renderIconCategories } from "~/constants/categories";
+import { Position } from "~/models";
 interface IProps {
   onClose: () => void;
   visible: boolean;
@@ -32,15 +35,32 @@ const activeTimeVsDate:StyleProp<ViewStyle> = {
   backgroundColor:colors.primary
 }
 
+interface ILocation {
+  address:string;
+  position:Position;
+}
+
 
 
 
 const ModalizeFilters: React.FC<IProps> = ({ visible, onClose }) => {
   const modalizeRef = useRef<Modalize>(null);
+  const {city,latitude,longitude,isoCountryCode} = useSelector((state:RootState) => state.app.region)
   const {categories} = useSelector(appSelector)
   const [selectCategories, setSelectCategories] = useState<string[]>([])
   const [selectTimeVsDate, setSelectTimeVsDate] = useState<string[]>([])
   const [calender,setCalender] = useState<Date>(new Date())
+  const [location,setLocation] = useState<ILocation>({
+    address:city && isoCountryCode ? `${city}, ${isoCountryCode}` : 'ChoiceLocation',
+    position:latitude && longitude ? {
+      lat:latitude,
+      lng:longitude
+    } : {
+      lat:0,
+      lng:0
+    }
+  })
+  const [priceRange,setPriceRange] = useState<[number,number]>([20,120])
 
   const selectedToday = selectTimeVsDate.includes('today')
   const selectedTomorrow = selectTimeVsDate.includes('tomorrow')
@@ -66,6 +86,9 @@ const ModalizeFilters: React.FC<IProps> = ({ visible, onClose }) => {
       ? prve.filter(item => item !== key)
       : [...prve,key]
     )
+  }
+  const handleOnSubMitLocation = (location: string, position: Position) => {
+    setLocation({address:location,position:position})
   }
 
   return (
@@ -145,7 +168,7 @@ const ModalizeFilters: React.FC<IProps> = ({ visible, onClose }) => {
 
               return (<View style={{alignItems:'center',marginRight:15}}>
                 <CircleComponent onPress={ () => handleSeletedCategory(item.key)} size={63} 
-                  styles={[{marginBottom:5,borderRadius:50,borderWidth:1,borderColor:'#B6B6B6'},selected ? activeCategories : undefined]} 
+                  styles={[{marginBottom:5,borderRadius:50,borderWidth:1,borderColor:colors.gray6},selected ? activeCategories : undefined]} 
                   color={selected ? colors.primary :colors.white}>
                   {renderIconCategories(item.iconLibrary, item.iconName, 40,selected ? colors.white :'#B6B6B6')}
                 </CircleComponent>
@@ -157,29 +180,55 @@ const ModalizeFilters: React.FC<IProps> = ({ visible, onClose }) => {
           <RowComponent>
             <ButtonComponent 
               onPress={() => handleTimeVsDate('today')}
-              style={[{marginRight:12,borderColor:colors.gray,borderWidth:1},selectedToday ? activeTimeVsDate : undefined]} 
+              style={[{marginRight:12,borderColor:colors.gray6,borderWidth:1},selectedToday ? activeTimeVsDate : undefined]} 
               textStyle={{fontSize:15,lineHeight:25,color:selectedToday? colors.white :colors.gray}}
               text="Today" 
               type='ouline'
             />
              <ButtonComponent 
               onPress={() => handleTimeVsDate('tomorrow')}
-              style={[{marginRight:12,borderColor:colors.gray,borderWidth:1},selectedTomorrow ? activeTimeVsDate : undefined]} 
+              style={[{marginRight:12,borderColor:colors.gray6,borderWidth:1},selectedTomorrow ? activeTimeVsDate : undefined]} 
               textStyle={[{fontSize:15,lineHeight:25,color:selectedTomorrow? colors.white :colors.gray}]}
               text="Tomorrow" 
               type='ouline'
             />
             <ButtonComponent 
               onPress={() => handleTimeVsDate('this-week')}
-              style={[{marginRight:12,borderColor:colors.gray,borderWidth:1},selectedThisWeek ? activeTimeVsDate : undefined]} 
+              style={[{marginRight:12,borderColor:colors.gray6,borderWidth:1},selectedThisWeek ? activeTimeVsDate : undefined]} 
               textStyle={{fontSize:15,lineHeight:25,color:selectedThisWeek? colors.white :colors.gray}}
               text="This week" 
               type='ouline'
             />
-           
-           
           </RowComponent>
-          <DateTimePickerComponent styles={{borderColor:colors.gray}}  testID='date' mode='date' dateSelected={calender} onSelect={(date,key) => setCalender(date)}/>
+          <SpaceComponent height={14}/>
+          <DateTimePickerComponent styles={{borderColor:colors.gray6}}  testID='date' mode='date' dateSelected={calender} onSelect={(date,key) => setCalender(date)}/>
+          <SpaceComponent height={26}/>
+          <TextComponent text="Location" font={typography.fontFamily.semiBold} size={typography.fontSizeMedium} lineHeight={34}/>
+          <SpaceComponent height={12}/>
+          <ChoiceLocation  
+            onSubMitLocation={handleOnSubMitLocation} 
+            dataPosition={{
+                address:location.address,
+                lat:location.position.lat,
+                lng:location.position.lng
+            }} 
+            dataLocation={location.address}
+            styles={{
+              borderColor:colors.gray6,
+              borderWidth:1,
+              paddingHorizontal: 8,
+              paddingVertical: 8,
+            }}
+          />
+           <SpaceComponent height={24}/>
+           <RowComponent justify='space-between'>
+            <TextComponent text="Select price range" font={typography.fontFamily.semiBold} size={typography.fontSizeMedium} lineHeight={34}/>
+            <TextComponent text={`${priceRange[0]}-${priceRange[1]}`} size={18} color={colors.primary} lineHeight={34} />
+           </RowComponent>
+           <PriceRangeSlider 
+            range={priceRange}
+            onValuesChange={(values) => setPriceRange([values[0], values[1]])}
+           />
         </ScrollView>
       </Modalize>
     </Portal>

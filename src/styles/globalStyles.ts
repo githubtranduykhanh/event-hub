@@ -173,7 +173,25 @@ const globalStyles = StyleSheet.create({
     btnPrimaryText:{
         textAlign: 'center',
         marginRight: 0
-    }
+    },
+    slider:{
+        width: 300,
+        height: 40,
+    },
+    thumbImage: {
+        width: 30,
+        height: 30,
+        resizeMode: 'contain',
+      },
+      trackImage: {
+        position: 'absolute',
+        width: 300,
+        height: 40,
+        top: 45,  // canh chỉnh cho track nằm dưới thumb
+      },
+      customTrack: {
+        height: 3,  // Độ dày của track
+      },
 })
 
 export default globalStyles

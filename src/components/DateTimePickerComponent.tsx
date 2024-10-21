@@ -31,7 +31,10 @@ const DateTimePickerComponent:React.FC<Props> = ({dateSelected,styles,mode,type,
 
   const handleOnConfirm = () => {
     setIsShowDateTimePicker(false);
+    onSelect(dateSelected,testID);
+    setDisplayDate(true)
   }
+  
 
   return (
     <View style={{flex:1}}>

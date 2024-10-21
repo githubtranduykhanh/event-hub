@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleProp, ViewStyle } from 'react-native'
 import React, { useState } from 'react'
 import RowComponent from './RowComponent'
 import { colors, globalStyles } from '~/styles'
@@ -12,18 +12,19 @@ interface Props {
   onSubMitLocation:(location:string,position:Position) => void;
   dataLocation:string;
   dataPosition:DataPositionModal;
+  styles?:StyleProp<ViewStyle>;
 }
 
 
 
-const ChoiceLocation:React.FC<Props> = ({onSubMitLocation,dataLocation,dataPosition}) => {
+const ChoiceLocation:React.FC<Props> = ({onSubMitLocation,dataLocation,dataPosition,styles}) => {
  
   const [isVibleModalLocotion, setIsVibleModelLocation] = useState<boolean>(false);
 
   
   return (
     <>
-      <RowComponent styles={[globalStyles.inputContainer]} onPress={()=> setIsVibleModelLocation(true)}>
+      <RowComponent styles={[globalStyles.inputContainer,styles]} onPress={()=> setIsVibleModelLocation(true)}>
         <CardComponent styles={{justifyContent:'center',alignItems:'center',margin:0,marginBottom:0,width:45,height:45}} color={`#E5E5E5`}>
           <CardComponent styles={{justifyContent:'center',alignItems:'center',margin:0,marginBottom:0,width:30,height:30}} color={colors.white}>
             <Location size={15} variant='Outline' color={colors.primary} />
